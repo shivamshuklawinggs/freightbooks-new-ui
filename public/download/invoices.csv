@@ -1,0 +1,6 @@
+invoiceNumber,invoiceDate,dueDate,tax,location,terms,customerNotes,terms_conditions,discountPercent,deposit,paymentOptions,customerId,email,address,name,productId,quantity,price
+INV-1008,2025-09-22,2025-10-22,test caneda,New York,Net 30,"Please pay before due date","Standard terms apply",5,100,Credit Card,CUSTOMER-10,john.doe@example.com,"123 Main St, New York, NY","John Doe",Service 2,2,100
+INV-1008,2025-09-22,2025-10-22,test caneda,New York,Net 30,"Please pay before due date","Standard terms apply",5,100,Credit Card,CUSTOMER-10,john.doe@example.com,"123 Main St, New York, NY","John Doe",lumper,1,250
+INV-1009,2025-09-23,2025-10-23,test caneda,Los Angeles,Net 10,"Thank you for your business","All sales final",0,0,Bank Transfer,CUSTOMER-6,jane.smith@example.com,"456 Market St, Los Angeles, CA","Jane Smith",lumper,5,50
+INV-1010,2025-09-25,2025-10-25,test caneda,Chicago,Net 40,"Late fee applies after due date","Custom terms",2,50,cash,CUSTOMER-6,bob.jones@example.com,"789 Lake Shore Dr, Chicago, IL","Bob Jones",Service 2,10,30
+INV-1011,2025-09-25,2025-10-25,test caneda,Chicago,Net 40,"Late fee applies after due date","Custom terms",2,50,cash,CUSTOMER-6,bob.jones@example.com,"789 Lake Shore Dr, Chicago, IL","Bob Jones",lumper,3,120

@@ -1,0 +1,42 @@
+
+import { Grid, TextField } from '@mui/material';
+import { FC } from 'react';
+import { useFormContext } from 'react-hook-form';
+import {  IVendorBill } from '@/types';
+
+const NotesSection:FC = () => {
+  const form=useFormContext<IVendorBill>();
+  return (
+    <Grid item xs={12}>
+      <Grid container spacing={3}>
+        <Grid item md={12}>
+          <TextField
+            fullWidth
+            label={"Notes"}
+            multiline
+            rows={8}
+            {...form.register('customerNotes')}
+            error={!!form.formState.errors.customerNotes}
+            helperText={form.formState.errors.customerNotes?.message}
+            placeholder="Enter Notes"
+          />
+        </Grid>
+        <Grid item md={12}>
+          <TextField
+            fullWidth
+            label={"Terms and Conditions"}
+            multiline
+            rows={6.5}
+            {...form.register('terms_conditions')}
+            error={!!form.formState.errors.terms_conditions}
+            helperText={form.formState.errors.terms_conditions?.message}
+            placeholder="Enter Terms and Conditions"
+          />
+        </Grid>
+    
+      </Grid>
+    </Grid>
+  );
+};
+
+export default NotesSection;
