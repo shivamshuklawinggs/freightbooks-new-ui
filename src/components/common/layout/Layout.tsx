@@ -43,7 +43,7 @@ const findRouteChain = (routes: Route[], path: string): Route[] | null => {
 
 const Layout: React.FC = () => {
   const isSidebarExpanded = useSelector((state: RootState) => state.sidebar.isOpen);
-  const drawerWidth = isSidebarExpanded ? 240 : 73;
+  const drawerWidth = isSidebarExpanded ? 190 : 73;
   const location = useLocation();
   const navigate = useNavigate();
 

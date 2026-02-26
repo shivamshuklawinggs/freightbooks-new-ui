@@ -106,22 +106,22 @@ const theme = createTheme({
     palette: Colors.palette,
     typography: {
       fontFamily: '"Lexend Deca", serif', // From body in index
-      fontSize: 14,
+      fontSize: 12,
       h1: {
         fontFamily: '"Poppins", sans-serif', // From h1-h4 in index
-        fontWeight: 700, // $font-weight-bold
+        fontWeight: 500, // $font-weight-bold
       },
       h2: {
         fontFamily: '"Poppins", sans-serif',
-        fontWeight: 700,
+        fontWeight: 500,
       },
       h3: {
         fontFamily: '"Poppins", sans-serif',
-        fontWeight: 700,
+        fontWeight: 500,
       },
       h4: {
         fontFamily: '"Poppins", sans-serif',
-        fontWeight: 700,
+        fontWeight: 500,
       },
       button: {
         textTransform: 'none',
@@ -129,21 +129,85 @@ const theme = createTheme({
       },
     },
     shape: {
-      borderRadius: 8, // $border-radius (0.5rem = 8px)
+      borderRadius: 12, // Modern rounded corners like QuickBooks
     },
+    shadows: [
+      'none',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 2px 6px rgba(0,0,0,0.08)',
+      '0px 4px 12px rgba(0,0,0,0.1)',
+      '0px 6px 16px rgba(0,0,0,0.12)',
+      '0px 8px 24px rgba(0,0,0,0.14)',
+      '0px 12px 32px rgba(0,0,0,0.16)',
+      '0px 16px 40px rgba(0,0,0,0.18)',
+      '0px 20px 48px rgba(0,0,0,0.2)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+      '0px 1px 3px rgba(0,0,0,0.08)',
+    ],
     components: {
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: 6, // $border-radius-md (0.375rem = 6px)
-            padding: '12px 20px', // From .button-style-one
-            transition: 'all 0.2s ease', // $transition-base
+            borderRadius: 8,
+            padding: '10px 24px',
+            transition: 'all 0.2s ease',
+            fontWeight: 500,
+            textTransform: 'none',
             '&:hover': {
-              transform: 'translateY(-1px)', // From .button-style-one:hover
+              transform: 'translateY(-1px)',
+              boxShadow: '0px 4px 12px rgba(0,0,0,0.15)',
             },
             '&:active': {
-              transform: 'translateY(0)', // From .button-style-one:active
+              transform: 'translateY(0)',
             },
+          },
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            borderRadius: 12,
+            boxShadow: '0px 2px 8px rgba(0,0,0,0.08)',
+            transition: 'all 0.3s ease-in-out',
+            '&:hover': {
+              boxShadow: '0px 8px 24px rgba(0,0,0,0.12)',
+            },
+          },
+        },
+      },
+      MuiChip: {
+        styleOverrides: {
+          root: {
+            fontWeight: 500,
+            borderRadius: 6,
+          },
+        },
+      },
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            boxShadow: '0px 1px 3px rgba(0,0,0,0.08)',
+          },
+        },
+      },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: {
+            borderRight: '1px solid #e5e7eb',
           },
         },
       },
