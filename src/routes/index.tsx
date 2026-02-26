@@ -5,6 +5,7 @@ import InvoiseSectionEdit from '@/pages/customer-service/CustomerTransactionList
 import BillSectionEdit from '@/pages/carrier-service/VendorTransactionList/Modals/BillSectionEdit';
 import { ActionType, ResourceType, RoteExtended } from '@/types';
 import SignatureDrawer from '@/components/SignatureDrawer';
+import Settings from '@/pages/Settings';
 
 // CHART OF ACCOUNTS
 const ChartAccounts = lazy(() => import('@/pages/chart-accounts-service'));
@@ -604,6 +605,16 @@ const baseProtectedRoutes: Route[] = [
     currentCompany: false,
     action: 'view',
     resource: ['superadmin'],
+  },
+  {
+    path: '/settings',
+    element: Settings,
+    title: 'Settings',
+    key: "settings",
+    icon: 'settings',
+    currentCompany: false,
+    action: 'view',
+    resource: ['public'],
   },
 
 

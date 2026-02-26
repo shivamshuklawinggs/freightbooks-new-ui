@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {  ICompany, Role } from '@/types';
 import { initialCompanyData } from '@/redux/InitialData/initialCompanyData'
 import { fetchCurrentUser } from '../api';
-import theme from '@/data/theme';
+import { colorPresets } from '@/data/colors';
 export interface IUser {
   _id: string;
   email: string;
@@ -111,7 +111,7 @@ const initialState: UserState = {
   isAuthenticated: false,
   loading: false,
   themeMode: 'light',
-  primaryColor: theme.palette.primary.main,
+  primaryColor: colorPresets.teal.main,
   error: null,
   currentCompany:"",
   currentCompanyDetails:initialCompanyData,

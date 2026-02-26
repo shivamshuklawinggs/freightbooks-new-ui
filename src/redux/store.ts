@@ -21,7 +21,7 @@ import itemServiceSliceReducer from './Slice/ItemServiceSlice'
 import reportReducer from '../store/reports';
 import dashboardReducer from './Slice/DashboardSlice';
 import superadminReducer from './Slice/SuperadminSlice';
-
+import themeReducer, { ThemeSettings } from './Slice/themeSlice';
 // Import types for proper typing with redux-persist
 import { PersistConfig } from 'redux-persist';
 import { ILoad, SidebarState } from "@/types";
@@ -29,8 +29,6 @@ import { TypedUseSelectorHook,useSelector, useDispatch } from "react-redux";
 import { companyResetMiddleware } from "./middlewares/companyReset.middleware";
 
 export const indexedDBStorage = createIndexedDBStorage("myAppDB");
-// const indexedDBStorage = createIndexedDBStorage("myAppDB");
-
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && !Array.isArray(value) && value !== null;
 
@@ -119,6 +117,11 @@ const columnFilterpersistConfig: PersistConfig<ColumnFilterState> = {
   transforms: [encryptionTransform],
   migrate: createTypeSafeMigrate("columnFilter", isColumnFilterPersistState),
 };
+const themePersistConfig: PersistConfig<ThemeSettings> = {
+  key: "theme",
+  storage: indexedDBStorage,
+  transforms: [encryptionTransform],
+};
 
 const sidebarpersistConfig: PersistConfig<SidebarState> = {
   key: "sidebar",
@@ -146,6 +149,7 @@ export const store = configureStore({
     location: locationSliceReducer,
     carriers: carriersSliceReducer,
     report: reportReducer,
+    theme:persistReducer<ThemeSettings>(themePersistConfig, themeReducer),
     dashboard: dashboardReducer,
 
     ["accounts.customers"]: accountsCustomersSliceReducer,
@@ -160,14 +164,6 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      // serializableCheck: {
-      //   // Ignore these action types
-      //   ignoredActions: ['load/setFiles', 'persist/PERSIST', FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      //   // Ignore these field paths in all actions
-      //   ignoredActionPaths: ['payload.files', 'meta.arg'],
-      //   // Ignore these paths in the state
-      //   ignoredPaths: ['load.files', 'editload.files'],
-      // },
       serializableCheck:false
     }).concat(companyResetMiddleware),
 });

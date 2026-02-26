@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import {
   QueryClient,
@@ -7,8 +7,9 @@ import {
 import RouterConfig from './routes/RouterConfig';
 import { useGlobalNumericInputPrevention } from './hooks/useGlobalNumericInputPrevention';
 import { ThemeProvider } from '@mui/material/styles';
-import {usecustomeTheme} from './data/theme';
 import { CssBaseline } from '@mui/material';
+import { useAppSelector } from './redux/store';
+import createAppTheme from './data/theme';
 // Create a client
 const queryClient = new QueryClient()
 const App: React.FC = () => {
@@ -18,7 +19,9 @@ const App: React.FC = () => {
   });
 
   // Create a new theme instance whenever the color changes
-  const theme = usecustomeTheme();
+   const themeSettings = useAppSelector((state) => state.theme);
+  const theme = useMemo(() => createAppTheme(themeSettings), [themeSettings]);
+
   return (
       <QueryClientProvider client={queryClient}
        >

@@ -1,11 +1,11 @@
-import { Colors } from "@/data/theme";
+import { colorPresets } from "@/data/colors";
 import { companyType, ICompany } from "@/types";
 
 export const initialCompanyData: ICompany = {
     _id: '',
     address: '',
     phone: '',
-    color: Colors.palette.primary.main,
+    color: colorPresets.teal.main,
     label: '',
     prefix: '',
     mcNumber: '',

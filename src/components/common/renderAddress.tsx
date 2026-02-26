@@ -14,11 +14,12 @@ import {
   alpha,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility'
-import theme from '@/data/theme';
+import { useTheme } from '@mui/material/styles';
 import { formatDate } from '@/utils/dateUtils';
 // Address Modal Component
 // Address Modal Component
 const AddressModal:React.FC<{addressModalOpen:any,setAddressModalOpen:any,selectedAddresses:any,}> = ({addressModalOpen,selectedAddresses,setAddressModalOpen}) => {
+    const theme = useTheme();
     // Function to close address modal
 const closeAddressModal = () => {
   setAddressModalOpen(false);

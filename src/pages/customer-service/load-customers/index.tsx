@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import AddCustomer from '@/pages/customer-service/load-customers/components/AddCustomer';
 import { CustomerStatus, ICustomer, } from '@/types';
-import theme from '@/data/theme';
+import { useTheme } from '@mui/material/styles';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
@@ -42,6 +42,7 @@ import CustomerFilters, { CustomerFiltersType }  from '@/components/CustomerFilt
 import { getIcon } from '@/components/common/icons/getIcon';
 
 const ViewCustomers: React.FC = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const currentUser = useSelector((state: RootState) => state.user);
   const printRef = useRef<HTMLDivElement>(null);

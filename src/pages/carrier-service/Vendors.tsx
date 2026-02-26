@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, RefObject, } from 'react';
 import { Button, Container, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography, Box, CircularProgress, Stack, alpha, TablePagination, Menu, MenuItem, Checkbox, Grid } from '@mui/material';
 import { CustomerStatus, ICarrier, } from '@/types';
-import theme from '@/data/theme';
+import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { Add as AddIcon,  Settings as SettingsIcon, Print as PrintIcon, Download, } from '@mui/icons-material';
@@ -27,6 +27,7 @@ import { getIcon } from '@/components/common/icons/getIcon';
 const DEFAULT_PAGE_SIZE = 10;
 
 const View: React.FC = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const currentUser = useSelector((state: RootState) => state.user);
 

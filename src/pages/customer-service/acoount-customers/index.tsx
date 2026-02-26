@@ -3,7 +3,7 @@ import { Button, Container, TableContainer, Table, TableBody, TableCell, TableHe
 import AddAccountsCustomer from './components/AddCustomer';
 import AddCustomer from '@/pages/customer-service/load-customers/components/AddCustomer';
 import { ICustomer, IAccountsCustomerView, IPaymentTerm, CustomerStatus, } from '@/types';
-import theme from '@/data/theme';
+import { useTheme } from '@mui/material/styles';
 import { fetchAccountsCustomers } from '@/redux/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
@@ -29,7 +29,7 @@ import { getIcon } from '@/components/common/icons/getIcon';
 const DEFAULT_PAGE_SIZE = 10;
 
 const ViewCustomers: React.FC = () => {
-
+  const theme = useTheme();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();

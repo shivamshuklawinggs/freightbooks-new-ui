@@ -7,8 +7,7 @@ import CarrierFilters, {CarrierFiltersType }  from '@/components/CarrierFilters'
 import { RootState } from '@/redux/store';
 import { useSelector } from 'react-redux';
 import DocumentEditField from './DocumentEditField';
-import theme from '@/data/theme';
-import { alpha } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 import apiService from '@/service/apiService';
 import { toast } from 'react-toastify';
 import CustomerDashboard from './CustomerDashboard';
@@ -20,6 +19,7 @@ import VerticalMenu from '@/components/VerticalMenu';
 import { paths } from '@/utils/paths';
 
 const Carriers: React.FC = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const currentUser = useSelector((state: RootState) => state.user);
   const [currentPage, setCurrentPage] = useState(1);
