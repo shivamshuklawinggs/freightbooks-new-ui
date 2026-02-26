@@ -8,10 +8,10 @@ import { TextField, Box, FormControl, InputLabel, Select, MenuItem, Button, Chec
 import TimeRangePicker from "@/components/common/TimeRangePicker";
 import LocationSelect from "@/components/common/PickupLocationSelect";
 import { AppDispatch } from "@/redux/store";
-import FloatInput from "@/components/ui/FloatInput";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { Production } from "@/config";
 import { getIcon } from "@/components/common/icons/getIcon";
+import NumericInput from "@/components/ui/NumericInput";
 
 interface LocationFormProps {
   index: number;
@@ -35,9 +35,6 @@ const LocationForm: FC<LocationFormProps> = ({ index, locationData, onRemove, lo
     const { name, value } = e.target;
     const updatedLocationInfo = { ...locationData, [name]: value };
 
-    if (!locationData.requirements?.includes("Appointment Required")) {
-      updatedLocationInfo.endTime = "";
-    }
     dispatch(actions.update({ index, ...updatedLocationInfo }));
   };
 
@@ -58,10 +55,6 @@ const LocationForm: FC<LocationFormProps> = ({ index, locationData, onRemove, lo
       ...locationData,
       requirements: Array.from(currentRequirements)
     };
-
-    if (!updatedLocationInfo.requirements?.includes("Appointment Required")) {
-      updatedLocationInfo.endTime = "";
-    }
     dispatch(actions.update({ index, ...updatedLocationInfo }));
   };
 
@@ -93,13 +86,14 @@ const LocationForm: FC<LocationFormProps> = ({ index, locationData, onRemove, lo
         </Stack>
       </Box>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <LocationSelect index={index} updateLocation={actions.update} />
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={6}>
           <TextField
             fullWidth
+            size="small"
             label="Warehouse"
             placeholder="Warehouse"
             name="warehouse"
@@ -110,52 +104,53 @@ const LocationForm: FC<LocationFormProps> = ({ index, locationData, onRemove, lo
         </Grid>
         <Grid item xs={12} md={6}>
           {
-            Production ?<AddressAutocomplete
-            value={locationData.address || ''}
-            onChange={() => {}}
-            onLocationSelect={handleLocationSelect}
-            label="Address"
-            placeholder="Enter address"
-            error={false}
-          />:<TextField
-            fullWidth
-            label="Address"
-            placeholder="Enter address"
-            name="address"
-            value={locationData.address || ""}
-            onChange={handleChange}
-            variant="outlined"
-          />
+            Production ? <AddressAutocomplete
+              value={locationData.address || ''}
+              onChange={() => {}}
+              onLocationSelect={handleLocationSelect}
+              label="Address"
+              placeholder="Enter address"
+              error={false}
+            /> : <TextField
+              fullWidth
+              size="small"
+              label="Address"
+              placeholder="Enter address"
+              name="address"
+              value={locationData.address || ""}
+              onChange={handleChange}
+              variant="outlined"
+            />
           }
-          
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={3}>
           <TextField
             fullWidth
+            size="small"
             label="City"
             placeholder="City"
             name="city"
             value={locationData.city || ""}
             onChange={handleChange}
             variant="outlined"
-            // InputProps={{ readOnly: true }}
           />
         </Grid>
         <Grid item xs={12} md={3}>
           <TextField
             fullWidth
+            size="small"
             label="State"
             placeholder="State"
             name="state"
             value={locationData.state || ""}
             onChange={handleChange}
-            // inputProps={{ readOnly: true }}
             variant="outlined"
           />
         </Grid>
         <Grid item xs={12} md={3}>
           <TextField
             fullWidth
+            size="small"
             label="Zipcode"
             placeholder="Zipcode"
             name="zipcode"
@@ -165,10 +160,10 @@ const LocationForm: FC<LocationFormProps> = ({ index, locationData, onRemove, lo
           />
         </Grid>
         <Grid item xs={12} md={3}>
-          <FormControl fullWidth variant="outlined">
+          <FormControl fullWidth size="small" variant="outlined">
             <InputLabel>Location Class</InputLabel>
             <Select
-              sx={{textTransform:"capitalize"}}
+              sx={{ textTransform: "capitalize" }}
               name="locationClass"
               value={locationData.locationClass || ""}
               onChange={handleChange as any}
@@ -176,7 +171,7 @@ const LocationForm: FC<LocationFormProps> = ({ index, locationData, onRemove, lo
             >
               <MenuItem value="" disabled>Location Class</MenuItem>
               {locationClasses.map((locationClass) => (
-                <MenuItem sx={{textTransform:"capitalize"}} key={locationClass} value={locationClass}>{locationClass}</MenuItem>
+                <MenuItem sx={{ textTransform: "capitalize" }} key={locationClass} value={locationClass}>{locationClass}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -199,6 +194,7 @@ const LocationForm: FC<LocationFormProps> = ({ index, locationData, onRemove, lo
         <Grid item xs={12} md={3}>
           <TextField
             fullWidth
+            size="small"
             label="PO Number"
             value={pnonumber || ''}
             onChange={(e) => dispatch(actions.setPoNumber(e.target.value))}
@@ -208,6 +204,7 @@ const LocationForm: FC<LocationFormProps> = ({ index, locationData, onRemove, lo
         <Grid item xs={12} md={3}>
           <TextField
             fullWidth
+            size="small"
             label={`${title} Number`}
             name={locationType === 'pickup' ? 'pickupNumber' : 'deliveryNumber'}
             value={(locationData as any)[locationType === 'pickup' ? 'pickupNumber' : 'deliveryNumber'] || ''}
@@ -215,64 +212,67 @@ const LocationForm: FC<LocationFormProps> = ({ index, locationData, onRemove, lo
             variant="outlined"
           />
         </Grid>
-        <Grid item xs={12} md={4}>
-          <FloatInput
-            fullWidth
+        <Grid item xs={12} md={3}>
+          <NumericInput
+            size="small"
             label="Weight"
             name="weight"
-            value={String(locationData.weight)}
+            value={locationData.weight || 0}
             onChange={(value) => handleChange({ target: { name: "weight", value } } as any)}
             variant="outlined"
+            // decimalScale={}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
-          <TextField
+        <Grid item xs={12} md={3}>
+          <NumericInput
             fullWidth
+            size="small"
             label="Case Count"
             name="casecount"
-            type="number"
-            value={locationData.casecount || ''}
-            onChange={handleChange}
+            value={locationData.casecount || 0}
+            onChange={(value) => handleChange({ target: { name: "casecount", value } } as any)}
             variant="outlined"
+            decimalScale={0}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
-          <TextField
+        <Grid item xs={12} md={3}>
+          <NumericInput
             fullWidth
-            label="Pallete Count"
+            size="small"
+            label="Pallet Count"
             name="palletcount"
-            type="number"
-            value={locationData.palletcount || ''}
-            onChange={handleChange}
+            value={locationData.palletcount || 0}
+            onChange={(value) => handleChange({ target: { name: "palletcount", value } } as any)}
             variant="outlined"
+            decimalScale={0}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             fullWidth
+            size="small"
             label="Driver Instructions"
             placeholder="Enter additional details..."
             name="notes"
             value={locationData.notes || ''}
             onChange={handleChange}
             multiline
-            rows={4}
+            rows={3}
             variant="outlined"
-            margin="normal"
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             fullWidth
+            size="small"
             label="Warehouse Instructions"
             placeholder="Enter additional details..."
             name="wherehouseInstructions"
             value={locationData.wherehouseInstructions || ''}
             onChange={handleChange}
             multiline
-            rows={4}
+            rows={3}
             variant="outlined"
-            margin="normal"
           />
         </Grid>
         <Grid item xs={12}>

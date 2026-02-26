@@ -1,6 +1,6 @@
 import  {  useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Grid, Typography, Box, Select, MenuItem, InputLabel, FormControl, Card, TextField, Stack, Paper, Divider, SelectChangeEvent, Chip, Dialog, DialogTitle, DialogActions, DialogContent } from "@mui/material";
+import { Button, Grid, Typography, Box, Select, MenuItem, InputLabel, FormControl, Card, TextField, Stack, Divider, SelectChangeEvent, Chip, Dialog, DialogTitle, DialogActions, DialogContent } from "@mui/material";
 import { setCarrier,setTrailer,setPowerunit,AddAssignDriver ,setDispatchRate,AssignDriversToCarrier, removeAssignDriver} from "@/redux/Slice/EditloadSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import {  ICarrier, IDriver } from "@/types";
@@ -82,29 +82,29 @@ const dispatch = useDispatch<AppDispatch>();
     setAssignDrivers(carrierData.assignDrivers)
   },[carrierData.assignDrivers])
    const renderDispatchRateSection = () => (
-      <Paper elevation={0} sx={{ p: 2, bgcolor: 'background.default' }}>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h6" gutterBottom>
-           Carrier Amount 
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TextField
-              label="Margin"
-              variant="outlined"
-              value={getCarrierMarginAmount(loadDetails.loadAmount || 0 as number,carrierData.carrierPay || 0)}
-              sx={{ width: '100px' }}
-            />
-            <TextField
-              label="Carrier Pay"
-              type="number"
-              value={carrierData.carrierPay}
-              onChange={(e) => handleDispatchRateChange(e.target.value)}
-              sx={{ width: '150px' }}
-            />
-          </Box>
-        </Box>
-  
-      </Paper>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={3}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Margin"
+            variant="outlined"
+            value={getCarrierMarginAmount(loadDetails.loadAmount || 0 as number, carrierData.carrierPay || 0)}
+            InputProps={{ readOnly: true }}
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Carrier Pay"
+            type="number"
+            value={carrierData.carrierPay}
+            onChange={(e) => handleDispatchRateChange(e.target.value)}
+            variant="outlined"
+          />
+        </Grid>
+      </Grid>
     );
 
 const handleCloseDriverForm=()=>{
@@ -136,125 +136,52 @@ const handleOpenTrailerForm=()=>{
         {selectedCarrierData && (
           <>
             {/* Carrier Details Section */}
-            <Paper elevation={0} sx={{ p: 2, bgcolor: 'background.default' }}>
-              <Typography variant="h6" gutterBottom>Carrier Details</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
-                  <TextField
-                    fullWidth
-                    label="Company Name"
-                    value={selectedCarrierData?.company || ''}
-                    variant="outlined"
-                    
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+            <Box>
+             
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={3}>
+                  <TextField fullWidth size="small" label="Company Name" value={selectedCarrierData?.company || ''} variant="outlined" InputProps={{ readOnly: true }} />
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <TextField
-                    fullWidth
-                    label="MC Number"
-                    value={selectedCarrierData?.mcNumber || ''}
-                    variant="outlined"
-                    
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                <Grid item xs={12} md={3}>
+                  <TextField fullWidth size="small" label="MC Number" value={selectedCarrierData?.mcNumber || ''} variant="outlined" InputProps={{ readOnly: true }} />
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <TextField
-                    fullWidth
-                    label="USDOT Number"
-                    value={selectedCarrierData?.usdot || ''}
-                    variant="outlined"
-                    
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                <Grid item xs={12} md={3}>
+                  <TextField fullWidth size="small" label="USDOT Number" value={selectedCarrierData?.usdot || ''} variant="outlined" InputProps={{ readOnly: true }} />
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <TextField
-                    fullWidth
-                    label="Address"
-                    value={selectedCarrierData?.address || ''}
-                    variant="outlined"
-                    
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    multiline
-                    maxRows={2}
-                  />
+                <Grid item xs={12} md={3}>
+                  <TextField fullWidth size="small" label="Phone" value={selectedCarrierData?.phone || ''} variant="outlined" InputProps={{ readOnly: true }} />
                 </Grid>
-                <Grid item xs={12} md={4}>
-                 <TextField
-                  fullWidth
-                  label="Phone"
-                  value={selectedCarrierData?.phone || ''}
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
+                <Grid item xs={12} md={3}>
+                  <TextField fullWidth size="small" label="Email" value={selectedCarrierData?.email || ''} variant="outlined" InputProps={{ readOnly: true }} />
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <TextField
-                    fullWidth
-                    label="Contact Email"
-                    value={selectedCarrierData?.email || ''}
-                    variant="outlined"
-                    
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                </Grid>
-                <ContactCarrierPersons/>
-                {/* add power unit */}
                 <Grid item xs={12} md={6}>
-                  {/* Text field */}
-                  <InputLabel id="powerunit">Power Unit</InputLabel>
-                  <Select
-                  labelId="powerunit"
-                  label="Power Unit"
-                    fullWidth
-                    variant="outlined"
-                    value={carrierData.powerunit}
-                    onChange={handlePowerUnitChange}
-                  >
-                  <MenuItem value="" onClick={handleOpenPowerUnitForm}>Add Power Unit</MenuItem>
-                    { Array.isArray(selectedCarrierData?.powerunit) && selectedCarrierData?.powerunit?.map((powerunit:string) => (
-                      <MenuItem key={powerunit} value={powerunit}>
-                        {powerunit}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                  {/* Text field */}
-                  <InputLabel id="trailer">Trailer</InputLabel>
-                  <Select
-                  labelId="trailer"
-                  label="Trailer"
-                    fullWidth
-                    variant="outlined"
-                    value={carrierData.trailer}
-                    onChange={handleTrailerChange}
-                  >
-                  <MenuItem value="" onClick={handleOpenTrailerForm}>Add Trailer</MenuItem>
-                    { Array.isArray(selectedCarrierData?.trailer) && selectedCarrierData?.trailer?.map((trailer:string) => (
-                      <MenuItem key={trailer} value={trailer}>
-                        {trailer}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  </Grid>
-                
+                  <TextField fullWidth size="small" label="Address" value={selectedCarrierData?.address || ''} variant="outlined" InputProps={{ readOnly: true }} multiline maxRows={2} />
+                </Grid>
+                <ContactCarrierPersons />
+                <Grid item xs={12} md={3}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel id="powerunit-label">Power Unit</InputLabel>
+                    <Select labelId="powerunit-label" label="Power Unit" value={carrierData.powerunit} onChange={handlePowerUnitChange}>
+                      <MenuItem value="" onClick={handleOpenPowerUnitForm}>+ Add Power Unit</MenuItem>
+                      {Array.isArray(selectedCarrierData?.powerunit) && selectedCarrierData?.powerunit?.map((pu: string) => (
+                        <MenuItem key={pu} value={pu}>{pu}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel id="trailer-label">Trailer</InputLabel>
+                    <Select labelId="trailer-label" label="Trailer" value={carrierData.trailer} onChange={handleTrailerChange}>
+                      <MenuItem value="" onClick={handleOpenTrailerForm}>+ Add Trailer</MenuItem>
+                      {Array.isArray(selectedCarrierData?.trailer) && selectedCarrierData?.trailer?.map((tr: string) => (
+                        <MenuItem key={tr} value={tr}>{tr}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
               </Grid>
-            </Paper>
+            </Box>
 
           
 
@@ -262,10 +189,10 @@ const handleOpenTrailerForm=()=>{
             <Divider sx={{ mt: 2, mb: 2  }}  />
             
             {/* Driver Assignment Section */}
-            <Box  sx={{ p: 2, bgcolor: 'background.default' }}>
-              <FormControl fullWidth>
-                <InputLabel id="edit-driver-label">Select a Driver</InputLabel>
-                <Select  onChange={AddDriver} label="Select a Driver" labelId="edit-driver-label">
+            <Box>
+              <FormControl fullWidth size="small">
+                <InputLabel id="edit-driver-label">Assign Driver</InputLabel>
+                <Select onChange={AddDriver} label="Assign Driver" labelId="edit-driver-label">
                   <MenuItem disabled value="">Select a Driver</MenuItem>
                   {drivers?.filter((driver:IDriver) => !assignDrivers.includes(driver._id as  unknown as any)) // Prevent duplicate selection
                     .map((driver:any) => (
@@ -286,8 +213,8 @@ const handleOpenTrailerForm=()=>{
             </Box>
 
             {/* Assigned Drivers List */}
-            <Paper elevation={0} sx={{ p: 2, bgcolor: 'background.default' }}>
-              <Typography variant="h6">Assigned Drivers</Typography>
+            <Box>
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, mb: 1 }}>Assigned Drivers</Typography>
               <Button variant="outlined" onClick={()=>{setOpenDriverForm(true)}}>Add Driver</Button>
               {assignDrivers.length > 0 ? (
                 assignDrivers.map((driverId, idx) => {
@@ -316,7 +243,7 @@ const handleOpenTrailerForm=()=>{
               ) : (
                 <Typography>No drivers assigned</Typography>
               )}
-            </Paper>
+            </Box>
             {/* Add Margin Amount Section here */}
             {renderDispatchRateSection()}
           </>

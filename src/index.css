@@ -1,418 +1,195 @@
-/* Material UI Custom Styles - FreightBooks CRM */
+/* FreightBooks CRM - Global Styles */
 
-/* ===== GLOBAL STYLES ===== */
-* {
+/* Override hardcoded page backgrounds to use theme default */
+.view-load {
+  background-color: transparent !important;
+}
+
+/* ===== GLOBAL RESET ===== */
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: 'Lexend Deca', 'Roboto', 'Helvetica', 'Arial', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
 }
 
-/* ===== MATERIAL UI COMPONENT OVERRIDES ===== */
-
-/* AppBar Overrides */
-.MuiAppBar-root {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.MuiToolbar-root {
-  padding-left: 24px !important;
-  padding-right: 24px !important;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-/* Button Overrides */
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* ===== BUTTON OVERRIDES ===== */
 .MuiButton-root {
   text-transform: none !important;
-  font-weight: 500 !important;
-  border-radius: 8px !important;
-  padding: 8px 16px !important;
-  transition: all 0.2s ease-in-out !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
 }
 
 .MuiButton-contained {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
 }
 
 .MuiButton-contained:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-  transform: translateY(-1px) !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
 }
 
-.MuiButton-outlined {
-  border-width: 2px !important;
+/* ===== INPUT / TEXTFIELD ===== */
+.MuiOutlinedInput-root {
+  transition: box-shadow 0.2s ease !important;
 }
 
-.MuiButton-outlined:hover {
-  border-width: 2px !important;
-  background-color: rgba(25, 118, 210, 0.04) !important;
+.MuiOutlinedInput-root.Mui-focused {
+  box-shadow: 0 0 0 3px rgba(var(--mui-palette-primary-mainChannel) / 0.15) !important;
 }
 
-/* TextField Overrides */
-.MuiTextField-root .MuiOutlinedInput-root {
-  border-radius: 8px !important;
-}
-
-.MuiTextField-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: rgba(25, 118, 210, 0.5) !important;
-}
-
-.MuiTextField-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #1976d2 !important;
-  border-width: 2px !important;
-}
-
-.MuiInputLabel-root.Mui-focused {
-  color: #1976d2 !important;
-}
-
-.MuiFormHelperText-root.Mui-error {
-  color: #d32f2f !important;
-}
-
-/* Select Overrides */
-.MuiSelect-root {
-  border-radius: 8px !important;
-}
-
-.MuiSelect-select {
-  padding: 10.5px 14px !important;
-}
-
-.MuiMenuItem-root {
-  padding: 8px 16px !important;
-  min-height: 40px !important;
-}
-
-.MuiMenuItem-root:hover {
-  background-color: rgba(25, 118, 210, 0.08) !important;
-}
-
-.MuiMenuItem-root.Mui-selected {
-  background-color: rgba(25, 118, 210, 0.12) !important;
-}
-
-/* Dialog Overrides */
-.MuiDialog-root .MuiDialog-paper {
-  border-radius: 12px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
-}
-
-.MuiDialogTitle-root {
-  padding: 20px 24px !important;
-  font-size: 1.25rem !important;
-  font-weight: 600 !important;
-}
-
-.MuiDialogContent-root {
-  padding: 0 24px 24px 24px !important;
-}
-
-.MuiDialogActions-root {
-  padding: 16px 24px !important;
-  gap: 8px !important;
-}
-
-/* Card Overrides */
-.MuiCard-root {
-  border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-}
-
-.MuiCard-root:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
-}
-
-.MuiCardContent-root {
-  padding: 24px !important;
-}
-
-/* Drawer/Sidebar Overrides */
-.MuiDrawer-paper {
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1) !important;
-}
-
-.MuiListItem-root {
-  border-radius: 8px !important;
-  margin: 2px 8px !important;
-}
-
-.MuiListItem-root:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.MuiListItem-root.Mui-selected {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Table Overrides */
+/* ===== TABLE ===== */
 .MuiTableHead-root .MuiTableCell-root {
-  font-weight: 600 !important;
-  color: #424242 !important;
-  border-bottom: 2px solid #e0e0e0 !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  white-space: nowrap;
 }
 
-.MuiTableRow-root:hover {
-  background-color: #f5f5f5 !important;
+.MuiTableRow-root {
+  transition: background-color 0.15s ease !important;
 }
 
 .MuiTableCell-root {
-  padding: 12px 16px !important;
-  border-bottom: 1px solid #f0f0f0 !important;
+  border-bottom-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Chip Overrides */
-.MuiChip-root {
+/* ===== CARD ===== */
+.MuiCard-root {
+  transition: box-shadow 0.2s ease !important;
+}
+
+/* ===== DIALOG ===== */
+.MuiDialog-paper {
   border-radius: 16px !important;
-  font-weight: 500 !important;
 }
 
-.MuiChip-clickable:hover {
-  background-color: rgba(25, 118, 210, 0.08) !important;
+.MuiDialogTitle-root {
+  font-weight: 700 !important;
+  padding-bottom: 8px !important;
 }
 
-/* Alert Overrides */
-.MuiAlert-root {
-  border-radius: 8px !important;
-  font-weight: 500 !important;
+.MuiDialogActions-root {
+  padding: 12px 24px 20px !important;
+  gap: 8px !important;
 }
 
-.MuiAlert-standardInfo {
-  background-color: #e3f2fd !important;
-  color: #1565c0 !important;
+/* ===== CHIP ===== */
+.MuiChip-root {
+  font-weight: 600 !important;
 }
 
-.MuiAlert-standardSuccess {
-  background-color: #e8f5e8 !important;
-  color: #2e7d32 !important;
-}
-
-.MuiAlert-standardWarning {
-  background-color: #fff8e1 !important;
-  color: #f57c00 !important;
-}
-
-.MuiAlert-standardError {
-  background-color: #ffebee !important;
-  color: #c62828 !important;
-}
-
-/* Divider Overrides */
-.MuiDivider-root {
-  margin: 16px 0 !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
-}
-
-/* Tooltip Overrides */
+/* ===== TOOLTIP ===== */
 .MuiTooltip-tooltip {
-  background-color: #424242 !important;
-  font-size: 0.875rem !important;
+  font-size: 0.75rem !important;
   border-radius: 6px !important;
+  font-weight: 500 !important;
 }
 
-/* Menu Overrides */
+/* ===== MENU ===== */
 .MuiMenu-paper {
-  border-radius: 8px !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
-.MuiMenuItem-root {
-  font-size: 0.875rem !important;
+/* ===== SIDEBAR SCROLLBAR (thinner) ===== */
+.MuiDrawer-paper::-webkit-scrollbar {
+  width: 4px;
 }
 
-/* FormControl Label Overrides */
-.MuiFormControlLabel-root {
-  margin-right: 8px !important;
+.MuiDrawer-paper::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
 }
 
-.MuiCheckbox-root {
-  color: rgba(25, 118, 210, 0.54) !important;
-}
-
-.MuiCheckbox-root.Mui-checked {
-  color: #1976d2 !important;
-}
-
-/* Switch Overrides */
-.MuiSwitch-root .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
-  background-color: rgba(25, 118, 210, 0.5) !important;
-}
-
-.MuiSwitch-root .MuiSwitch-switchBase.Mui-checked .MuiSwitch-thumb {
-  color: #1976d2 !important;
-}
-
-/* Progress Overrides */
-.MuiCircularProgress-root {
-  color: #1976d2 !important;
-}
-
-.MuiLinearProgress-root {
-  border-radius: 4px !important;
-}
-
-.MuiLinearProgress-colorPrimary {
-  background-color: #1976d2 !important;
-}
-
-/* ===== CUSTOM UTILITY CLASSES ===== */
-
-/* Company Color Border Classes */
-.company-border-primary {
-  border-color: var(--company-primary-color, #1976d2) !important;
-}
-
-.company-border-accent {
-  border-color: var(--company-accent-color, #ff5722) !important;
-}
-
-/* Custom Animation Classes */
+/* ===== ANIMATION UTILITIES ===== */
 .fade-in {
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.25s ease-in-out;
 }
 
 .slide-up {
-  animation: slideUp 0.3s ease-in-out;
+  animation: slideUp 0.25s ease-out;
 }
 
 .scale-in {
-  animation: scaleIn 0.2s ease-in-out;
+  animation: scaleIn 0.15s ease-out;
 }
 
-/* Custom Layout Classes */
-.full-height {
-  height: 100vh !important;
-}
-
-.flex-center {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.flex-between {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-}
-
-/* Custom Status Classes */
-.status-pending {
-  background-color: #fff3cd !important;
-  color: #856404 !important;
-  border: 1px solid #ffeaa7 !important;
-}
-
-.status-completed {
-  background-color: #d4edda !important;
-  color: #155724 !important;
-  border: 1px solid #c3e6cb !important;
-}
-
-.status-cancelled {
-  background-color: #f8d7da !important;
-  color: #721c24 !important;
-  border: 1px solid #f5c6cb !important;
-}
-
-.status-processing {
-  background-color: #d1ecf1 !important;
-  color: #0c5460 !important;
-  border: 1px solid #bee5eb !important;
-}
-
-/* ===== ANIMATIONS ===== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
 
 @keyframes scaleIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* ===== STATUS CHIP UTILITIES ===== */
+.status-pending   { background-color: #fff7e6 !important; color: #b45309 !important; }
+.status-completed { background-color: #f0fdf4 !important; color: #166534 !important; }
+.status-cancelled { background-color: #fff1f2 !important; color: #9f1239 !important; }
+.status-processing{ background-color: #eff6ff !important; color: #1e40af !important; }
+
+/* ===== UTILITY CLASSES ===== */
+.flex-center  { display: flex !important; align-items: center !important; justify-content: center !important; }
+.flex-between { display: flex !important; align-items: center !important; justify-content: space-between !important; }
+.full-height  { height: 100vh !important; }
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .MuiDialog-paper {
-    margin: 16px !important;
-    max-width: calc(100% - 32px) !important;
+    margin: 12px !important;
+    max-width: calc(100% - 24px) !important;
+    border-radius: 12px !important;
   }
-  
-  .MuiCardContent-root {
-    padding: 16px !important;
-  }
-  
-  .MuiGrid-item {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-  }
-}
 
-@media (max-width: 480px) {
-  .MuiButton-root {
-    padding: 6px 12px !important;
-    font-size: 0.875rem !important;
-  }
-  
   .MuiDialogActions-root {
     flex-direction: column !important;
   }
-  
+
   .MuiDialogActions-root .MuiButton-root {
     width: 100% !important;
   }
 }
 
-/* ===== DARK MODE SUPPORT ===== */
-@media (prefers-color-scheme: dark) {
-  .MuiPaper-root {
-    background-color: #1e1e1e !important;
-  }
-  
-  .MuiTextField-root .MuiOutlinedInput-root {
-    background-color: #2a2a2a !important;
-  }
-  
-  .MuiTypography-root {
-    color: #ffffff !important;
-  }
-}
-
-/* ===== PRINT STYLES ===== */
+/* ===== PRINT ===== */
 @media print {
   .MuiButton-root,
-  .MuiIconButton-root {
+  .MuiIconButton-root,
+  .MuiDrawer-root,
+  .MuiAppBar-root {
     display: none !important;
   }
-  
+
   .MuiPaper-root {
     box-shadow: none !important;
-    border: 1px solid #ccc !important;
+    border: 1px solid #e0e0e0 !important;
   }
 }

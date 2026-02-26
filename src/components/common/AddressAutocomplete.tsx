@@ -114,6 +114,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           setInputValue(e.target.value);
           onChange(e.target.value);
         }}
+        size="small"
         error={error}
         helperText={helperText}
         disabled={disabled}

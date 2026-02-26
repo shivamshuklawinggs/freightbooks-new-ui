@@ -1,6 +1,5 @@
-import React from 'react'
 import { ICompany, Role } from '@/types'
-import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { Box, FormControl, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/redux/store'
 import { fetchAllCompanies } from "@/redux/api";
@@ -12,7 +11,7 @@ type CompanyQueryKey = ['companies', string | undefined];
 const SelectCoompany = () => {
   const [SearchParam] = useSearchParams()
   const dispatch = useDispatch<AppDispatch>();
-  const { user, currentCompany,primaryColor } = useSelector((state: RootState) => state.user);
+  const { user, currentCompany } = useSelector((state: RootState) => state.user);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   // get all queries
@@ -47,65 +46,73 @@ const SelectCoompany = () => {
     enabled: !!user && user.role !== Role.SUPERADMIN,
   });
   return (
-    <React.Fragment>
-  <FormControl fullWidth>
-      <Select
-        value={currentCompany || ''}
-        onChange={handleCompanyChange}
-        sx={{
-          backgroundColor: 'white',
-          minWidth: 120,
-          borderColor:`1px solid ${primaryColor}`,
-          '&:hover': {
-            borderColor: primaryColor,
-          },
-          '&.Mui-focused': {
-            borderColor: primaryColor,
-          },
-        }}
-        displayEmpty
-        renderValue={(selected) => {
-          if (!selected) {
-            // ✅ Explicitly render “All” when value is empty
+    <>
+      <FormControl size="small" sx={{ minWidth: 140, maxWidth: 200 }}>
+        <Select
+          value={currentCompany || ''}
+          onChange={handleCompanyChange}
+          displayEmpty
+          sx={{
+            fontSize: '0.8rem',
+            fontWeight: 600,
+            borderRadius: 2,
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'divider',
+            },
+            '& .MuiSelect-select': {
+              py: '6px',
+            },
+          }}
+          renderValue={(selected) => {
+            if (!selected) {
+              return (
+                <Typography variant="caption" color="text.secondary" fontWeight={600}>
+                  Select Company
+                </Typography>
+              );
+            }
+            const selectedCompany = companies.find(c => c._id === selected);
             return (
-              <Typography sx={{ color: '#000' }}>
-                Select Company
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '2px',
+                    bgcolor: selectedCompany?.color || 'primary.main',
+                    flexShrink: 0,
+                  }}
+                />
+                <Typography variant="caption" fontWeight={700} noWrap>
+                  {selectedCompany?.prefix || selectedCompany?.label}
+                </Typography>
+              </Box>
             );
-          }
-          const selectedCompany = companies.find(c => c._id === selected);
-          return (
-            <Typography sx={{ color: '#000' }}>
-              {selectedCompany?.prefix || selectedCompany?.label}
-            </Typography>
-          );
-        }}
-      >
-        {companies.map((company: ICompany) => (
-          <MenuItem
-            key={company._id || `empty-${company.label}`}
-            value={company._id}
-            sx={{
-              '&::before': {
-                content: '""',
-                display: 'inline-block',
-                width: '16px',
-                height: '16px',
-                marginRight: '8px',
-                backgroundColor: company.color,
-                borderRadius: '4px',
-              },
-            }}
-          >
-            {company.label.length > 15
-              ? company.label.slice(0, 15) + '...'
-              : company.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  </React.Fragment>
-  )
+          }}
+        >
+          {companies.map((company: ICompany) => (
+            <MenuItem
+              key={company._id || `empty-${company.label}`}
+              value={company._id}
+              sx={{ gap: 1.5, py: 1, fontSize: '0.8rem' }}
+            >
+              <Box
+                sx={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: '3px',
+                  bgcolor: company.color,
+                  flexShrink: 0,
+                }}
+              />
+              {company.label.length > 20
+                ? company.label.slice(0, 20) + '...'
+                : company.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </>)
 }
 
 export default SelectCoompany

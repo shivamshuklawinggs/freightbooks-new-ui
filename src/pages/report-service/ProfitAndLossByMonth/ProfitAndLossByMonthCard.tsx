@@ -130,7 +130,7 @@ const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData })
                                             <TableRow 
                                                 key={row._id}
                                                 sx={{ 
-                                                    '&:hover': { backgroundColor: '#f5f5f5' },
+                                                    '&:hover': { backgroundColor: 'action.hover' },
                                                     transition: 'background-color 0.2s'
                                                 }}
                                             >

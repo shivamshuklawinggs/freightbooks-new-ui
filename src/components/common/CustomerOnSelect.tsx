@@ -90,6 +90,7 @@ const CustomerOnSelect: React.FC<CustomerOnSelectProps> = ({ updateLocation,clea
             {...params}
             label="Select Customer"
             variant="outlined"
+            size="small"
           />
         )}
       />

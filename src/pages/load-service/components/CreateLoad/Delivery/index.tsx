@@ -6,7 +6,7 @@ import {
 } from "@/redux/Slice/loadSlice";
 import DeliveryLocation from "./DeliveryLocation";
 import { RootState, AppDispatch } from "@/redux/store";
-import { Typography, Box, Button,  } from "@mui/material";
+import {  Box, Button,  } from "@mui/material";
 import { fetchLocations } from "@/redux/api";
 import LoadTermsAndCondition from "@/components/common/LoadTermsAndCondition";
 import { getIcon } from "@/components/common/icons/getIcon";
@@ -28,10 +28,7 @@ const Delivery:React.FC  = () => {
   }, [search]);
 
   return (
-    <>
-      <Typography variant="h6" gutterBottom color="primary">
-        Delivery Information
-      </Typography>
+     <>
       {deliveryLocationId.map((pickup, index) => (
         <DeliveryLocation
           key={index}
@@ -51,8 +48,8 @@ const Delivery:React.FC  = () => {
           {getIcon("plus")} Add Another Delivery  Location
         </Button>
       </Box>
-      <Box display="flex"  mb={2}>
-      <LoadTermsAndCondition type="load" handleAddDelivery={() => dispatch(addDeliveryLocation())} />
+      <Box  mb={2}>
+      <LoadTermsAndCondition type="editload" handleAddDelivery={() => dispatch(addDeliveryLocation())} />
       </Box>
      
     </>

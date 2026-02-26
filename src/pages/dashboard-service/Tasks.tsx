@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Paper, Typography, List, ListItem, Box, Stack, Button } from '@mui/material';
-import { getIcon } from '@/components/common/icons/getIcon';
+import { Card, CardContent, Typography, List, ListItem, Box, Stack, Button, Chip, Divider } from '@mui/material';
+import { ArrowForward as ArrowIcon } from '@mui/icons-material';
 
 interface Task {
   id: string;
@@ -41,76 +41,76 @@ const Tasks: React.FC = () => {
     }
   ];
 
-  const getStatusColor = (status: Task['status']): string => {
+  const getStatusConfig = (status: Task['status']) => {
     switch (status) {
-      case 'unpaid':
-        return '#ffc107';
-      case 'overdue':
-        return '#dc3545';
-      case 'pending':
-        return '#007bff';
-      default:
-        return '#6c757d';
+      case 'unpaid':  return { color: '#f59e0b', bg: '#fff7ed', label: 'Unpaid' };
+      case 'overdue': return { color: '#ef4444', bg: '#fff1f2', label: 'Overdue' };
+      case 'pending': return { color: '#3b82f6', bg: '#eff6ff', label: 'Pending' };
+      default:        return { color: '#6b7280', bg: '#f9fafb', label: status };
     }
   };
 
   return (
-    <Paper 
-      elevation={1} 
-      sx={{ 
-        p: 2,
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column'
-      }}
-    >
-      <Typography variant="h6" gutterBottom>
-        TASKS
-      </Typography>
-      <List sx={{ width: '100%' }}>
-        {tasks.map((task) => (
-          <ListItem
-            key={task.id}
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              mb: 2,
-              '&:last-child': {
-                mb: 0
-              }
-            }}
-          >
-            <Box>
-              <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                {task.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {task.description}
-              </Typography>
-            </Box>
-            <Stack direction="row" spacing={1} alignItems="center">
-              {getIcon("GoDotFill",{ color: getStatusColor(task.status) })}
-              <Typography variant="body2">
-                {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
-              </Typography>
-              <Button
-                component={Link}
-                to={`/tasks/${task.id}`}
-                
+    <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 2 }}>
+      <CardContent sx={{ p: '16px 16px 0 !important' }}>
+        <Typography variant="subtitle2" fontWeight={700} color="text.secondary" sx={{ letterSpacing: '0.06em' }}>
+          TASKS
+        </Typography>
+      </CardContent>
+      <List disablePadding sx={{ flex: 1, px: 1, pt: 0.5 }}>
+        {tasks.map((task, idx) => {
+          const cfg = getStatusConfig(task.status);
+          return (
+            <React.Fragment key={task.id}>
+              <ListItem
                 sx={{
-                  minWidth: 'auto',
-                  px: 1,
-                  py: 0.5
+                  py: 1.25,
+                  px: 0.5,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  gap: 1,
                 }}
               >
-                Go
-              </Button>
-            </Stack>
-          </ListItem>
-        ))}
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography variant="body2" fontWeight={600} sx={{ mb: 0.25 }} noWrap>
+                    {task.title}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {task.description}
+                  </Typography>
+                </Box>
+                <Stack direction="row" spacing={0.75} alignItems="center" sx={{ flexShrink: 0 }}>
+                  <Chip
+                    label={cfg.label}
+                    size="small"
+                    sx={{
+                      height: 20,
+                      fontSize: '0.65rem',
+                      fontWeight: 700,
+                      bgcolor: cfg.bg,
+                      color: cfg.color,
+                      border: `1px solid ${cfg.color}30`,
+                      '& .MuiChip-label': { px: 0.75 },
+                    }}
+                  />
+                  <Button
+                    component={Link}
+                    to={`/tasks/${task.id}`}
+                    size="small"
+                    endIcon={<ArrowIcon sx={{ fontSize: '12px !important' }} />}
+                    sx={{ minWidth: 'auto', px: 1, py: 0.25, fontSize: '0.7rem', fontWeight: 600 }}
+                  >
+                    Go
+                  </Button>
+                </Stack>
+              </ListItem>
+              {idx < tasks.length - 1 && <Divider sx={{ borderColor: 'divider', mx: 0.5 }} />}
+            </React.Fragment>
+          );
+        })}
       </List>
-    </Paper>
+    </Card>
   );
 };
 

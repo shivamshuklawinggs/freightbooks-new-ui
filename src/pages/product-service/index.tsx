@@ -51,100 +51,92 @@ const ProductServices: React.FC = () => {
 
 
   return (
-   <Box className="view-load" sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-      <Typography variant="h5"></Typography>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          startIcon={<AddIcon />} 
-          onClick={handleModalShow}
-        >
+   <Box sx={{ minHeight: '100vh' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
+        <Box>
+          <Typography variant="h5" fontWeight={700}>Products & Services</Typography>
+          <Typography variant="body2" color="text.secondary">Manage your product and service catalog</Typography>
+        </Box>
+        <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={handleModalShow} sx={{ borderRadius: 2 }}>
           Add New
         </Button>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Label</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Income Account</TableCell>
-              <TableCell>Expense Account</TableCell>
-              <TableCell>Opening Stock</TableCell>
-              <TableCell>Reorder Point</TableCell>
-              <TableCell>Current Level</TableCell>
-              <TableCell>Inventory Account</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {isPending ? (
-              <TableRow>
-                <TableCell colSpan={10} align="center">
-                  <CircularProgress />
-                </TableCell>
+      <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ bgcolor: 'action.hover' }}>
+                <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Label</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Category</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Income Account</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Expense Account</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Opening Stock</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Reorder Point</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Current Level</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Inventory Account</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
               </TableRow>
-            ) : error ? (
-              <TableRow>
-                <TableCell colSpan={10} align="center">
-                  <Typography>Failed to fetch product services</Typography>
-                </TableCell>
-              </TableRow>
-            ) : productServices.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={10} align="center">
-                  <Typography>No item services found</Typography>
-                </TableCell>
-              </TableRow>
-            ) : (
-              productServices.map((item: IProductService) => (
-                <TableRow key={item._id}>
-                  <TableCell>{capitalizeFirstLetter(item.name || 'N/A')}</TableCell>
-                  <TableCell>{capitalizeFirstLetter(item.category || 'N/A')}</TableCell>
-                  <TableCell>{item.description || 'N/A'}</TableCell>
-                  <TableCell>{capitalizeFirstLetter(item?.incomeAccountData?.name ||  item?.incomeAccount || 'N/A')}</TableCell>
-                  <TableCell>{capitalizeFirstLetter(item?.expenseAccountData?.name ||  item?.expenseAccount || 'N/A')}</TableCell>
-                  <TableCell>{item.OpeningStock || 0}</TableCell>
-                  <TableCell>{item.reorderStock || 0}</TableCell>
-                  <TableCell>{item.currentLevel || 0}</TableCell>
-                  <TableCell>{capitalizeFirstLetter(item?.inventoryAccountData?.name || item?.inventoryAccount || 'N/A')}</TableCell>
-                  <TableCell>
-                    <Box display="flex" gap={1}>
-                      <IconButton 
-                        color="primary" 
-                         
-                        onClick={() => handleEdit(item)}
-                      >
-                        {getIcon("edit")}
-                      </IconButton>
-                      <IconButton 
-                        color="error" 
-                         
-                        onClick={() => item._id && handleDelete(item._id)}
-                      >
-                      {getIcon("delete")}
-                      </IconButton>
-                    </Box>
+            </TableHead>
+            <TableBody>
+              {isPending ? (
+                <TableRow>
+                  <TableCell colSpan={10} align="center" sx={{ py: 6 }}>
+                    <CircularProgress size={32} />
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-         <TablePagination
-          component="div"
-          count={pagination?.total || 0}
-          page={isPagination.page - 1}
-          // rows perpage start from 5 
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          rowsPerPage={isPagination.limit}
-          onPageChange={(event, newPage) => setIsPagination({ ...isPagination, page: newPage + 1 })}
-          onRowsPerPageChange={(event) => setIsPagination({ ...isPagination, limit: parseInt(event.target.value, 10), page: 1 })}
-        />
-      </TableContainer>
+              ) : error ? (
+                <TableRow>
+                  <TableCell colSpan={10} align="center" sx={{ py: 5 }}>
+                    <Typography variant="body2" color="error">Failed to fetch product services</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : productServices.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={10} align="center" sx={{ py: 5 }}>
+                    <Typography variant="body2" color="text.secondary">No products or services found</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                productServices.map((item: IProductService) => (
+                  <TableRow key={item._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+                    <TableCell sx={{ py: 1.25 }}>{capitalizeFirstLetter(item.name || 'N/A')}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{capitalizeFirstLetter(item.category || 'N/A')}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{item.description || 'N/A'}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{capitalizeFirstLetter(item?.incomeAccountData?.name || item?.incomeAccount || 'N/A')}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{capitalizeFirstLetter(item?.expenseAccountData?.name || item?.expenseAccount || 'N/A')}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{item.OpeningStock || 0}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{item.reorderStock || 0}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{item.currentLevel || 0}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{capitalizeFirstLetter(item?.inventoryAccountData?.name || item?.inventoryAccount || 'N/A')}</TableCell>
+                    <TableCell sx={{ py: 0.5 }}>
+                      <Box display="flex" gap={0.5}>
+                        <IconButton size="small" color="primary" onClick={() => handleEdit(item)}>
+                          {getIcon("edit")}
+                        </IconButton>
+                        <IconButton size="small" color="error" onClick={() => item._id && handleDelete(item._id)}>
+                          {getIcon("delete")}
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+          <TablePagination
+            component="div"
+            count={pagination?.total || 0}
+            page={isPagination.page - 1}
+            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+            rowsPerPage={isPagination.limit}
+            onPageChange={(_, newPage) => setIsPagination({ ...isPagination, page: newPage + 1 })}
+            onRowsPerPageChange={(event) => setIsPagination({ ...isPagination, limit: parseInt(event.target.value, 10), page: 1 })}
+            sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
+          />
+        </TableContainer>
+      </Paper>
 
        <ProductServiceForm showModal={showModal} handleModalClose={handleModalClose} editingItem={editingItem} />
     </Box>

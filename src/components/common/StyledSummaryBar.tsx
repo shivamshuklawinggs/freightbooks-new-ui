@@ -22,65 +22,64 @@ type Props = {
 };
 
 const StyledSummaryBar: React.FC<Props> = ({ sections }) => {
-  // const maxAmount = Math.max(...sections.map(s => s.totalAmount), 0);
-
   return (
-    <Card elevation={1} sx={{ borderRadius: 2, px: 1, py: 1 }}>
-      <CardContent sx={{ padding: '12px 16px' }}>
+    <Card variant="outlined" sx={{ borderRadius: 2 }}>
+      <CardContent sx={{ p: '12px 16px !important' }}>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
-          spacing={2}
-          justifyContent="space-between"
-          alignItems="flex-start"
+          spacing={{ xs: 2, sm: 0 }}
+          divider={
+            <Box
+              sx={{
+                width: '1px',
+                bgcolor: 'divider',
+                mx: 2,
+                display: { xs: 'none', sm: 'block' },
+              }}
+            />
+          }
         >
-          {sections.map(({ label, totalAmount, count, color,percentage }) => {
-          
-
-            const tooltipLabel =
-              count === 0
-                ? `${label}: ${formatCurrency(totalAmount)} (full bar because count is 0)`
-                : `${label}: ${formatCurrency(
-                    totalAmount
-                  )} (${percentage.toFixed(1)}% of max)`;
+          {sections.map(({ label, totalAmount, count, color, percentage }) => {
+            const tooltipLabel = `${label}: ${formatCurrency(totalAmount)} — ${count} item${count !== 1 ? 's' : ''} (${percentage.toFixed(1)}%)`;
 
             return (
               <Box
                 key={label}
-                textAlign="center"
                 flex={1}
-                minWidth={100}
-                sx={{ wordBreak: 'break-word' }}
+                minWidth={90}
+                sx={{ px: { sm: 1 } }}
               >
-                <Typography variant="subtitle2" fontWeight={600}>
+                <Typography variant="body2" fontWeight={700} noWrap>
                   {formatCurrency(totalAmount)}
                 </Typography>
                 <Typography
                   variant="caption"
                   color="text.secondary"
-                  sx={{ mb: 0.5, display: 'block' }}
+                  sx={{ display: 'block', mb: 0.75, mt: 0.25 }}
                 >
                   {count} {label.toLowerCase()}
                 </Typography>
-                <Box
-                  position="relative"
-                  height={10}
-                  borderRadius={5}
-                  bgcolor="#e0e0e0"
-                  overflow="hidden"
-                  aria-label={`${label} bar`}
-                >
-                  <Tooltip title={tooltipLabel} placement="top" arrow>
+                <Tooltip title={tooltipLabel} placement="top" arrow>
+                  <Box
+                    sx={{
+                      height: 6,
+                      borderRadius: 3,
+                      bgcolor: 'action.hover',
+                      overflow: 'hidden',
+                      cursor: 'default',
+                    }}
+                  >
                     <Box
-                      component="div"
                       sx={{
-                        width: `${percentage}%`,
+                        width: `${Math.max(percentage, percentage > 0 ? 4 : 0)}%`,
                         bgcolor: color,
                         height: '100%',
-                        transition: 'width 0.4s ease',
+                        borderRadius: 3,
+                        transition: 'width 0.5s ease',
                       }}
                     />
-                  </Tooltip>
-                </Box>
+                  </Box>
+                </Tooltip>
               </Box>
             );
           })}

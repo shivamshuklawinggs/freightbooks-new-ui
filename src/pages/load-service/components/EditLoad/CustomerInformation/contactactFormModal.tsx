@@ -6,7 +6,10 @@ import {
   TextField,
   Modal,
   Button,
+  Divider,
+  IconButton,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useForm, Controller } from 'react-hook-form';
 import { IContactPerson } from '@/types';
 import { maxinputAllow, preventInvalidPhone, preventStringInput } from '@/utils';
@@ -69,90 +72,39 @@ const ContactFormModal: React.FC<ContactFormModalProps> = ({
 
   return (
     <Modal open={isAddingNew} onClose={toggleAddNew}>
-      <Paper
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          p: 3,
-          width: 400,
-        }}
-      >
-        <Typography variant="h6" mb={2}>
-          Add New Contact
-        </Typography>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <Controller
-            name="name"
-            control={control}
-            render={({ field }) => (
+      <Paper sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', p: 0, width: 440, borderRadius: 2, outline: 'none' }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" px={3} py={2}>
+          <Typography variant="h6" fontWeight={600}>Add New Contact</Typography>
+          <IconButton size="small" onClick={toggleAddNew}><CloseIcon fontSize="small" /></IconButton>
+        </Box>
+        <Divider />
+        <Box px={3} py={2.5}>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <Controller name="name" control={control} render={({ field }) => (
+              <TextField {...field} fullWidth size="small" label="Name" error={!!errors.name} helperText={errors.name?.message} sx={{ mb: 2 }} />
+            )} />
+            <Controller name="email" control={control} render={({ field }) => (
+              <TextField {...field} fullWidth size="small" label="Email" error={!!errors.email} helperText={errors.email?.message} sx={{ mb: 2 }} />
+            )} />
+            <Controller name="phone" control={control} render={({ field }) => (
               <TextField
                 {...field}
-                fullWidth
-                label="Name"
-                error={!!errors.name}
-                helperText={errors.name?.message}
-                sx={{ mb: 2 }}
+                name="phone" label="Phone" fullWidth size="small" sx={{ mb: 2 }}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => preventInvalidPhone(e as unknown as React.ChangeEvent<HTMLInputElement>)}
+                onChange={(e) => { maxinputAllow(e as unknown as React.ChangeEvent<HTMLInputElement>, 10); field.onChange(e); }}
+                error={!!errors.phone} helperText={errors.phone?.message}
               />
-            )}
-          />
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                label="Email"
-                error={!!errors.email}
-                helperText={errors.email?.message}
-                sx={{ mb: 2 }}
-              />
-            )}
-          />
-          <Controller
-            name="phone"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                name="phone"
-                label="Phone"
-                fullWidth
-                sx={{ mb: 2 }}
-                onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>)=>preventInvalidPhone(e as unknown as React.ChangeEvent<HTMLInputElement>)}
-                onChange={(e) => {
-                  maxinputAllow(e as unknown as React.ChangeEvent<HTMLInputElement>, 10);
-                  field.onChange(e);
-                }}
-                error={!!errors.phone}
-                helperText={errors.phone?.message}
-              />
-            )}
-          />
-          <Controller
-            name="extentionNo"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                name="extentionNo"
-                label="Extention No"
-                fullWidth
-                sx={{ mb: 2 }}
-                  onKeyDown={preventStringInput}
-                error={!!errors.extentionNo}
-                helperText={errors.extentionNo?.message}
-              />
-            )}
-          />
-          <Box display="flex" justifyContent="flex-end" mt={1}>
-            <Button type="submit" variant="contained" onClick={handleSubmit(onSubmit)} color="primary">
-              Add Contact
-            </Button>
-          </Box>
-        </form>
+            )} />
+            <Controller name="extentionNo" control={control} render={({ field }) => (
+              <TextField {...field} name="extentionNo" label="Extension No" fullWidth size="small" sx={{ mb: 2 }} onKeyDown={preventStringInput} error={!!errors.extentionNo} helperText={errors.extentionNo?.message} />
+            )} />
+            <Divider sx={{ mb: 2 }} />
+            <Box display="flex" justifyContent="flex-end" gap={1}>
+              <Button variant="outlined" onClick={toggleAddNew}>Cancel</Button>
+              <Button type="submit" variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>Add Contact</Button>
+            </Box>
+          </form>
+        </Box>
       </Paper>
     </Modal>
   );

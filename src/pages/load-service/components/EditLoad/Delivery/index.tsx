@@ -6,7 +6,7 @@ import {
 } from "@/redux/Slice/EditloadSlice";
 import DeliveryLocation from "./DeliveryLocation";
 import { RootState, AppDispatch } from "@/redux/store";
-import { Typography, Box, Button } from "@mui/material";
+import {  Box, Button } from "@mui/material";
 import { useQuery } from '@tanstack/react-query';
 import apiService from '@/service/apiService';
 import LoadTermsAndCondition from "@/components/common/LoadTermsAndCondition";
@@ -31,9 +31,6 @@ const Delivery: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h6" gutterBottom color="primary">
-        Delivery Information
-      </Typography>
       {deliveryLocationId.map((pickup, index) => (
         <DeliveryLocation
           key={index}

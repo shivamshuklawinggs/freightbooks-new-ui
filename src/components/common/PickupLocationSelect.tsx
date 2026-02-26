@@ -62,7 +62,7 @@ const DeliveryLocationSelect: React.FC<LocationSelectProps> = ({index, updateLoc
         options={locations as IPickupLocation[]}
         loading={loading}
         getOptionLabel={(option: IPickupLocation) => 
-          `Warehouse-${option.warehouse}, Address-${option.address}${option.city ? ` - ${option.city}` : ''}${option.state ? ` - ${option.state}` : ''}${option.zipcode ? ` - ${option.zipcode}` : ''}`
+          `${option.warehouse}, Address-${option.address}${option.city ? ` - ${option.city}` : ''}${option.state ? ` - ${option.state}` : ''}${option.zipcode ? ` - ${option.zipcode}` : ''}`
         }
         onChange={handleLocationUpdate}
         onInputChange={(event, newInputValue) => {
@@ -71,6 +71,7 @@ const DeliveryLocationSelect: React.FC<LocationSelectProps> = ({index, updateLoc
         renderInput={(params) => (
           <TextField
             {...params}
+            size="small"
             label="Search Location"
             variant="outlined"
           />

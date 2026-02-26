@@ -54,79 +54,65 @@ const ItemServicesList: React.FC = () => {
   // };
 
   return (
-   <Box className="view-load" sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-      <Typography variant="h5"></Typography>
-      <HasPermission resource={["expense_service"]} action="create" component={<Button 
-          variant="contained" 
-          color="primary" 
-          startIcon={<AddIcon />} 
-          onClick={handleModalShow}
-        >
-          Add New
-        </Button>}/>
+   <Box sx={{ minHeight: '100vh' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
+        <Box>
+          <Typography variant="h5" fontWeight={700}>Expense & Fee Types</Typography>
+          <Typography variant="body2" color="text.secondary">Manage expense and fee categories</Typography>
+        </Box>
+        <HasPermission resource={["expense_service"]} action="create" component={
+          <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={handleModalShow} sx={{ borderRadius: 2 }}>
+            Add New
+          </Button>
+        }/>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Label</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={3} align="center">
-                  <CircularProgress />
-                </TableCell>
+      <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ bgcolor: 'action.hover' }}>
+                <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Label</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
               </TableRow>
-            ) : isError ? (
-              <TableRow>
-                <TableCell colSpan={3} align="center">
-                  <Typography>Failed to fetch item services</Typography>
-                </TableCell>
-              </TableRow>
-            ) : itemServices.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={3} align="center">
-                  <Typography>No item services found</Typography>
-                </TableCell>
-              </TableRow>
-            ) : (
-              itemServices.map((item) => (
-                <TableRow key={item._id}>
-                  <TableCell>{item.label}</TableCell>
-                  <TableCell>{item.value}</TableCell>
-                  <TableCell>
-                    <Box display="flex" gap={1}>
-                       <VerticalMenu actions={
-                        [
-                          {
-                            label:"Edit",
-                            onClick:() => handleEdit(item),
-                            icon:"edit"
-                          },
-                        
-                        ]
-                       }/>
-                      {/* <IconButton 
-                        color="error" 
-                         
-                        onClick={() => item._id && handleDelete(item._id)}
-                      >
-                        <FaTrash />
-                      </IconButton> */}
-                    </Box>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={3} align="center" sx={{ py: 6 }}>
+                    <CircularProgress size={32} />
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              ) : isError ? (
+                <TableRow>
+                  <TableCell colSpan={3} align="center" sx={{ py: 5 }}>
+                    <Typography variant="body2" color="error">Failed to fetch item services</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : itemServices.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={3} align="center" sx={{ py: 5 }}>
+                    <Typography variant="body2" color="text.secondary">No expense types found</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                itemServices.map((item) => (
+                  <TableRow key={item._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+                    <TableCell sx={{ py: 1.25 }}>{item.label}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{item.value}</TableCell>
+                    <TableCell sx={{ py: 0.5 }}>
+                      <VerticalMenu actions={[
+                        { label: 'Edit', onClick: () => handleEdit(item), icon: 'edit' },
+                      ]}/>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
     <ExpenseFessServiceForm
       showModal={showModal}
       handleModalClose={handleModalClose}

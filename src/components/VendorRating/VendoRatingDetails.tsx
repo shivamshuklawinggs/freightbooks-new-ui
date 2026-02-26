@@ -120,7 +120,7 @@ const VendoRatingDetails: React.FC = () => {
   const overallLabel = getRatingLabel(overallScore);
 
   return (
-    <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+    <Box sx={{ p: 3, minHeight: '100vh' }}>
     
       {/* Carrier Info Card */}
       <Paper 

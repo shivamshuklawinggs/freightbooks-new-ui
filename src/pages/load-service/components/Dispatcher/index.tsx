@@ -7,7 +7,7 @@ import ExpenseDetails from './ExpenseDetails';
 import StatusUpdate from './StatusUpdate';
 import ExpenseBelow from './ExpenseBelow';
 import { ICarrierExpenseDispatcher, ICustomer, IitemService, ILocationWithIds } from '@/types';
-import { Button, IconButton, Container, Drawer, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tabs, Tab, useTheme, alpha, Chip, TablePagination } from '@mui/material';
+import { Button, IconButton, Drawer, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tabs, Tab, useTheme, alpha, Chip, TablePagination } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import UpdateIcon from '@mui/icons-material/Update';
 // import EventNoteIcon from '@mui/icons-material/EventNote';
@@ -201,8 +201,7 @@ const columns=[
 ]
   return (
     <>
-      <Box className="view-load" sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 3 }}>
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      <Box sx={{ minHeight: '100vh' }}>
         <FilterBox
           search={search}
           setSearch={setSearch}
@@ -387,7 +386,6 @@ const columns=[
               />
             </TableContainer>
           </Paper>
-        </Container>
       </Box>
       
       <Drawer 

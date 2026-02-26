@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Box, Typography, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tabs, Tab, IconButton, TablePagination, } from '@mui/material';
+import { Modal, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tabs, Tab, IconButton, TablePagination, } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Remove as RemoveIcon, Add as AddIcon } from '@mui/icons-material';
 import { RootState, AppDispatch } from '@/redux/store';
@@ -65,15 +65,15 @@ const Documents: React.FC = () => {
 
   return (
     <>
-      <Box className="view-load" sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 3 }}>
-        <Container maxWidth={false}>
-          <Typography variant="h5" gutterBottom>Documents</Typography>
-          <Box borderBottom={1} borderColor="divider" mb={3}>
-            <Tabs 
-              value={activeTab} 
-              onChange={(_, newValue) => {
-                setActiveTab(newValue);
-              }}
+      <Box sx={{ minHeight: '100vh' }}>
+          <Box mb={2}>
+            <Typography variant="h5" fontWeight={700}>Documents</Typography>
+            <Typography variant="body2" color="text.secondary">View and manage uploaded documents</Typography>
+          </Box>
+          <Paper elevation={0} sx={{ mb: 1.5, borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs
+              value={activeTab}
+              onChange={(_, newValue) => setActiveTab(newValue)}
               variant="scrollable"
               scrollButtons="auto"
             >
@@ -81,80 +81,72 @@ const Documents: React.FC = () => {
                 <Tab key={status.value} label={status.label} value={status.value} />
               ))}
             </Tabs>
-          </Box>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                   <TableCell padding="checkbox" />
-                  {getDocumentCell(activeTab)}
-            
-                  <TableCell>Created Date</TableCell>
-                  <TableCell>Last Updated</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {isPending ? (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      <LoadingSpinner size={50} />
-                    </TableCell>
+          </Paper>
+          <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow sx={{ bgcolor: 'action.hover' }}>
+                    <TableCell padding="checkbox" />
+                    {getDocumentCell(activeTab)}
+                    <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Created Date</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Last Updated</TableCell>
                   </TableRow>
-                ) : data?.length > 0 ? (
-                  data.map((document: IDocument) => {
-                  
-                    const isExpanded = expandedRow === document._id;
-
-                    return (
-                      <React.Fragment key={document._id}>
-                        <TableRow>
+                </TableHead>
+                <TableBody>
+                  {isPending ? (
+                    <TableRow>
+                      <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
+                        <LoadingSpinner size={36} />
+                      </TableCell>
+                    </TableRow>
+                  ) : data?.length > 0 ? (
+                    data.map((document: IDocument) => {
+                      const isExpanded = expandedRow === document._id;
+                      return (
+                        <React.Fragment key={document._id}>
+                          <TableRow hover>
                             <TableCell padding="checkbox">
-                              <IconButton
-                                size="small"
-                                onClick={() => handleExpandRow(document._id)}
-                              >
+                              <IconButton size="small" onClick={() => handleExpandRow(document._id)}>
                                 {isExpanded ? <RemoveIcon fontSize="small" /> : <AddIcon fontSize="small" />}
                               </IconButton>
                             </TableCell>
-                          <TableCell>{getSubDocumentName(document,activeTab)}</TableCell>
-                          <TableCell>{moment(document.createdAt).format(`${TIME_FORMAT} ${HOUR_MINUTE_FORMAT}`)}</TableCell>
-                          <TableCell>{moment(document.updatedAt).format(`${TIME_FORMAT} ${HOUR_MINUTE_FORMAT}`)}</TableCell>
-                       
-                        </TableRow>
-                        {isExpanded && (
-                          <TableRow>
-                            <TableCell colSpan={8} sx={{ py: 0 }}>
-                              <Box sx={{ margin: 1 }}>
-                                <SubDocument
-                                  parentId={document._id}
-                                  type={activeTab}
-                                />
-                              </Box>
-                            </TableCell>
+                            <TableCell sx={{ py: 1.25 }}>{getSubDocumentName(document, activeTab)}</TableCell>
+                            <TableCell sx={{ py: 1.25 }}>{moment(document.createdAt).format(`${TIME_FORMAT} ${HOUR_MINUTE_FORMAT}`)}</TableCell>
+                            <TableCell sx={{ py: 1.25 }}>{moment(document.updatedAt).format(`${TIME_FORMAT} ${HOUR_MINUTE_FORMAT}`)}</TableCell>
                           </TableRow>
-                        )}
-                      </React.Fragment>
-                    );
-                  })
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      <Typography variant="body1">No Records Found</Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                          {isExpanded && (
+                            <TableRow>
+                              <TableCell colSpan={8} sx={{ py: 0, bgcolor: 'action.hover' }}>
+                                <Box sx={{ m: 1 }}>
+                                  <SubDocument parentId={document._id} type={activeTab} />
+                                </Box>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </React.Fragment>
+                      );
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
+                        <Typography variant="body2" color="text.secondary">No records found</Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
             <TablePagination
               component="div"
               count={pagination.total}
               page={currentPage - 1}
               rowsPerPage={limit}
-              onPageChange={(event, newPage) => setCurrentPage(newPage + 1)}
+              onPageChange={(_, newPage) => setCurrentPage(newPage + 1)}
               onRowsPerPageChange={(event) => setLimit(Number(event.target.value))}
+              sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
             />
-          </TableContainer>
-        </Container>
+          </Paper>
       </Box>
       <Modal
         open={viewModalOpen}

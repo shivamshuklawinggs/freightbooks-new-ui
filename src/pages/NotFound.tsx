@@ -1,50 +1,83 @@
 import { Link } from 'react-router-dom';
-import { Box, Typography, Button, Container } from '@mui/material';
-import { SearchOff as SearchOffIcon } from '@mui/icons-material';
+import { Box, Typography, Button, alpha } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { SearchOff as SearchOffIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { paths } from '@/utils/paths';
 import { Role } from '@/types';
 import { useAppSelector } from '@/redux/store';
 
 const NotFound = () => {
-   const role = useAppSelector((state) => state.user?.user?.role);  
+  const role = useAppSelector((state) => state.user?.user?.role);
+  const theme = useTheme();
+
   return (
-    <Container>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: 'background.default',
+        p: 3,
+      }}
+    >
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-          textAlign: 'center'
+          textAlign: 'center',
+          maxWidth: 480,
         }}
       >
-        <SearchOffIcon sx={{ fontSize: 100, color: 'primary.main', mb: 2 }} />
-        <Typography variant="h1" color='primary' sx={{ mb: 2 }}>
+        {/* Icon */}
+        <Box
+          sx={{
+            width: 100,
+            height: 100,
+            borderRadius: '50%',
+            bgcolor: alpha(theme.palette.primary.main, 0.1),
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mx: 'auto',
+            mb: 3,
+          }}
+        >
+          <SearchOffIcon sx={{ fontSize: 48, color: 'primary.main' }} />
+        </Box>
+
+        {/* 404 number */}
+        <Typography
+          sx={{
+            fontSize: { xs: '5rem', sm: '7rem' },
+            fontWeight: 900,
+            lineHeight: 1,
+            mb: 1,
+            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
           404
         </Typography>
-        <Typography variant="h4" sx={{ mb: 2 }}>
+
+        <Typography variant="h5" fontWeight={700} sx={{ mb: 1.5 }}>
           Page Not Found
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 4, lineHeight: 1.7 }}>
           The page you are looking for doesn't exist or has been moved.
         </Typography>
-        {/* or Dashboard */}
-       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-           <Button
+
+        <Button
           component={Link}
-          to={role===Role.SUPERADMIN ?paths.superadminDashboard :!role?paths.login: paths.dashboard}
+          to={role === Role.SUPERADMIN ? paths.superadminDashboard : !role ? paths.login : paths.dashboard}
           variant="contained"
-          color="primary"
           size="large"
+          startIcon={<ArrowBackIcon />}
+          sx={{ borderRadius: 2, px: 3 }}
         >
-         {
-          !role ?"Login":"Dashboard"
-         }
+          {!role ? 'Go to Login' : 'Back to Dashboard'}
         </Button>
-        </Box>
-           </Box>
-    </Container>
+      </Box>
+    </Box>
   );
 };
 

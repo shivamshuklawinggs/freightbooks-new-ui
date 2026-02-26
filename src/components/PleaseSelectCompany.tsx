@@ -58,49 +58,77 @@ const PleaseSelectCompany: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '80vh',
-        p: 3
+        p: 3,
+        bgcolor: 'background.default',
       }}
     >
       <Paper
-        elevation={3}
+        elevation={0}
+        variant="outlined"
         sx={{
-          p: 4,
+          p: { xs: 3, sm: 4 },
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          maxWidth: 400,
-          width: '100%'
+          maxWidth: 420,
+          width: '100%',
+          borderRadius: 3,
+          textAlign: 'center',
         }}
       >
-        <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-          Please Select a Company
+        {/* Icon */}
+        <Box
+          sx={{
+            width: 64,
+            height: 64,
+            borderRadius: '50%',
+            bgcolor: 'primary.main',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mb: 2.5,
+          }}
+        >
+          <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.5rem' }}>F</Typography>
+        </Box>
+
+        <Typography variant="h6" fontWeight={700} sx={{ mb: 1 }}>
+          Select a Company
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3, textAlign: 'center' }}>
-          You need to select a company to access this section
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Choose a company to continue
         </Typography>
-     <FormControl fullWidth>
+
+        <FormControl fullWidth>
           <Select
             value={currentCompany || ''}
             onChange={handleCompanyChange}
-            sx={{
-              backgroundColor: 'white',
-              minWidth: 120,
-            }}
             displayEmpty
+            sx={{ borderRadius: 2 }}
             renderValue={(selected) => {
               if (!selected) {
-                // ✅ Explicitly render “All” when value is empty
                 return (
-                  <Typography sx={{ color: '#000' }}>
+                  <Typography variant="body2" color="text.disabled">
                     Select Company
                   </Typography>
                 );
               }
               const selectedCompany = companies.find(c => c._id === selected);
               return (
-                <Typography sx={{ color: '#000' }}>
-                  {selectedCompany?.prefix || selectedCompany?.label}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: '3px',
+                      bgcolor: selectedCompany?.color || 'primary.main',
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Typography variant="body2">
+                    {selectedCompany?.prefix || selectedCompany?.label}
+                  </Typography>
+                </Box>
               );
             }}
           >
@@ -108,21 +136,22 @@ const PleaseSelectCompany: React.FC = () => {
               <MenuItem
                 key={company._id || `empty-${company.label}`}
                 value={company._id}
-                sx={{
-                  '&::before': {
-                    content: '""',
-                    display: 'inline-block',
-                    width: '16px',
-                    height: '16px',
-                    marginRight: '8px',
-                    backgroundColor: company.color,
-                    borderRadius: '4px',
-                  },
-                }}
+                sx={{ gap: 1.5, py: 1 }}
               >
-                {company.label.length > 15
-                  ? company.label.slice(0, 15) + '...'
-                  : company.label}
+                <Box
+                  sx={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: '3px',
+                    bgcolor: company.color,
+                    flexShrink: 0,
+                  }}
+                />
+                <Typography variant="body2">
+                  {company.label.length > 30
+                    ? company.label.slice(0, 30) + '...'
+                    : company.label}
+                </Typography>
               </MenuItem>
             ))}
           </Select>

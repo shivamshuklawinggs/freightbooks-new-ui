@@ -45,9 +45,15 @@ const FileUploadButton: React.FC<FileUploadButtonProps> = ({
         variant={variant}
         onClick={handleButtonClick}
         disabled={loading}
-        startIcon={loading ? <CircularProgress size={20} /> :getIcon("fileImport")}
+        size="small"
+        startIcon={
+          loading
+            ? <CircularProgress size={14} thickness={4} />
+            : getIcon('fileImport')
+        }
+        sx={{ whiteSpace: 'nowrap' }}
       >
-        {title}
+        {loading ? 'Importing…' : title}
       </Button>
     </>
   );

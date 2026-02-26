@@ -48,7 +48,7 @@ const SectionRow: React.FC<{ section: BalanceSheetIassets, name: string }> = ({ 
                                         <TableRow 
                                             key={item._id}
                                             sx={{ 
-                                                '&:hover': { backgroundColor: '#f5f5f5' },
+                                                '&:hover': { backgroundColor: 'action.hover' },
                                                 transition: 'background-color 0.2s'
                                             }}
                                         >

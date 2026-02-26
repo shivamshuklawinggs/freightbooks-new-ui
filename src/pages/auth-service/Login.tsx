@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-
-import { Box, Button, Container, TextField, Typography, Checkbox, FormControlLabel, IconButton, InputAdornment , } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Box, Button, TextField, Typography, Checkbox, FormControlLabel, IconButton, InputAdornment, Alert, Paper, alpha } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,12 +17,13 @@ import { initialCompanyData } from '@/redux/InitialData/initialCompanyData';
 import { Role } from '@/types';
 const Login = () => {
   const q=useQueryClient()
+  const theme = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading,error } = useSelector((state: RootState) => state.user);
+  const { loading, error } = useSelector((state: RootState) => state.user);
 
   const {
     register,
@@ -64,183 +65,201 @@ const Login = () => {
         minHeight: '100vh',
         display: 'flex',
         position: 'relative',
-        backgroundImage: `url('/banners/freight-login-bg.jpg')`, // Use the correct path to your background image
+        backgroundImage: `url('/banners/freight-login-bg.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          clipPath: 'polygon(0 0, 55% 0, 65% 100%, 0% 100%)'
-        }
+        bgcolor: 'background.default',
       }}
     >
-      <Container maxWidth="lg" sx={{ display: 'flex', alignItems: 'center' }}>
-      <Box sx={{ width: '50%', position: 'relative', zIndex: 2, pl: 4 ,textAlign:"center"}}>
-          <Box sx={{ mb: 2 }}>
-            <Box 
-              component="img"
-              src={"/logo.png"} // Use the correct path to your logo image
-              alt="Freight Books Logo"
-              sx={{ 
-                width: 'auto',
-                height: '80px',
-                mb: 1
+      {/* Left side overlay */}
+      <Box
+        sx={{
+          display: { xs: 'none', md: 'flex' },
+          width: '55%',
+          position: 'relative',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 6,
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            background: `linear-gradient(135deg, ${alpha(theme.palette.primary.dark, 0.92)} 0%, ${alpha(theme.palette.primary.main, 0.85)} 100%)`,
+            clipPath: 'polygon(0 0, 100% 0, 88% 100%, 0% 100%)',
+          },
+        }}
+      >
+        <Box sx={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 460 }}>
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="FreightBooks"
+            sx={{ height: 64, mb: 4, filter: 'brightness(0) invert(1)' }}
+            onError={(e: any) => { e.target.style.display = 'none'; }}
+          />
+          <Typography
+            variant="h3"
+            sx={{
+              color: 'white',
+              fontWeight: 800,
+              fontSize: { md: '2rem', lg: '2.5rem' },
+              lineHeight: 1.3,
+              mb: 2,
+            }}
+          >
+            Where Freight Meets Technology
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.8)', lineHeight: 1.7 }}>
+            Streamline your freight operations with our comprehensive management platform.
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Right side — login form */}
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: { xs: 2, sm: 4 },
+          bgcolor: 'background.default',
+        }}
+      >
+        <Paper
+          elevation={0}
+          sx={{
+            width: '100%',
+            maxWidth: 420,
+            p: { xs: 3, sm: 4 },
+            borderRadius: 3,
+            border: `1px solid ${theme.palette.divider}`,
+          }}
+        >
+          {/* Mobile logo */}
+          <Box sx={{ display: { xs: 'block', md: 'none' }, textAlign: 'center', mb: 3 }}>
+            <Box
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: 2,
+                bgcolor: 'primary.main',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mb: 1,
+              }}
+            >
+              <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.4rem' }}>F</Typography>
+            </Box>
+          </Box>
+
+          <Typography variant="h5" fontWeight={700} sx={{ mb: 0.75 }}>
+            Sign In
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Enter your credentials to access your account
+          </Typography>
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <TextField
+              fullWidth
+              label="Email Address"
+              placeholder="you@company.com"
+              {...register('email')}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              size="small"
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••"
+              {...register('password')}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              size="small"
+              sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      edge="end"
+                      size="small"
+                    >
+                      {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
-          </Box>
-          {/* <Typography 
-            variant="h3" 
-            sx={{ 
-              color: "#000",
-              fontWeight: 600,
-              mb: 1,
-              fontSize: '2.25rem',
-              lineHeight: 1.2
-            }}
-          >
-            Welcome back to
-          </Typography>
-          <Typography 
-            variant="h3" 
-            sx={{ 
-              color: "#000",
-              fontWeight: 600,
-              mb: 1,
-              fontSize: '2.25rem',
-              lineHeight: 1.2
-            }}
-          >
-            freight books     
-            
-          </Typography> */}
-          <Typography 
-            variant="h3" 
-            sx={{ 
-              color: "#000",
-              fontWeight: 600,
-              fontSize: '2.25rem',
-              lineHeight: 1.2
-            }}
-          >
-           Where Freight Meets Technology    
-            
-          </Typography>
-      </Box>
-        <Box sx={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
-          <Box sx={{ 
-            width: '100%', 
-            maxWidth: 400,
-            bgcolor: 'white',
-            borderRadius: 2,
-            p: 4,
-          }}>
-            <Typography variant="h5" sx={{ textAlign: 'center', fontWeight: 600, mb: 1 }}>
-              Sign In
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mb: 3 }}>
-              Enter your email and password to access your account
-            </Typography>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <TextField
-                fullWidth
-                placeholder="Email Address *"
-                {...register('email')}
-                error={!!errors.email}
-                helperText={errors.email?.message}
-                sx={{ mb: 2 }}
+            {error && (
+              <Alert severity="error" sx={{ mb: 2, py: 0.5, borderRadius: 1.5 }}>
+                {error}
+              </Alert>
+            )}
+
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    size="small"
+                    color="primary"
+                  />
+                }
+                label={
+                  <Typography variant="body2">Remember me</Typography>
+                }
+                sx={{ m: 0 }}
               />
-              <TextField
-
-                fullWidth
-               type={showPassword ? 'text' : 'password'}
-                placeholder="Password *"
-                {...register('password')}
-                error={!!errors.password}
-                helperText={errors.password?.message}
-                sx={{ mb: 2 }}
-                  InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton
-          onClick={() => setShowPassword((prev) => !prev)}
-          edge="end"
-        >
-          {showPassword ? <VisibilityOff /> : <Visibility />}
-        </IconButton>
-      </InputAdornment>
-    ),
-  }}
-              />
-              {error && <Box sx={{color:"red"}}>{error}</Box>}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      sx={{ 
-                        color: '#DF5727',
-                        '&.Mui-checked': {
-                          color: '#DF5727',
-                        },
-                      }}
-                    />
-                  }
-                  label="Remember me"
-                />
-                <Link 
-                  to={paths.forgetpassword}
-                  style={{ 
-                    color: '#DF5727',
-                    textDecoration: 'none',
-                    fontSize: '0.875rem'
-                  }}
-                >
-                  Forgot password?
-                </Link>
-              </Box>
-
-              <Button
-                fullWidth
-                type="submit"
-                variant="contained"
-                disabled={loading}
-                sx={{
-                  py: 1.5,
-                  bgcolor: '#DF5727',
-                  '&:hover': {
-                    bgcolor: '#c94d22'
-                  },
-                  mb: 3
+              <Link
+                to={paths.forgetpassword}
+                style={{
+                  color: theme.palette.primary.main,
+                  textDecoration: 'none',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
                 }}
               >
-                Access Securely
-              </Button>
+                Forgot password?
+              </Link>
+            </Box>
 
-              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3 }}>
-                {['Terms', 'Privacy', 'Support'].map((item) => (
-                  <Link
-                    key={item}
-                    to="#"
-                    style={{ 
-                      color: '#666',
-                      textDecoration: 'none',
-                      fontSize: '0.75rem'
-                    }}
-                  >
-                    {item}
-                  </Link>
-                ))}
-              </Box>
-            </form>
-          </Box>
-        </Box>
-      </Container>
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              size="large"
+              sx={{ py: 1.25, mb: 3, borderRadius: 2 }}
+            >
+              {loading ? 'Signing in…' : 'Sign In'}
+            </Button>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3 }}>
+              {['Terms', 'Privacy', 'Support'].map((item) => (
+                <Link
+                  key={item}
+                  to="#"
+                  style={{
+                    color: theme.palette.text.secondary,
+                    textDecoration: 'none',
+                    fontSize: '0.75rem',
+                  }}
+                >
+                  {item}
+                </Link>
+              ))}
+            </Box>
+          </form>
+        </Paper>
+      </Box>
     </Box>
   );
 };

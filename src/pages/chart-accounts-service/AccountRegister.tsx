@@ -238,7 +238,7 @@ const AccountRegister: React.FC = () => {
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+              <TableRow sx={{ backgroundColor: 'action.hover' }}>
                 <TableCell>Date</TableCell>
                 <TableCell>REF No. TYPE</TableCell>
                 <TableCell>PAYEE ACCOUNT</TableCell>

@@ -45,66 +45,66 @@ const PaymentTermsList: React.FC = () => {
   };
 
   return (
-<Box className="view-load" sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h5">Payment Terms</Typography>
+<Box sx={{ minHeight: '100vh' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
+        <Box>
+          <Typography variant="h5" fontWeight={700}>Payment Terms</Typography>
+          <Typography variant="body2" color="text.secondary">Configure invoice payment terms</Typography>
+        </Box>
         <HasPermission action="create" resource={["accounting"]} component={
-           <Button
-           variant="contained"
-           color="primary"
-           onClick={() => handleOpenDialog()}
-         >
-           Add New Payment Term
-         </Button>
+          <Button variant="contained" size="small" onClick={() => handleOpenDialog()} sx={{ borderRadius: 2 }}>
+            Add New Payment Term
+          </Button>
         }/>
-       
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{fontWeight:'bold'}}>Name</TableCell>
-              <TableCell sx={{fontWeight:'bold'}}>Description</TableCell>
-              <TableCell sx={{fontWeight:'bold'}}>Days</TableCell>
-              <TableCell sx={{fontWeight:'bold'}}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              isLoading ? (
+      <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ bgcolor: 'action.hover' }}>
+                <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Name</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Days</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={4} align="center">
-                    <LoadingSpinner size={50} />
+                  <TableCell colSpan={4} align="center" sx={{ py: 6 }}>
+                    <LoadingSpinner size={36} />
                   </TableCell>
                 </TableRow>
               ) : (
-                data?.data.filter((term:IPaymentTerm)=>term._id!=="").map((term:IPaymentTerm) => (
-                  <TableRow key={term._id}>
-                    <TableCell>{term.name}</TableCell>
-                    <TableCell>{term.description}</TableCell>
-                    <TableCell>{term.days}</TableCell>
-                <TableCell>
-                  <HasPermission action="update" resource={["accounting"]} component={
-                  <IconButton onClick={() => handleOpenDialog(term)}>
-                    <EditIcon />
-                  </IconButton>
-                }/>
-                </TableCell>
-              </TableRow>
-            ))
-            )}
-          </TableBody>
-        </Table>
+                data?.data.filter((term: IPaymentTerm) => term._id !== "").map((term: IPaymentTerm) => (
+                  <TableRow key={term._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+                    <TableCell sx={{ py: 1.25 }}>{term.name}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{term.description}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{term.days}</TableCell>
+                    <TableCell sx={{ py: 0.5 }}>
+                      <HasPermission action="update" resource={["accounting"]} component={
+                        <IconButton size="small" onClick={() => handleOpenDialog(term)}>
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      }/>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <TablePagination
           component="div"
           count={data?.total || 0}
           page={State.page - 1}
-          onPageChange={(event, newPage) => setState({ ...State, page: newPage + 1 })}
+          onPageChange={(_, newPage) => setState({ ...State, page: newPage + 1 })}
           rowsPerPage={State.limit}
           onRowsPerPageChange={(event) => setState({ ...State, limit: parseInt(event.target.value, 10) })}
+          sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
         />
-      </TableContainer>
+      </Paper>
 
       <PaymentTermForm
         open={openDialog}

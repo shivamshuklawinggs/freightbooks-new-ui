@@ -180,7 +180,7 @@ const DriverRatingDetails: React.FC = () => {
   const overallLabel =  getRatingLabel(overallScore);
 
   return (
-    <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+    <Box sx={{ p: 3, minHeight: '100vh' }}>
       <Box sx={{ mb: 3 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>

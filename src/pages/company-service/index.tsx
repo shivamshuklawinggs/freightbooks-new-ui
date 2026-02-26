@@ -67,84 +67,69 @@ const CompanyList: React.FC = () => {
   };
 
   return (
-    <Box className="view-load" sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h5">Company</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleOpenDialog()}
-        >
+    <Box sx={{ minHeight: '100vh' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
+        <Box>
+          <Typography variant="h5" fontWeight={700}>Companies</Typography>
+          <Typography variant="body2" color="text.secondary">Manage your company profiles</Typography>
+        </Box>
+        <Button variant="contained" size="small" onClick={() => handleOpenDialog()} sx={{ borderRadius: 2 }}>
           Add New Company
         </Button>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{fontWeight:'bold'}}>Name</TableCell>
-              <TableCell sx={{fontWeight:'bold'}}>Description</TableCell>
-              <TableCell sx={{fontWeight:'bold'}}>Type</TableCell>
-              <TableCell sx={{fontWeight:'bold'}}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              isLoading ? (
+      <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ bgcolor: 'action.hover' }}>
+                <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Name</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={4} align="center">
-                    <LoadingSpinner size={50} />
+                  <TableCell colSpan={4} align="center" sx={{ py: 6 }}>
+                    <LoadingSpinner size={36} />
                   </TableCell>
                 </TableRow>
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={4} align="center">
-                    Error loading companies
+                  <TableCell colSpan={4} align="center" sx={{ py: 5 }}>
+                    <Typography variant="body2" color="error">Error loading companies</Typography>
                   </TableCell>
                 </TableRow>
               ) : (
                 companies.map((company) => (
-                  <TableRow key={company._id}>
-                    <TableCell>{company.label}</TableCell>
-                    <TableCell>{company.description}</TableCell>
-                    <TableCell>{company.type}</TableCell>
-                    <TableCell>
-                      <VerticalMenu actions={
-                        [
-                          {
-                            label:"Edit",
-                            onClick:() => handleOpenDialog(company),
-                            icon:"edit"
-                          },
-                          {
-                            label:"Delete",
-                            onClick:() => handleDelete(company._id as string),
-                            icon:"delete"
-                          },
-                        
-                        ]
-                      }/>
-                      
+                  <TableRow key={company._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+                    <TableCell sx={{ py: 1.25 }}>{company.label}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{company.description}</TableCell>
+                    <TableCell sx={{ py: 1.25 }}>{company.type}</TableCell>
+                    <TableCell sx={{ py: 0.5 }}>
+                      <VerticalMenu actions={[
+                        { label: 'Edit', onClick: () => handleOpenDialog(company), icon: 'edit' },
+                        { label: 'Delete', onClick: () => handleDelete(company._id as string), icon: 'delete' },
+                      ]}/>
                     </TableCell>
                   </TableRow>
                 ))
               )}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
+        </TableContainer>
         <TablePagination
           component="div"
           count={pagination?.total || 0}
-          page={(currentPage - 1)}
+          page={currentPage - 1}
           rowsPerPage={limit}
-          onPageChange={(event, newPage) => setCurrentPage(newPage + 1)}
-          onRowsPerPageChange={(event) => {
-            setLimit(parseInt(event.target.value, 10));
-            setCurrentPage(1);
-          }}
+          onPageChange={(_, newPage) => setCurrentPage(newPage + 1)}
+          onRowsPerPageChange={(event) => { setLimit(parseInt(event.target.value, 10)); setCurrentPage(1); }}
+          sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
         />
-        
-      </TableContainer>
+      </Paper>
 
       <CompanyForm
         open={openDialog}

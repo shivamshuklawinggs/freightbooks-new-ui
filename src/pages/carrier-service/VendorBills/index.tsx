@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import apiService from "@/service/apiService";
 import { toast } from "react-toastify";
-import { Modal, Box, Typography, Container, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Stack, TablePagination, Chip, } from '@mui/material';
+import { Modal, Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Stack, TablePagination, Chip, Tooltip, IconButton, Divider, alpha } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import {  Download } from '@mui/icons-material';
 import CustomerInvoiseForm from './CustomerInvoiseForm';
 import InvoiceDownloadButton from './components/InvoiceDownloadButton';
@@ -14,7 +15,7 @@ import { initialInvoiseData } from './genearateInvoiceSchema';
 import VerticalMenu from '@/components/VerticalMenu';
 import { hasAccess, HasPermission, withPermission } from '@/hooks/ProtectedRoute/authUtils';
 import FileUploadButton from '@/components/common/FileUploadButton';
-import { Alert, AlertTitle, Collapse, IconButton } from '@mui/material';
+import { Alert, AlertTitle, Collapse } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { downloadCSV, getInvoiceStatus } from '@/utils';
 import { formatDate } from '@/utils/dateUtils';
@@ -53,6 +54,7 @@ const modalStyle = {
 };
 
 const VendorBills: React.FC = () => {
+  const theme = useTheme();
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -161,89 +163,73 @@ const VendorBills: React.FC = () => {
 
   return (
     <>
-      <Box className="view-load" sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 3 }}>
-        <Container maxWidth={false}>
+      <Box sx={{ minHeight: '100vh' }}>
           {Array.isArray(allerrors) && allerrors.length > 0 && (
             <Collapse in={openErrorAlert}>
               <Alert
                 severity="error"
                 action={
-                  <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                      setOpenErrorAlert(false);
-                    }}
-                  >
+                  <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenErrorAlert(false)}>
                     <CloseIcon fontSize="inherit" />
                   </IconButton>
                 }
-                sx={{ mb: 2 }}
+                sx={{ mb: 2, borderRadius: 2 }}
               >
                 <AlertTitle>{BillImportMutation?.error?.response?.data?.message}</AlertTitle>
-                <Typography variant="body2">
-                  {allerrors.join(', ')}
-                </Typography>
+                <Typography variant="body2">{allerrors.join(', ')}</Typography>
               </Alert>
             </Collapse>
           )}
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-            <Typography variant="h5"></Typography>
-            <Box display="flex" alignItems="center" gap={2}>
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
+            <Box>
+              <Typography variant="h5" fontWeight={700}>Vendor Bills</Typography>
+              <Typography variant="body2" color="text.secondary">Manage vendor bills and payments</Typography>
+            </Box>
+            <Box display="flex" alignItems="center" gap={0.5}>
               <HasPermission action="create" resource={["accounting"]} component={
                 <Button
                   variant="contained"
-                  color="primary"
+                  size="small"
                   startIcon={getIcon("plus")}
-                  onClick={() => {
-                    setEditingInvoice(initialInvoiseData);
-                    setShowInvoiceModal(true);
-                  }}
+                  onClick={() => { setEditingInvoice(initialInvoiseData); setShowInvoiceModal(true); }}
+                  sx={{ borderRadius: 2 }}
                 >
                   Create New
                 </Button>
               } />
-              {/* add import  data via fileupload  */}
-              <HasPermission action="import" resource={["accounting"]} component={<FileUploadButton
-                onFileSelect={handleImportInvoice}
-                loading={BillImportMutation.isPending}
-              />} />
-              <HasPermission action="export" resource={["accounting"]} component={<Button
-                variant="contained"
-                onClick={handleExportData}
-                disabled={exportCustomersMutation.isPending}
-                startIcon={exportCustomersMutation.isPending ? <LoadingSpinner size={20} /> : getIcon("fileExport")}
-              >
-              </Button>} />
-              {/* add example csv file download button */}
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<Download />}
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open('/download/Bill.csv', '_blank');
-                }}
-              >
-                Sample
-              </Button>
+              <HasPermission action="import" resource={["accounting"]} component={
+                <FileUploadButton onFileSelect={handleImportInvoice} loading={BillImportMutation.isPending} />
+              } />
+              <HasPermission action="export" resource={["accounting"]} component={
+                <Tooltip title="Export">
+                  <span>
+                    <IconButton size="small" onClick={handleExportData} disabled={exportCustomersMutation.isPending} sx={{ color: 'text.secondary' }}>
+                      {exportCustomersMutation.isPending ? <LoadingSpinner size={16} /> : getIcon("fileExport")}
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              } />
+              <Tooltip title="Download Sample">
+                <IconButton size="small" onClick={() => window.open('/download/Bill.csv', '_blank')} sx={{ color: 'text.secondary' }}>
+                  <Download fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Box>
-          <TableContainer component={Paper}>
-            <Table>
+          <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+          <TableContainer>
+            <Table size="small">
               <TableHead>
-                <TableRow>
-                  {/* <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell> */}
-                  <TableCell sx={{ fontWeight: 'bold' }}>Bill #</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Customer</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Bill Date</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Due Date</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Total Amount</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Recieved Amount</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Due Amount</TableCell>
-                  <TableCell align="center">Actions</TableCell>
+                <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.04) }}>
+                  <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Bill #</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Vendor</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Bill Date</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Due Date</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Total Amount</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Received Amount</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Due Amount</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 700 }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -255,77 +241,56 @@ const VendorBills: React.FC = () => {
                   </TableRow>
                 ) : Array.isArray(data?.data) && data?.data.length > 0 ? (
                   data?.data.map((invoice) => (
-                    <TableRow key={invoice._id} hover>
-                      {/* <TableCell>{invoice.id}</TableCell> */}
-                      <TableCell>{invoice.BillNumber}</TableCell>
-                      <TableCell>{invoice.carrier?.company || "N/A"} </TableCell>
-                      <TableCell>
-                        <Chip {...getInvoiceStatus(invoice.dueAmount || 0, invoice.dueDate,"bill")} />
+                    <TableRow key={invoice._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+                      <TableCell sx={{ py: 1.25 }}>{invoice.BillNumber}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{invoice.carrier?.company || 'N/A'}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>
+                        <Chip size="small" {...getInvoiceStatus(invoice.dueAmount || 0, invoice.dueDate, 'bill')} />
                       </TableCell>
-                      <TableCell>
-                        {formatDate(invoice.invoiceDate)}
-                      </TableCell>
-                      <TableCell>
-                        {formatDate(invoice.dueDate)}
-                      </TableCell>
-                      <TableCell>
-                        {invoice?.totalAmountWithTax?.toFixed(2) || '0.00'}
-                      </TableCell>
-                      <TableCell>
-                        {invoice?.recievedAmount?.toFixed(2) || '0.00'}
-                      </TableCell>
-                      <TableCell>
-                        {invoice?.dueAmount?.toFixed(2) || '0.00'}
-                      </TableCell>
-
-                      <TableCell align="center">
-                        <Stack direction="row" spacing={1} justifyContent="center">
+                      <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.invoiceDate)}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.dueDate)}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{invoice?.totalAmountWithTax?.toFixed(2) || '0.00'}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{invoice?.recievedAmount?.toFixed(2) || '0.00'}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{invoice?.dueAmount?.toFixed(2) || '0.00'}</TableCell>
+                      <TableCell align="center" sx={{ py: 0.5 }}>
+                        <Stack direction="row" spacing={0.5} justifyContent="center">
                           <VerticalMenu actions={[
-                            hasAccess(["accounting"], "update", currentUser) ? {
-                              label: "Edit",
-                              icon: "edit",
-                              onClick: () => handleInvoiceClick(invoice)
-                            } : null,
-                            hasAccess(["accounting"], "delete", currentUser) ? {
-                              label: "Delete",
-                              icon:"delete",
-                              onClick: () => handleDeleteLoad(invoice._id),
-                            } : null,
-                            hasAccess(["accounting"], "create", currentUser) ? {
-                              label: "Make Payment",
-                              icon: "payment",
-                              onClick: () => navigate(`/accounting/purchase/accounts/recievedbill/${invoice.vendorId}?BillNumber=${invoice.BillNumber}`),
-                            } : null,
-
+                            hasAccess(['accounting'], 'update', currentUser)
+                              ? { label: 'Edit', icon: 'edit', onClick: () => handleInvoiceClick(invoice) }
+                              : null,
+                            hasAccess(['accounting'], 'delete', currentUser)
+                              ? { label: 'Delete', icon: 'delete', onClick: () => handleDeleteLoad(invoice._id) }
+                              : null,
+                            hasAccess(['accounting'], 'create', currentUser)
+                              ? { label: 'Make Payment', icon: 'payment', onClick: () => navigate(`/accounting/purchase/accounts/recievedbill/${invoice.vendorId}?BillNumber=${invoice.BillNumber}`) }
+                              : null,
                           ]} />
                           <InvoiceDownloadButton invoiseId={invoice._id} />
-
-
                         </Stack>
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={8} align="center">
-                      <Typography variant="body1">No Records Found</Typography>
+                    <TableCell colSpan={9} align="center" sx={{ py: 5 }}>
+                      <Typography variant="body2" color="text.secondary">No records found</Typography>
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
-            <TablePagination
-              component="div"
-              count={data?.pagination?.total || 0}
-              page={currentPage - 1}
-              rowsPerPage={limit}
-              onPageChange={(_, newPage) => setCurrentPage(newPage + 1)}
-              onRowsPerPageChange={(e) => setLimit(Number(e.target.value))}
-
-            />
           </TableContainer>
-
-        </Container>
+          <Divider />
+          <TablePagination
+            component="div"
+            count={data?.pagination?.total || 0}
+            page={currentPage - 1}
+            rowsPerPage={limit}
+            onPageChange={(_, newPage) => setCurrentPage(newPage + 1)}
+            onRowsPerPageChange={(e) => setLimit(Number(e.target.value))}
+            sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
+          />
+          </Paper>
       </Box>
       <Modal
         open={showInvoiceModal}

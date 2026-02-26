@@ -53,7 +53,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
               cursor: 'pointer',
               borderBottom: '1px solid #e0e0e0',
               '&:hover': {
-                backgroundColor: '#f5f5f5',
+                backgroundColor: 'action.hover',
               },
             }}
           >

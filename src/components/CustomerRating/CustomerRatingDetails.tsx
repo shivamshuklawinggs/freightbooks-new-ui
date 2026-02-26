@@ -92,12 +92,12 @@ const CustomerRatingDetails: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }} />
+      <Box sx={{ p: 3, minHeight: '100vh' }} />
     );
   }
 
   return (
-    <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+    <Box sx={{ p: 3, minHeight: '100vh' }}>
       {/* Info Header */}
       <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2, background: 'linear-gradient(to right, #ffffff, #f9fafb)', position: 'relative', overflow: 'hidden' }}>
         {/* Decorative accent */}

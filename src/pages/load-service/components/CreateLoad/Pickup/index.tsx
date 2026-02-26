@@ -7,7 +7,7 @@ import {
 import PickupLocation from "./PickupLocation";
 import { AppDispatch, RootState } from "@/redux/store";
 import { IPickupLocation } from "@/types";
-import { Typography, Button, Box } from "@mui/material";
+import {  Button, Box } from "@mui/material";
 import { fetchLocations } from "@/redux/api";
 import { getIcon } from "@/components/common/icons/getIcon";
 
@@ -21,9 +21,6 @@ const Pickup :FC= () => {
 
   return (
     <>
-      <Typography variant="h6" gutterBottom color="primary">
-        Pickup Information
-      </Typography>
       {pickupLocationId.map((pickup:IPickupLocation, index:number) => (
         <PickupLocation
         key={ index} // Add unique key

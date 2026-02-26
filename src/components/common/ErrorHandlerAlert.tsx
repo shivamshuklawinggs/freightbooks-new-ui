@@ -38,32 +38,34 @@ const ErrorHandlerAlert: FC<ErrorHandlerAlertProps> = ({ error,toast=false,exclu
   
   return (
     <Collapse in={open}>
-      <Alert severity={severity}
-                action={
-                    <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                            setOpen(false);
-                        }}
-                    >
-                        <Close fontSize="inherit" />
-                    </IconButton>
-                }
-                sx={{ mb: 2 }}>
-        {headerText}
+      <Alert
+        severity={severity}
+        action={
+          <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={() => setOpen(false)}
+          >
+            <Close fontSize="inherit" />
+          </IconButton>
+        }
+        sx={{ mb: 2, borderRadius: 2, fontSize: '0.85rem', alignItems: 'flex-start' }}
+      >
+        {headerText && <strong>{headerText}</strong>}
         {required.length > 0 && (
-          <ul>
-            required Roles {required.map((item: any, index: number) => (
-              <li key={index}>{typeof item == "object" ? JSON.stringify(item) : item}</li>
+          <ul style={{ margin: '4px 0 0', paddingLeft: 20 }}>
+            {required.map((item: any, index: number) => (
+              <li key={index} style={{ fontSize: '0.8rem' }}>
+                {typeof item === 'object' ? JSON.stringify(item) : item}
+              </li>
             ))}
           </ul>
         )}
         {fieldErrors.length > 0 && (
-          <ul style={{ marginTop: '8px', marginBottom: 0 }}>
+          <ul style={{ margin: '4px 0 0', paddingLeft: 20 }}>
             {fieldErrors.map((e, i) => (
-              <li key={i}>
+              <li key={i} style={{ fontSize: '0.8rem' }}>
                 <strong>{formatFieldName(e.field)}:</strong> {e.message}
               </li>
             ))}

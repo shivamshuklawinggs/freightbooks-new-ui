@@ -5,8 +5,6 @@ import { setCarrierContactPerson } from '@/redux/Slice/EditloadSlice';
 import { IContactPerson } from '@/types';
 import apiService from '@/service/apiService';
 import {
-  Paper,
-  Stack,
   Typography,
   TextField,
   MenuItem,
@@ -83,114 +81,41 @@ const ContactCarrierPersons: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={12} md={!carrierIds.contactPerson?6:3}>
-        <Paper
-          elevation={0}
-          sx={{
-            p: 2,
-            bgcolor: 'background.default',
-            height: '100%'
-          }}
-        >
-          <Stack spacing={1}>
-
-            <FormControl fullWidth >
-              <InputLabel id="contact-select-label">Select Contact</InputLabel>
-              <Select
-                labelId="contact-select-label"
-                name="customerContactPerson"
-                value={carrierIds.contactPerson || ''}
-                onChange={(e)=>{
-                  handleSelectContact(e)
-                }}
-                label="Select Contact"
-              >
-                
-                <MenuItem value="" onClick={()=>{
-                    setIsAddingNew(true);
-                    dispatch(setCarrierContactPerson(null));
-                }} >
-                  <Typography
-                    variant="body2"
-                    color={isAddingNew ? "primary" : "textSecondary"}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    {isAddingNew ? "✓ Adding new contact" : "+ Add new contact"}
-                  </Typography>
-                </MenuItem>
-                {contactPersons.length > 0 && (
-                  contactPersons.map((person) => (
-                    <MenuItem 
-                      key={person._id} 
-                      value={person._id}
-                    >
-                      {person.name}
-                    </MenuItem>
-                  ))
-                )}
-              </Select>
-            </FormControl>
-          </Stack>
-        </Paper>
+      <Grid item xs={12} md={3}>
+        <FormControl fullWidth size="small">
+          <InputLabel id="carrier-contact-label">Select Contact</InputLabel>
+          <Select
+            labelId="carrier-contact-label"
+            name="carrierContactPerson"
+            value={carrierIds.contactPerson || ''}
+            onChange={handleSelectContact}
+            label="Select Contact"
+          >
+            <MenuItem value="" onClick={() => { setIsAddingNew(true); dispatch(setCarrierContactPerson(null)); }}>
+              <Typography variant="body2" color={isAddingNew ? 'primary' : 'textSecondary'} sx={{ cursor: 'pointer' }}>
+                {isAddingNew ? '✓ Adding new contact' : '+ Add new contact'}
+              </Typography>
+            </MenuItem>
+            {contactPersons.map((person) => (
+              <MenuItem key={person._id} value={person._id}>{person.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Grid>
 
-      {/* Contact Form Modal - Moved outside of layout components */}
-      <ContactactFormModal
-        isAddingNew={isAddingNew}
-        toggleAddNew={toggleAddNew}
-        onSuccess={onSuccess}
-      />
+      <ContactactFormModal isAddingNew={isAddingNew} toggleAddNew={toggleAddNew} onSuccess={onSuccess} />
 
-      {
-        selectedContact && <>
+      {selectedContact && (
+        <>
           <Grid item xs={12} md={3}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: 2,
-                bgcolor: 'background.default',
-                height: '100%'
-              }}
-            >
-              <Stack spacing={1}>
-                
-                <TextField
-                  fullWidth
-                  
-                  label="Email"
-                  value={selectedContact?.email || ''}
-                  InputProps={{ readOnly: true }}
-                  variant="outlined"
-                />
-              </Stack>
-            </Paper>
+            <TextField fullWidth size="small" label="Contact Email" value={selectedContact?.email || ''} InputProps={{ readOnly: true }} variant="outlined" />
           </Grid>
           <Grid item xs={12} md={3}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: 2,
-                bgcolor: 'background.default',
-                height: '100%'
-              }}
-            >
-              <Stack spacing={1}>
-                <TextField
-                  fullWidth
-                  
-                  label="Phone"
-                  value={selectedContact?.phone || ''}
-                  InputProps={{ readOnly: true }}
-                  variant="outlined"
-                />
-              
-              </Stack>
-            </Paper>
+            <TextField fullWidth size="small" label="Contact Phone" value={selectedContact?.phone || ''} InputProps={{ readOnly: true }} variant="outlined" />
           </Grid>
         </>
-      }
+      )}
     </>
-
   );
 };
 export default ContactCarrierPersons

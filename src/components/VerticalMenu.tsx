@@ -1,8 +1,8 @@
 // components/VerticalMenu.tsx
 import React, { useState, MouseEvent } from 'react';
-import { Button, Menu, MenuItem } from '@mui/material';
+import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText, CircularProgress } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
-import { getIcon ,iconType } from './common/icons/getIcon';
+import { getIcon, iconType } from './common/icons/getIcon';
 export interface MenuAction {
   label: string;
   icon: iconType  ;
@@ -44,32 +44,50 @@ const VerticalMenu: React.FC<VerticalMenuProps> = ({
 
   return (
     <>
-      <Button aria-label="row actions" onClick={handleOpen} size="small">
+      <IconButton
+        aria-label="row actions"
+        onClick={handleOpen}
+        size="small"
+        sx={{
+          color: 'text.secondary',
+          '&:hover': { bgcolor: 'action.hover', color: 'text.primary' },
+        }}
+      >
         <MoreVertIcon fontSize="small" />
-      </Button>
+      </IconButton>
       <Menu
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         PaperProps={{
-          style: {
+          elevation: 3,
+          sx: {
+            mt: 0.5,
+            minWidth: width,
             maxHeight: itemHeight * 4.5,
-            width,
+            borderRadius: 2,
+            '& .MuiMenuItem-root': { borderRadius: 1, mx: 0.5, my: 0.25 },
           },
         }}
       >
         {validActions.map((action, idx) => (
           <MenuItem
             key={idx}
-            onClick={() => {
-              action.onClick();
-              handleClose();
-            }}
-            // onLoad={action?.loading}
-            disabled={action.disabled}
+            onClick={() => { action.onClick(); handleClose(); }}
+            disabled={action.disabled || action.loading}
+            sx={{ py: 1, px: 1.5, gap: 1 }}
           >
-            <span style={{ marginRight: 8 }}>{getIcon(action.icon)}</span>
-            {action.loading && '...'} { action.label}
+            <ListItemIcon sx={{ minWidth: 'unset', color: 'inherit' }}>
+              {action.loading
+                ? <CircularProgress size={16} />
+                : getIcon(action.icon)
+              }
+            </ListItemIcon>
+            <ListItemText primaryTypographyProps={{ variant: 'body2' }}>
+              {action.label}
+            </ListItemText>
           </MenuItem>
         ))}
       </Menu>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, RefObject, } from 'react';
-import { Button, Container, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography, Box, CircularProgress, Stack, alpha, TablePagination, Menu, MenuItem, Checkbox, Grid, } from '@mui/material';
+import { Button, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography, Box, CircularProgress, alpha, TablePagination, Menu, MenuItem, Checkbox, Grid, Tooltip, IconButton, Divider } from '@mui/material';
 import AddAccountsCustomer from './components/AddCustomer';
 import AddCustomer from '@/pages/customer-service/load-customers/components/AddCustomer';
 import { ICustomer, IAccountsCustomerView, IPaymentTerm, CustomerStatus, } from '@/types';
@@ -189,37 +189,36 @@ const ViewCustomers: React.FC = () => {
   const customers = customer?.data || [];
   const total = customer?.pagination?.total || 0;
   return (
-    <Box
-      className="view-load"
-      sx={{
-        backgroundColor: '#f5f5f5',
-        minHeight: '100vh',
-        py: 4,
-      }}
-    >
-      <Container maxWidth="xl">
+    <Box sx={{ minHeight: '100vh' }}>
         {/* Header + Actions */}
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
+        <Box
+          display="flex"
           justifyContent="space-between"
-          alignItems={{ xs: 'stretch', sm: 'center' }}
-          spacing={2}
-          mb={3}
+          alignItems="flex-start"
+          mb={2.5}
+          flexWrap="wrap"
+          gap={1}
         >
-          <Typography variant="h5" fontWeight={600}>
-            Customers
-          </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center">
-            <HasPermission action="create" resource={['accounting']} component={<Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleAddNew}
-              aria-label="Add new customer"
-            >
-              Add Customer
-            </Button>} />
-          </Stack>
-        </Stack>
+          <Box>
+            <Typography variant="h5" fontWeight={700}>Customers</Typography>
+            <Typography variant="body2" color="text.secondary">Manage your accounts customers</Typography>
+          </Box>
+          <HasPermission
+            action="create"
+            resource={['accounting']}
+            component={
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<AddIcon />}
+                onClick={handleAddNew}
+                sx={{ borderRadius: 2 }}
+              >
+                Add Customer
+              </Button>
+            }
+          />
+        </Box>
         
         <Grid container spacing={2}>
           {/* Filters Sidebar */}
@@ -235,111 +234,98 @@ const ViewCustomers: React.FC = () => {
           <Grid item xs={12} md={9}>
             <CustomerDashboard />
 
-        {/* Export / Settings Row */}
-        <Stack
-          direction="row"
-          spacing={1}
-          justifyContent="flex-end"
-          alignItems="center"
-          mb={2}
-          flexWrap="wrap"
+        {/* Toolbar */}
+        <Paper
+          variant="outlined"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: 0.5,
+            px: 1.5,
+            py: 0.75,
+            mb: 1.5,
+            borderRadius: 2,
+            flexWrap: 'wrap',
+          }}
         >
-          <Button
-            variant="outlined"
-            startIcon={<SettingsIcon />}
-            onClick={handleColumnMenuOpen}
-            aria-label="Column visibility settings"
-          >
-            Columns
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<PrintIcon />}
-            onClick={() =>
-              handlePrint(printRef as RefObject<HTMLDivElement>, 'Customers')
+          <Tooltip title="Toggle Columns">
+            <IconButton size="small" onClick={handleColumnMenuOpen} sx={{ color: 'text.secondary' }}>
+              <SettingsIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Print">
+            <IconButton
+              size="small"
+              onClick={() => handlePrint(printRef as RefObject<HTMLDivElement>, 'Customers')}
+              sx={{ color: 'text.secondary' }}
+            >
+              <PrintIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <HasPermission
+            action="import"
+            resource={['accounting']}
+            component={
+              <FileUploadButton
+                onFileSelect={handleImportInvoice}
+                loading={invoiceImportMutation.isPending}
+              />
             }
-            aria-label="Print customer list"
-          >
-            Print
-          </Button>
-          <HasPermission action="import" resource={['accounting']} component={<FileUploadButton
-            onFileSelect={handleImportInvoice}
-            loading={invoiceImportMutation.isPending}
-          />} />
-          <Button
-            variant="outlined"
-            startIcon={getIcon("fileExport")}
-            onClick={handleExportData}
-            aria-label="Export customers"
-          >
-            Export
-          </Button>
-          {/* add example csv file download button */}
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Download />}
-            onClick={(e) => {
-              e.preventDefault();
-              window.open('/download/sample.csv', '_blank');
-            }}
-          >
-            Sample
-          </Button>
+          />
+          <Tooltip title="Export CSV">
+            <IconButton size="small" onClick={handleExportData} sx={{ color: 'text.secondary' }}>
+              <Download fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Download Sample CSV">
+            <IconButton
+              size="small"
+              onClick={() => window.open('/download/sample.csv', '_blank')}
+              sx={{ color: 'text.secondary' }}
+            >
+              {getIcon('fileExport')}
+            </IconButton>
+          </Tooltip>
           <Menu
             anchorEl={columnMenuAnchor}
             open={Boolean(columnMenuAnchor)}
             onClose={handleColumnMenuClose}
-            PaperProps={{ elevation: 4 }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            PaperProps={{ sx: { borderRadius: 2, minWidth: 180 } }}
           >
+            <Typography variant="caption" fontWeight={700} color="text.secondary" sx={{ px: 2, py: 0.5, display: 'block', letterSpacing: '0.05em' }}>
+              VISIBLE COLUMNS
+            </Typography>
+            <Divider />
             {AccountsCustomerColumns.map((col) => (
-              <MenuItem key={col.key} dense>
+              <MenuItem key={col.key} dense onClick={() => handleColumnToggle(col.key)} sx={{ gap: 1 }}>
                 <Checkbox
-                  edge="start"
-                  checked={visibleColumns.includes(col.key)}
-                  onChange={() => handleColumnToggle(col.key)}
                   size="small"
-                  inputProps={{ 'aria-label': `toggle ${col.label}` }}
+                  checked={visibleColumns.includes(col.key)}
+                  sx={{ p: 0 }}
                 />
                 <Typography variant="body2">{col.label}</Typography>
               </MenuItem>
             ))}
           </Menu>
-        </Stack>
+        </Paper>
         <FileImportError allerrors={invoiceImportMutation?.error?.response?.data?.errors?.allErrors || []} message={invoiceImportMutation?.error?.response?.data?.message || "Error importing vendors"} />
 
         {/* Table */}
-        <Paper elevation={1}>
+        <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
           <Box ref={printRef}>
             <TableContainer>
-              <Table size="medium" aria-label="customers table">
+              <Table size="small" aria-label="customers table">
                 <TableHead>
-                  <TableRow
-                    sx={{
-                      backgroundColor: alpha(
-                        theme.palette.primary.main,
-                        0.04
-                      ),
-                    }}
-                  >
+                  <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.04) }}>
                     {displayedColumns.map((col) => (
-                      <TableCell
-                        key={col.key}
-                        sx={{
-                          fontWeight: 600,
-                          whiteSpace: 'nowrap',
-                          height: 60,
-                          // width: `${Math.max(col.label.length * 12, 100)}px`,
-                        }}
-                      >
+                      <TableCell key={col.key} sx={{ fontWeight: 700, whiteSpace: 'nowrap', py: 1.5 }}>
                         {col.label}
                       </TableCell>
                     ))}
-                    <TableCell
-                      align="center"
-                      sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}
-                      className="no-print"
-                    >
+                    <TableCell align="center" sx={{ fontWeight: 700 }} className="no-print">
                       Actions
                     </TableCell>
                   </TableRow>
@@ -347,118 +333,54 @@ const ViewCustomers: React.FC = () => {
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={displayedColumns.length + 1}>
-                        <Box
-                          display="flex"
-                          justifyContent="center"
-                          py={3}
-                        >
-                          <CircularProgress size={24} />
-                        </Box>
+                      <TableCell colSpan={displayedColumns.length + 1} align="center" sx={{ py: 6 }}>
+                        <CircularProgress size={32} />
                       </TableCell>
                     </TableRow>
                   ) : customers.length > 0 ? (
                     customers
-                      .filter((c: Omit<IAccountsCustomerView, 'paymentTerms'> & {
-                        paymentTerms: IPaymentTerm;
-                      }) => c._id)
-                      .map((customer: Omit<IAccountsCustomerView, 'paymentTerms'> & {
-                        paymentTerms: IPaymentTerm;
-                      }) => (
-                        <TableRow key={customer._id} hover>
-                          {AccountsCustomerColumns.filter(
-                            (col) => col.key !== 'invoice'
-                          )
-                            .filter((col) =>
-                              visibleColumns.includes(col.key)
-                            )
-                            .map((col, i) => (
+                      .filter((c: Omit<IAccountsCustomerView, 'paymentTerms'> & { paymentTerms: IPaymentTerm }) => c._id)
+                      .map((customer: Omit<IAccountsCustomerView, 'paymentTerms'> & { paymentTerms: IPaymentTerm }) => (
+                        <TableRow key={customer._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+                          {AccountsCustomerColumns
+                            .filter((col) => col.key !== 'invoice')
+                            .filter((col) => visibleColumns.includes(col.key))
+                            .map((col) => (
                               <TableCell
                                 key={col.key}
                                 onClick={() =>
-                                  hasAccess(["accounting"], "view", user) && col.key !== 'rating' && navigate(
-                                    paths.customertransactionlist + "/" +
-                                    customer._id,
-                                    {
-                                      state: {
-                                        page: currentPage,
-                                        limit,
-                                      },
-                                    }
-                                  )
+                                  hasAccess(["accounting"], "view", user) && col.key !== 'rating' &&
+                                  navigate(paths.customertransactionlist + '/' + customer._id, { state: { page: currentPage, limit } })
                                 }
-                                sx={{
-                                  cursor: 'pointer',
-                                  fontWeight: 600,
-                                  whiteSpace: 'nowrap',
-                                  height: 60,
-                                  // width: 100,
-                                }}
+                                sx={{ cursor: col.key !== 'rating' ? 'pointer' : 'default', whiteSpace: 'nowrap', py: 1.25 }}
                               >
-                                {renderCell({
-                                  column: col.key,
-                                  customer,
-                                  navigate
-                                })}
+                                {renderCell({ column: col.key, customer, navigate })}
                               </TableCell>
                             ))}
-                          <TableCell
-                            className="no-print"
-                            sx={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              gap: 1,
-                              whiteSpace: 'nowrap',
-                              height: 60,
-                            }}
-                          >
-                            <Box>
-
-                              <VerticalMenu
-                                actions={[
-                                  hasAccess(customer.isAccountCustomer ? ["accounting" ]: ["customers"], "update", user) ? {
-                                    label: 'Edit',
-                                    icon: "edit",
-                                    onClick: () => {
-                                      handleEditClick(customer as any);
-                                    },
-                                  } : null,
-                                  hasAccess(customer.isAccountCustomer ? ["accounting"] : ["customers"], "delete", user) ? {
-                                    label: 'Delete',
-                                    icon: "delete",
-                                    onClick: () => {
-                                      handleDeleteCustomer(
-                                        customer._id || ''
-                                      );
-                                    },
-                                  } : null,
-                                  hasAccess(["accounting"], "create", user) ? {
-                                    label: "Make Payment",
-                                    icon: "payment",
-                                    onClick: () => navigate(`/accounting/sales/accounts/recievedpayment/${customer._id}`),
-                                  } : null,
-                                  hasAccess(['accounting'], "create", user) ?
-                                    {
-                                      label: 'Report ',
-                                      icon: "reports",
-                                      onClick: () => {
-                                        navigate(`${paths.customers}/report/${customer._id}`)
-                                      },
-                                    } : null,
-                                ]}
-                              />
-                            </Box>
+                          <TableCell align="center" className="no-print" sx={{ py: 0.5 }}>
+                            <VerticalMenu
+                              actions={[
+                                hasAccess(customer.isAccountCustomer ? ["accounting"] : ["customers"], "update", user)
+                                  ? { label: 'Edit', icon: "edit", onClick: () => handleEditClick(customer as any) }
+                                  : null,
+                                hasAccess(customer.isAccountCustomer ? ["accounting"] : ["customers"], "delete", user)
+                                  ? { label: 'Delete', icon: "delete", onClick: () => handleDeleteCustomer(customer._id || '') }
+                                  : null,
+                                hasAccess(["accounting"], "create", user)
+                                  ? { label: 'Make Payment', icon: "payment", onClick: () => navigate(`/accounting/sales/accounts/recievedpayment/${customer._id}`) }
+                                  : null,
+                                hasAccess(['accounting'], "create", user)
+                                  ? { label: 'Report', icon: "reports", onClick: () => navigate(`${paths.customers}/report/${customer._id}`) }
+                                  : null,
+                              ]}
+                            />
                           </TableCell>
                         </TableRow>
                       ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={displayedColumns.length + 1}>
-                        <Box py={4} textAlign="center">
-                          <Typography variant="body2">
-                            No customers found
-                          </Typography>
-                        </Box>
+                      <TableCell colSpan={displayedColumns.length + 1} align="center" sx={{ py: 5 }}>
+                        <Typography variant="body2" color="text.secondary">No customers found</Typography>
                       </TableCell>
                     </TableRow>
                   )}
@@ -466,8 +388,9 @@ const ViewCustomers: React.FC = () => {
               </Table>
             </TableContainer>
           </Box>
+          <Divider />
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 25, 50]}
             component="div"
             count={total}
             rowsPerPage={limit}
@@ -477,6 +400,7 @@ const ViewCustomers: React.FC = () => {
               setLimit(parseInt(event.target.value, 10));
               setCurrentPage(1);
             }}
+            sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
           />
         </Paper>
 
@@ -501,7 +425,6 @@ const ViewCustomers: React.FC = () => {
 
           </Grid>
         </Grid>
-      </Container>
     </Box>
   );
 };

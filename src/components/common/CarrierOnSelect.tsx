@@ -97,6 +97,7 @@ const CarrierOnSelect: React.FC<CarrierOnSelectProps> = ({ index, updateLocation
             {...params}
             label="Select Carrier"
             variant="outlined"
+            size="small"
           />
         )}
       />

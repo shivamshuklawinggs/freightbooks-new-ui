@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import apiService from "@/service/apiService";
 import { toast } from "react-toastify";
-import { Modal, Box, Typography, Container, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Chip, } from '@mui/material';
+import { Modal, Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Chip, } from '@mui/material';
 import CustomerInvoiseForm from './CustomerInvoiseForm';
 import { IInvoice, InvoiceResponse } from '@/types';
 import { RootState } from '@/redux/store';
@@ -126,35 +126,32 @@ const GetInvoices: React.FC = () => {
   }
   return (
     <>
-      <Box className="view-load" sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 3 }}>
-        <Container maxWidth={false}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-            <Typography variant="h5"></Typography>
-            <Box display="flex" alignItems="center" gap={2}>
-              <HasPermission action="create" resource={["accounting"]} component={<Button
-                variant="contained"
-                color="primary"
-                startIcon={getIcon("plus")}
-                onClick={(e) =>handleInvoiceClick(undefined)}
-              >
-                Create New
-              </Button>}/>
-          
+      <Box sx={{ minHeight: '100vh' }}>
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
+            <Box>
+              <Typography variant="h5" fontWeight={700}>Estimates</Typography>
+              <Typography variant="body2" color="text.secondary">Manage customer estimates and quotes</Typography>
             </Box>
+            <HasPermission action="create" resource={["accounting"]} component={
+              <Button variant="contained" size="small" startIcon={getIcon("plus")} onClick={() => handleInvoiceClick(undefined)} sx={{ borderRadius: 2 }}>
+                Create New
+              </Button>
+            }/>
           </Box>
-          <TableContainer component={Paper}>
-            <Table>
+          <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+          <TableContainer>
+            <Table size="small">
               <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Estimate #</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Customer</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Invoice Date</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Due Date</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Total Amount</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Recieved Amount</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Due Amount</TableCell>
-                  <TableCell align="center">Actions</TableCell>
+                <TableRow sx={{ bgcolor: 'action.hover' }}>
+                  <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Estimate #</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Customer</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Invoice Date</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Due Date</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Total Amount</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Received Amount</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Due Amount</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 700 }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -166,28 +163,18 @@ const GetInvoices: React.FC = () => {
                   </TableRow>
                 ) : Array.isArray(data?.data) && data?.data.length > 0 ? (
                   data?.data.map((invoice) => (
-                    <TableRow key={invoice._id} hover>
-                      <TableCell>{invoice.invoiceNumber}</TableCell>
-                      <TableCell>{invoice.customer?.company || 'N/A'}</TableCell>
-                      <TableCell>
-                          <Chip {...getInvoiceStatus(invoice.dueAmount || 0, invoice.dueDate,"invoice")} />
+                    <TableRow key={invoice._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+                      <TableCell sx={{ py: 1.25 }}>{invoice.invoiceNumber}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{invoice.customer?.company || 'N/A'}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>
+                        <Chip size="small" {...getInvoiceStatus(invoice.dueAmount || 0, invoice.dueDate, "invoice")} />
                       </TableCell>
-                      <TableCell>
-                        {formatDate(invoice.invoiceDate )}
-                      </TableCell>
-                      <TableCell>
-                        {formatDate(invoice.dueDate)}
-                      </TableCell>
-                      <TableCell>
-                        {invoice?.totalAmountWithTax?.toFixed(2) || '0.00'}
-                      </TableCell>
-                      <TableCell>
-                        {invoice?.recievedAmount?.toFixed(2) || '0.00'}
-                      </TableCell>
-                      <TableCell>
-                        {invoice?.dueAmount?.toFixed(2) || '0.00'}
-                      </TableCell>
-                            <TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.invoiceDate)}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.dueDate)}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{invoice?.totalAmountWithTax?.toFixed(2) || '0.00'}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{invoice?.recievedAmount?.toFixed(2) || '0.00'}</TableCell>
+                      <TableCell sx={{ py: 1.25 }}>{invoice?.dueAmount?.toFixed(2) || '0.00'}</TableCell>
+                      <TableCell align="center" sx={{ py: 0.5 }}>
                                               
                                               <VerticalMenu actions={[
                                                 hasAccess(["accounting"],"update",user) ? {
@@ -230,8 +217,8 @@ const GetInvoices: React.FC = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={8} align="center">
-                      <Typography variant="body1">No Records Found</Typography>
+                    <TableCell colSpan={9} align="center" sx={{ py: 5 }}>
+                      <Typography variant="body2" color="text.secondary">No records found</Typography>
                     </TableCell>
                   </TableRow>
                 )}
@@ -244,11 +231,10 @@ const GetInvoices: React.FC = () => {
               rowsPerPage={limit}
               onPageChange={(_, newPage) => setCurrentPage(newPage + 1)}
               onRowsPerPageChange={(e) => setLimit(Number(e.target.value))}
-
+              sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
             />
           </TableContainer>
-
-        </Container>
+          </Paper>
       </Box>
       <Modal
         open={showInvoiceModal}

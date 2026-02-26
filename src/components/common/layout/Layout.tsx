@@ -1,8 +1,8 @@
 import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Box, Toolbar, Breadcrumbs, Typography, Link } from '@mui/material';
-import { NavigateNext as NavigateNextIcon } from '@mui/icons-material';
+import { Box, Toolbar, Breadcrumbs, Link, Chip } from '@mui/material';
+import { NavigateNext as NavigateNextIcon, Home as HomeIcon } from '@mui/icons-material';
 import AppHeader from './Header';
 import SideDrawer from './Sidebar/Index';
 import { RootState } from '@/redux/store';
@@ -51,16 +51,19 @@ const Layout: React.FC = () => {
   const routeChain = findRouteChain(protectedRoutes, location.pathname) || [];
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'background.default' }}>
       <AppHeader drawerWidth={drawerWidth} />
       <SideDrawer drawerWidth={drawerWidth} />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          backgroundColor: '#f9f9f9',
+          px: { xs: 2, sm: 3 },
+          pt: 2,
+          pb: 4,
+          bgcolor: 'background.default',
           overflowY: 'auto',
+          overflowX: 'hidden',
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           transition: theme =>
             theme.transitions.create(['margin', 'width'], {
@@ -70,25 +73,69 @@ const Layout: React.FC = () => {
         }}
       >
         <Toolbar />
-        <Box>
-          <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+        {/* Breadcrumb Bar */}
+        <Box
+          sx={{
+            mb: 2,
+            py: 1,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Breadcrumbs
+            separator={<NavigateNextIcon sx={{ fontSize: 14, color: 'text.disabled' }} />}
+            aria-label="breadcrumb"
+          >
             <Link
               color="inherit"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
+                gap: 0.4,
                 textDecoration: 'none',
                 cursor: 'pointer',
+                color: 'text.secondary',
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                '&:hover': { color: 'primary.main' },
               }}
             >
-              Back
+              <HomeIcon sx={{ fontSize: 14 }} />
+              Home
             </Link>
-            {routeChain.map((route, idx) => (
-              <Typography key={idx} color="text.primary" sx={{ fontWeight: 'medium' }}>
-                {route.title}
-              </Typography>
-            ))}
+            {routeChain.map((route, idx) =>
+              idx < routeChain.length - 1 ? (
+                <Link
+                  key={idx}
+                  onClick={() => navigate(route.path || '/')}
+                  sx={{
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    color: 'text.secondary',
+                    fontSize: '0.8rem',
+                    fontWeight: 500,
+                    '&:hover': { color: 'primary.main' },
+                  }}
+                >
+                  {route.title}
+                </Link>
+              ) : (
+                <Chip
+                  key={idx}
+                  label={route.title}
+                  size="small"
+                  sx={{
+                    height: 22,
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    bgcolor: 'primary.main',
+                    color: 'primary.contrastText',
+                    '& .MuiChip-label': { px: 1 },
+                  }}
+                />
+              )
+            )}
           </Breadcrumbs>
         </Box>
         <Outlet />
