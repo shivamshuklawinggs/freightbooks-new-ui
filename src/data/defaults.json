@@ -7,7 +7,7 @@
     "borderRadius": 8,
     "sidebarStyle": "solid",
     "fontFamily": "roboto",
-    "typographyScale": "xlarge",
+    "typographyScale": "compact",
     "formFontSize": "medium",
     "sidebarCollapsed": false
   },

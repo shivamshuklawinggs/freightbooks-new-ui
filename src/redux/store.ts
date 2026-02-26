@@ -27,6 +27,7 @@ import { PersistConfig } from 'redux-persist';
 import { ILoad, SidebarState } from "@/types";
 import { TypedUseSelectorHook,useSelector, useDispatch } from "react-redux";
 import { companyResetMiddleware } from "./middlewares/companyReset.middleware";
+import storage from "redux-persist/lib/storage";
 
 export const indexedDBStorage = createIndexedDBStorage("myAppDB");
 const isObject = (value: unknown): value is Record<string, unknown> =>
@@ -119,8 +120,7 @@ const columnFilterpersistConfig: PersistConfig<ColumnFilterState> = {
 };
 const themePersistConfig: PersistConfig<ThemeSettings> = {
   key: "theme",
-  storage: indexedDBStorage,
-  transforms: [encryptionTransform],
+  storage: storage,
 };
 
 const sidebarpersistConfig: PersistConfig<SidebarState> = {
