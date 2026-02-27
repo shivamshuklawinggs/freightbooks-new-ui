@@ -49,7 +49,7 @@ const Delivery:React.FC  = () => {
         </Button>
       </Box>
       <Box  mb={2}>
-      <LoadTermsAndCondition type="editload" handleAddDelivery={() => dispatch(addDeliveryLocation())} />
+      <LoadTermsAndCondition type="load" handleAddDelivery={() => dispatch(addDeliveryLocation())} />
       </Box>
      
     </>

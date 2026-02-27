@@ -121,6 +121,7 @@ const columnFilterpersistConfig: PersistConfig<ColumnFilterState> = {
 const themePersistConfig: PersistConfig<ThemeSettings> = {
   key: "theme",
   storage: storage,
+  version: 2,
 };
 
 const sidebarpersistConfig: PersistConfig<SidebarState> = {

@@ -9,7 +9,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
 import 'recharts';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-// import './index.css';
+import './index.css';
 
 const LoadingFallback = () => (
   <div style={{

@@ -50,7 +50,7 @@ const DatewiseGeneralLedgerReport: React.FC<{ reportData: IGeneralLedgerReport }
       <TableContainer component={Paper} elevation={4} sx={{ borderRadius: 3, overflow: 'hidden' }}>
         <Table size="small">
           <TableHead>
-            <TableRow sx={{ backgroundColor: '#f0f2f5' }}>
+            <TableRow sx={{ bgcolor: 'background.paper' }}>
               <TableCell sx={{ fontWeight: 600 }}>Account</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Date</TableCell>
               <TableCell sx={{ fontWeight: 600, textAlign: 'right' }}>Debit</TableCell>
@@ -63,8 +63,8 @@ const DatewiseGeneralLedgerReport: React.FC<{ reportData: IGeneralLedgerReport }
                 {/* Account Header */}
                 <TableRow
                   sx={{
-                    backgroundColor: '#f9f9f9',
-                    '&:hover': { backgroundColor: '#f1f1f1' },
+                    bgcolor: 'background.paper',
+                    '&:hover': { bgcolor: 'action.hover' },
                   }}
                 >
                   <TableCell>
@@ -99,8 +99,8 @@ const DatewiseGeneralLedgerReport: React.FC<{ reportData: IGeneralLedgerReport }
                             <TableRow
                               key={idx}
                               sx={{
-                                backgroundColor: idx % 2 === 0 ? '#ffffff' : '#f7f7f7',
-                                '&:hover': { backgroundColor: '#e6f2ff' },
+                                bgcolor: idx % 2 === 0 ? 'background.default' : 'action.hover',
+                                '&:hover': { bgcolor: 'action.selected' },
                               }}
                             >
                               <TableCell sx={{ pl: 6 }}>{formatDate(payment._id)}</TableCell>
@@ -124,7 +124,7 @@ const DatewiseGeneralLedgerReport: React.FC<{ reportData: IGeneralLedgerReport }
             {/* Grand Total */}
             <TableRow
               sx={{
-                backgroundColor: '#dbe5f1',
+                bgcolor: 'primary.dark',
                 fontWeight: 700,
                 fontSize: '0.95rem',
               }}

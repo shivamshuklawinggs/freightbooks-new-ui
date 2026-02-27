@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tabs, Tab, IconButton, TablePagination, } from '@mui/material';
+import { PageHeader } from '@/components/ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { Remove as RemoveIcon, Add as AddIcon } from '@mui/icons-material';
 import { RootState, AppDispatch } from '@/redux/store';
@@ -66,10 +67,7 @@ const Documents: React.FC = () => {
   return (
     <>
       <Box sx={{ minHeight: '100vh' }}>
-          <Box mb={2}>
-            <Typography variant="h5" fontWeight={700}>Documents</Typography>
-            <Typography variant="body2" color="text.secondary">View and manage uploaded documents</Typography>
-          </Box>
+          <PageHeader title="Documents" subtitle="View and manage uploaded documents" />
           <Paper elevation={0} sx={{ mb: 1.5, borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
               value={activeTab}

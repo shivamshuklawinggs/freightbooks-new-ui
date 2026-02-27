@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, RefObject, } from 'react';
-import { Button, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography, Box, CircularProgress, alpha, TablePagination, Menu, MenuItem, Checkbox, Grid, Tooltip, IconButton, Divider } from '@mui/material';
+import { PageHeader, DataTable } from '@/components/ui';
+import { Button, TableCell, TableRow, Paper, Typography, Box, Menu, MenuItem, Checkbox, Tooltip, IconButton, Divider, Drawer } from '@mui/material';
 import AddAccountsCustomer from './components/AddCustomer';
 import AddCustomer from '@/pages/customer-service/load-customers/components/AddCustomer';
 import { ICustomer, IAccountsCustomerView, IPaymentTerm, CustomerStatus, } from '@/types';
@@ -7,7 +8,7 @@ import { useTheme } from '@mui/material/styles';
 import { fetchAccountsCustomers } from '@/redux/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { Add as AddIcon,  Settings as SettingsIcon, Print as PrintIcon, Download, } from '@mui/icons-material';
+import { Add as AddIcon, Settings as SettingsIcon, Print as PrintIcon, Download, FilterList as FilterListIcon } from '@mui/icons-material';
 import apiService from '@/service/apiService';
 import { toast } from 'react-toastify';
 import { downloadCSV, handlePrint, } from '@/utils';
@@ -53,8 +54,8 @@ const ViewCustomers: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(DEFAULT_PAGE_SIZE);
 
-  const [columnMenuAnchor, setColumnMenuAnchor] =
-    useState<null | HTMLElement>(null);
+  const [columnMenuAnchor, setColumnMenuAnchor] = useState<null | HTMLElement>(null);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
   // Debounced search updater
@@ -191,48 +192,29 @@ const ViewCustomers: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh' }}>
         {/* Header + Actions */}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          mb={2.5}
-          flexWrap="wrap"
-          gap={1}
-        >
-          <Box>
-            <Typography variant="h5" fontWeight={700}>Customers</Typography>
-            <Typography variant="body2" color="text.secondary">Manage your accounts customers</Typography>
-          </Box>
-          <HasPermission
-            action="create"
-            resource={['accounting']}
-            component={
-              <Button
-                variant="contained"
-                size="small"
-                startIcon={<AddIcon />}
-                onClick={handleAddNew}
-                sx={{ borderRadius: 2 }}
-              >
-                Add Customer
-              </Button>
-            }
-          />
-        </Box>
-        
-        <Grid container spacing={2}>
-          {/* Filters Sidebar */}
-          <Grid item xs={12} md={3}>
-            <CustomerFilters
-              filters={filters}
-              onFiltersChange={handleFiltersChange}
-              onClearFilters={handleClearFilters}
+        <PageHeader
+          title="Customers"
+          subtitle="Manage your customer accounts"
+          actions={
+            <HasPermission
+              action="create"
+              resource={["accounting"]}
+              component={
+                <Button
+                  variant="contained"
+                  size="small"
+                  startIcon={<AddIcon />}
+                  onClick={handleAddNew}
+                  sx={{ borderRadius: 2 }}
+                >
+                  Add Customer
+                </Button>
+              }
             />
-          </Grid>
-          
-          {/* Main Content */}
-          <Grid item xs={12} md={9}>
-            <CustomerDashboard />
+          }
+        />
+        
+        <CustomerDashboard />
 
         {/* Toolbar */}
         <Paper
@@ -249,6 +231,11 @@ const ViewCustomers: React.FC = () => {
             flexWrap: 'wrap',
           }}
         >
+          <Tooltip title="Filter">
+            <IconButton size="small" onClick={() => setFilterDrawerOpen(true)} sx={{ color: 'text.secondary' }}>
+              <FilterListIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Toggle Columns">
             <IconButton size="small" onClick={handleColumnMenuOpen} sx={{ color: 'text.secondary' }}>
               <SettingsIcon fontSize="small" />
@@ -313,96 +300,58 @@ const ViewCustomers: React.FC = () => {
         </Paper>
         <FileImportError allerrors={invoiceImportMutation?.error?.response?.data?.errors?.allErrors || []} message={invoiceImportMutation?.error?.response?.data?.message || "Error importing vendors"} />
 
-        {/* Table */}
-        <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <Box ref={printRef}>
-            <TableContainer>
-              <Table size="small" aria-label="customers table">
-                <TableHead>
-                  <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.04) }}>
-                    {displayedColumns.map((col) => (
-                      <TableCell key={col.key} sx={{ fontWeight: 700, whiteSpace: 'nowrap', py: 1.5 }}>
-                        {col.label}
-                      </TableCell>
-                    ))}
-                    <TableCell align="center" sx={{ fontWeight: 700 }} className="no-print">
-                      Actions
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {loading ? (
-                    <TableRow>
-                      <TableCell colSpan={displayedColumns.length + 1} align="center" sx={{ py: 6 }}>
-                        <CircularProgress size={32} />
-                      </TableCell>
-                    </TableRow>
-                  ) : customers.length > 0 ? (
-                    customers
-                      .filter((c: Omit<IAccountsCustomerView, 'paymentTerms'> & { paymentTerms: IPaymentTerm }) => c._id)
-                      .map((customer: Omit<IAccountsCustomerView, 'paymentTerms'> & { paymentTerms: IPaymentTerm }) => (
-                        <TableRow key={customer._id} hover sx={{ '&:last-child td': { border: 0 } }}>
-                          {AccountsCustomerColumns
-                            .filter((col) => col.key !== 'invoice')
-                            .filter((col) => visibleColumns.includes(col.key))
-                            .map((col) => (
-                              <TableCell
-                                key={col.key}
-                                onClick={() =>
-                                  hasAccess(["accounting"], "view", user) && col.key !== 'rating' &&
-                                  navigate(paths.customertransactionlist + '/' + customer._id, { state: { page: currentPage, limit } })
-                                }
-                                sx={{ cursor: col.key !== 'rating' ? 'pointer' : 'default', whiteSpace: 'nowrap', py: 1.25 }}
-                              >
-                                {renderCell({ column: col.key, customer, navigate })}
-                              </TableCell>
-                            ))}
-                          <TableCell align="center" className="no-print" sx={{ py: 0.5 }}>
-                            <VerticalMenu
-                              actions={[
-                                hasAccess(customer.isAccountCustomer ? ["accounting"] : ["customers"], "update", user)
-                                  ? { label: 'Edit', icon: "edit", onClick: () => handleEditClick(customer as any) }
-                                  : null,
-                                hasAccess(customer.isAccountCustomer ? ["accounting"] : ["customers"], "delete", user)
-                                  ? { label: 'Delete', icon: "delete", onClick: () => handleDeleteCustomer(customer._id || '') }
-                                  : null,
-                                hasAccess(["accounting"], "create", user)
-                                  ? { label: 'Make Payment', icon: "payment", onClick: () => navigate(`/accounting/sales/accounts/recievedpayment/${customer._id}`) }
-                                  : null,
-                                hasAccess(['accounting'], "create", user)
-                                  ? { label: 'Report', icon: "reports", onClick: () => navigate(`${paths.customers}/report/${customer._id}`) }
-                                  : null,
-                              ]}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={displayedColumns.length + 1} align="center" sx={{ py: 5 }}>
-                        <Typography variant="body2" color="text.secondary">No customers found</Typography>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
+        <DataTable
+          columns={AccountsCustomerColumns.filter(col => visibleColumns.includes(col.key)).concat([{ key: 'actions', label: 'Actions' }])}
+          data={customers.filter((c: Omit<IAccountsCustomerView, 'paymentTerms'> & { paymentTerms: IPaymentTerm }) => c._id)}
+          isLoading={loading}
+          emptyMessage="No customers found"
+          total={total}
+          page={currentPage - 1}
+          rowsPerPage={limit}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          onPageChange={(newPage) => setCurrentPage(newPage + 1)}
+          onRowsPerPageChange={(rows) => { setLimit(rows); setCurrentPage(1); }}
+          renderRow={(customer: Omit<IAccountsCustomerView, 'paymentTerms'> & { paymentTerms: IPaymentTerm }) => (
+            <TableRow key={customer._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+              {AccountsCustomerColumns
+                .filter((col) => col.key !== 'invoice' && visibleColumns.includes(col.key))
+                .map((col) => (
+                  <TableCell
+                    key={col.key}
+                    onClick={() => hasAccess(["accounting"], "view", user) && col.key !== 'rating' && navigate(paths.customertransactionlist + '/' + customer._id, { state: { page: currentPage, limit } })}
+                    sx={{ cursor: col.key !== 'rating' ? 'pointer' : 'default', whiteSpace: 'nowrap', py: 1.25 }}
+                  >
+                    {renderCell({ column: col.key, customer, navigate })}
+                  </TableCell>
+                ))}
+              <TableCell align="center" sx={{ py: 0.5 }}>
+                <VerticalMenu
+                  actions={[
+                    hasAccess(customer.isAccountCustomer ? ["accounting"] : ["customers"], "update", user) ? { label: 'Edit', icon: "edit", onClick: () => handleEditClick(customer as any) } : null,
+                    hasAccess(customer.isAccountCustomer ? ["accounting"] : ["customers"], "delete", user) ? { label: 'Delete', icon: "delete", onClick: () => handleDeleteCustomer(customer._id || '') } : null,
+                    hasAccess(["accounting"], "create", user) ? { label: 'Make Payment', icon: "payment", onClick: () => navigate(`/accounting/sales/accounts/recievedpayment/${customer._id}`) } : null,
+                    hasAccess(['accounting'], "create", user) ? { label: 'Report', icon: "reports", onClick: () => navigate(`${paths.customers}/report/${customer._id}`) } : null,
+                  ]}
+                />
+              </TableCell>
+            </TableRow>
+          )}
+        />
+
+        <Drawer
+          anchor="right"
+          open={filterDrawerOpen}
+          onClose={() => setFilterDrawerOpen(false)}
+          PaperProps={{ sx: { width: 320 } }}
+        >
+          <Box sx={{ p: 2 }}>
+            <CustomerFilters
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              onClearFilters={handleClearFilters}
+            />
           </Box>
-          <Divider />
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            component="div"
-            count={total}
-            rowsPerPage={limit}
-            page={currentPage - 1}
-            onPageChange={(_, page) => setCurrentPage(page + 1)}
-            onRowsPerPageChange={(event) => {
-              setLimit(parseInt(event.target.value, 10));
-              setCurrentPage(1);
-            }}
-            sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
-          />
-        </Paper>
+        </Drawer>
 
         {/* Add / Edit modal */}
         {typeof selectedCustomer === "object" && !selectedCustomer.isAccountCustomer ? <AddCustomer
@@ -422,9 +371,6 @@ const ViewCustomers: React.FC = () => {
             setSelectedCustomer(false);
           }}
         />}
-
-          </Grid>
-        </Grid>
     </Box>
   );
 };

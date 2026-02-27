@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, RefObject, } from 'react';
-import { Button, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography, Box, CircularProgress, alpha, TablePagination, Menu, MenuItem, Checkbox, Grid, Tooltip, IconButton, Divider } from '@mui/material';
+import { Button, TableCell, TableRow, Paper, Typography, Box, CircularProgress, Menu, MenuItem, Checkbox, Tooltip, IconButton, Divider, Drawer } from '@mui/material';
+import { DataTable } from '@/components/ui';
 import { CustomerStatus, ICarrier, } from '@/types';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { Add as AddIcon,  Settings as SettingsIcon, Print as PrintIcon, Download, } from '@mui/icons-material';
+import { Add as AddIcon, Settings as SettingsIcon, Print as PrintIcon, Download, FilterList as FilterListIcon } from '@mui/icons-material';
 import apiService from '@/service/apiService';
 import { toast } from 'react-toastify';
 import { downloadCSV, handlePrint } from '@/utils';
@@ -23,6 +24,7 @@ import { FileImportError } from '@/components/common/FileImportError';
 import CarrierFilters, { VendorFiltersType }  from '@/components/VendorFilters';
 import CustomerDashboard from './CustomerDashboard';
 import { getIcon } from '@/components/common/icons/getIcon';
+import { PageHeader } from '@/components/ui';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -52,8 +54,8 @@ const View: React.FC = () => {
   >(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(DEFAULT_PAGE_SIZE);
-  const [columnMenuAnchor, setColumnMenuAnchor] =
-    useState<null | HTMLElement>(null);
+  const [columnMenuAnchor, setColumnMenuAnchor] = useState<null | HTMLElement>(null);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
   const { data: vendorsData, isLoading, refetch } = useQuery({
@@ -207,48 +209,28 @@ const View: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: '100vh' }}>
-        {/* Header + Actions */}
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
-          <Box>
-            <Typography variant="h5" fontWeight={700}>Vendors</Typography>
-            <Typography variant="body2" color="text.secondary">Manage your vendor accounts</Typography>
-          </Box>
-          <HasPermission
-            action="create"
-            resource={["accounting"]}
-            component={
-              <Button
-                variant="contained"
-                size="small"
-                startIcon={<AddIcon />}
-                onClick={handleAddNew}
-                sx={{ borderRadius: 2 }}
-              >
-                Add Vendor
-              </Button>
-            }
-          />
-        </Box>
+        <PageHeader
+          title="Vendors"
+          subtitle="Manage your vendor accounts"
+          actions={
+            <HasPermission action="create" resource={["accounting"]} component={
+              <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={handleAddNew} sx={{ borderRadius: 2 }}>Add Vendor</Button>
+            } />
+          }
+        />
         
-        <Grid container spacing={2}>
-          {/* Filters Sidebar */}
-          <Grid item xs={12} md={3}>
-            <CarrierFilters
-              filters={filters}
-              onFiltersChange={handleFiltersChange}
-              onClearFilters={handleClearFilters}
-            />
-          </Grid>
-          
-          {/* Main Content */}
-          <Grid item xs={12} md={9}>
-            <CustomerDashboard isCarrier={false} />
+        <CustomerDashboard isCarrier={false} />
 
             {/* Toolbar */}
             <Paper
               variant="outlined"
               sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5, px: 1.5, py: 0.75, mb: 1.5, borderRadius: 2, flexWrap: 'wrap' }}
             >
+              <Tooltip title="Filter">
+                <IconButton size="small" onClick={() => setFilterDrawerOpen(true)} sx={{ color: 'text.secondary' }}>
+                  <FilterListIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Toggle Columns">
                 <IconButton size="small" onClick={handleColumnMenuOpen} sx={{ color: 'text.secondary' }}>
                   <SettingsIcon fontSize="small" />
@@ -299,97 +281,59 @@ const View: React.FC = () => {
               </Menu>
             </Paper>
         <FileImportError allerrors={invoiceImportMutation?.error?.response?.data?.errors?.allErrors || []} message={invoiceImportMutation?.error?.response?.data?.message || "Error importing vendors"} />
-        {/* Table */}
-        <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <Box ref={printRef}>
-            <TableContainer>
-              <Table size="small" aria-label="vendors table">
-                <TableHead>
-                  <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.04) }}>
-                    {displayedColumns.map((col) => (
-                      <TableCell key={col.key} sx={{ fontWeight: 700, whiteSpace: 'nowrap', py: 1.5 }}>
-                        {col.label}
-                      </TableCell>
-                    ))}
-                    <TableCell align="center" sx={{ fontWeight: 700 }} className="no-print">
-                      Actions
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {isLoading ? (
-                    <TableRow>
-                      <TableCell colSpan={displayedColumns.length + 1} align="center" sx={{ py: 6 }}>
-                        <CircularProgress size={32} />
-                      </TableCell>
-                    </TableRow>
-                  ) : vendors.length > 0 ? (
-                    vendors
-                      .filter((c: ICarrier) => c._id)
-                      .map((vendor: ICarrier) => (
-                        <TableRow key={vendor._id} hover sx={{ '&:last-child td': { border: 0 } }}>
-                          {AccountsCustomerColumns
-                            .filter((col) => col.key !== 'invoice')
-                            .filter((col) => visibleColumns.includes(col.key))
-                            .map((col) => (
-                              <TableCell
-                                key={col.key}
-                                onClick={() =>
-                                  hasAccess(["accounting"], "view", currentUser) &&
-                                  navigate(paths.vendortransactionlist + '/' + vendor._id, { state: { page: currentPage, limit } })
-                                }
-                                sx={{ cursor: 'pointer', whiteSpace: 'nowrap', py: 1.25 }}
-                              >
-                                {renderCell({ column: col.key, vendor, navigate })}
-                              </TableCell>
-                            ))}
-                          <TableCell align="center" className="no-print" sx={{ py: 0.5 }}>
-                            <VerticalMenu
-                              actions={[
-                                hasAccess(!vendor.isCarrier ? ["accounting"] : ["carriers"], "update", currentUser)
-                                  ? { label: 'Edit', icon: "edit", onClick: () => handleEditClick(vendor) }
-                                  : null,
-                                hasAccess(!vendor.isCarrier ? ["accounting"] : ["carriers"], "delete", currentUser)
-                                  ? { label: 'Delete', icon: "delete", onClick: () => handleDeleteVendor(vendor._id || '') }
-                                  : null,
-                                hasAccess(["accounting"], "create", currentUser)
-                                  ? { label: 'Make Payment', icon: "payment", onClick: () => navigate('/accounting/purchase/accounts/recievedbill/' + vendor._id) }
-                                  : null,
-                                hasAccess(['accounting'], "create", currentUser)
-                                  ? { label: 'Report', icon: "reports", onClick: () => navigate(`${paths.carriers}/report/${vendor._id}`) }
-                                  : null,
-                              ]}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={displayedColumns.length + 1} align="center" sx={{ py: 5 }}>
-                        <Typography variant="body2" color="text.secondary">No vendors found</Typography>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-          <Divider />
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            component="div"
-            count={total}
-            rowsPerPage={limit}
-            page={currentPage - 1}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            showFirstButton
-            showLastButton
-            sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
-          />
-        </Paper>
 
-        {/* Add / Edit modal */}
+        <DataTable
+          columns={AccountsCustomerColumns.filter(col => visibleColumns.includes(col.key)).concat([{ key: 'actions', label: 'Actions' }])}
+          data={vendors.filter((c: ICarrier) => c._id)}
+          isLoading={isLoading}
+          emptyMessage="No vendors found"
+          total={total}
+          page={currentPage - 1}
+          rowsPerPage={limit}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          onPageChange={(newPage) => setCurrentPage(newPage + 1)}
+          onRowsPerPageChange={(rows) => { setLimit(rows); setCurrentPage(1); }}
+          renderRow={(vendor: ICarrier) => (
+            <TableRow key={vendor._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+              {AccountsCustomerColumns
+                .filter((col) => col.key !== 'invoice' && visibleColumns.includes(col.key))
+                .map((col) => (
+                  <TableCell
+                    key={col.key}
+                    onClick={() => hasAccess(["accounting"], "view", currentUser) && navigate(paths.vendortransactionlist + '/' + vendor._id, { state: { page: currentPage, limit } })}
+                    sx={{ cursor: 'pointer', whiteSpace: 'nowrap', py: 1.25 }}
+                  >
+                    {renderCell({ column: col.key, vendor, navigate })}
+                  </TableCell>
+                ))}
+              <TableCell align="center" sx={{ py: 0.5 }}>
+                <VerticalMenu
+                  actions={[
+                    hasAccess(!vendor.isCarrier ? ["accounting"] : ["carriers"], "update", currentUser) ? { label: 'Edit', icon: "edit", onClick: () => handleEditClick(vendor) } : null,
+                    hasAccess(!vendor.isCarrier ? ["accounting"] : ["carriers"], "delete", currentUser) ? { label: 'Delete', icon: "delete", onClick: () => handleDeleteVendor(vendor._id || '') } : null,
+                    hasAccess(["accounting"], "create", currentUser) ? { label: 'Make Payment', icon: "payment", onClick: () => navigate('/accounting/purchase/accounts/recievedbill/' + vendor._id) } : null,
+                    hasAccess(['accounting'], "create", currentUser) ? { label: 'Report', icon: "reports", onClick: () => navigate(`${paths.carriers}/report/${vendor._id}`) } : null,
+                  ]}
+                />
+              </TableCell>
+            </TableRow>
+          )}
+        />
+
+        <Drawer
+          anchor="right"
+          open={filterDrawerOpen}
+          onClose={() => setFilterDrawerOpen(false)}
+          PaperProps={{ sx: { width: 320 } }}
+        >
+          <Box sx={{ p: 2 }}>
+            <CarrierFilters
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              onClearFilters={handleClearFilters}
+            />
+          </Box>
+        </Drawer>
 
         <CarrierModal
           open={selectedCustomer}
@@ -399,8 +343,6 @@ const View: React.FC = () => {
           }}
           isCarrier={typeof  selectedCustomer ==="object"?selectedCustomer.isCarrier || false:false }
         />
-          </Grid>
-        </Grid>
     </Box>
   );
 };

@@ -6,22 +6,14 @@ import {
   Box,
   Typography,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
   TableRow,
-  Paper,
+  TableCell,
   Stack,
-  TablePagination,
   Chip,
   Tooltip,
   IconButton,
-  Divider,
-  alpha,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { PageHeader, DataTable, ColumnDef } from '@/components/ui';
 import CustomerInvoiseForm from './CustomerInvoiseForm';
 import InvoiceDownloadButton from './components/InvoiceDownloadButton';
 import { IInvoice, InvoiceResponse } from '@/types';
@@ -62,7 +54,6 @@ const modalStyle = {
 };
 
 const GetInvoices: React.FC = () => {
-  const theme = useTheme();
   const user = useSelector((state: RootState) => state.user)
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1);
@@ -169,15 +160,26 @@ const GetInvoices: React.FC = () => {
     invoiceImportMutation.mutate({ file });
   };
 
+  const invoiceColumns: ColumnDef[] = [
+    { key: 'invoiceNumber', label: 'Invoice #' },
+    { key: 'customer', label: 'Customer' },
+    { key: 'status', label: 'Status' },
+    { key: 'invoiceDate', label: 'Invoice Date' },
+    { key: 'dueDate', label: 'Due Date' },
+    { key: 'totalAmount', label: 'Total Amount' },
+    { key: 'receivedAmount', label: 'Received Amount' },
+    { key: 'dueAmount', label: 'Due Amount' },
+    { key: 'actions', label: 'Actions', align: 'center' },
+  ];
+
   return (
     <>
       <Box sx={{ minHeight: '100vh' }}>
-          <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
-            <Box>
-              <Typography variant="h5" fontWeight={700}>Invoices</Typography>
-              <Typography variant="body2" color="text.secondary">Manage customer invoices</Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={0.5}>
+        <PageHeader
+          title="Invoices"
+          subtitle="Manage customer invoices"
+          actions={
+            <>
               <HasPermission
                 action="create"
                 resource={["accounting"]}
@@ -216,86 +218,52 @@ const GetInvoices: React.FC = () => {
                   {getIcon("fileDownload")}
                 </IconButton>
               </Tooltip>
-            </Box>
-          </Box>
-          <FileImportError allerrors={invoiceImportMutation?.error?.response?.data?.errors?.allErrors || []} message={invoiceImportMutation?.error?.response?.data?.message || "Error importing invoices"} />
-          <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <TableContainer>
-            <Table size="small">
-              <TableHead>
-                <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.04) }}>
-                  <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Invoice #</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Customer</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Invoice Date</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Due Date</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Total Amount</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Received Amount</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Due Amount</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 700 }}>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {isPending ? (
-                  <TableRow>
-                    <TableCell colSpan={9} align="center">
-                      <LoadingSpinner size={50} />
-                    </TableCell>
-                  </TableRow>
-                ) : Array.isArray(data?.data) && data?.data.length > 0 ? (
-                  data.data.map((invoice) => (
-                    <TableRow key={invoice._id} hover sx={{ '&:last-child td': { border: 0 } }}>
-                      <TableCell sx={{ py: 1.25 }}>{invoice.invoiceNumber}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{invoice.customer?.company || 'N/A'}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>
-                        <Chip size="small" {...getInvoiceStatus(invoice.dueAmount || 0, invoice.dueDate, "invoice")} />
-                      </TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.invoiceDate)}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.dueDate)}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{invoice?.totalAmountWithTax?.toFixed(2) || '0.00'}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{invoice?.recievedAmount?.toFixed(2) || '0.00'}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{invoice?.dueAmount?.toFixed(2) || '0.00'}</TableCell>
-                      <TableCell align="center" sx={{ py: 0.5 }}>
-                        <Stack direction="row" spacing={0.5} justifyContent="center">
-                          <VerticalMenu
-                            actions={[
-                              hasAccess(["accounting"], "update", user)
-                                ? { label: 'Edit', icon: "edit", onClick: () => handleInvoiceClick(invoice) }
-                                : null,
-                              hasAccess(["accounting"], "delete", user)
-                                ? { label: 'Delete', icon: "delete", onClick: () => handleDeleteInvoice(invoice._id) }
-                                : null,
-                              hasAccess(["accounting"], "create", user)
-                                ? { label: 'Make Payment', icon: "payment", onClick: () => navigate(`/accounting/sales/accounts/recievedpayment/${invoice.customerId}?invoiceNumber=${invoice.invoiceNumber}`) }
-                                : null,
-                            ]}
-                          />
-                          <InvoiceDownloadButton invoiseId={invoice._id} invoiceType={invoice.type} />
-                        </Stack>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={9} align="center" sx={{ py: 5 }}>
-                      <Typography variant="body2" color="text.secondary">No records found</Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Divider />
-          <TablePagination
-            component="div"
-            count={data?.pagination?.total || 0}
-            page={currentPage - 1}
-            rowsPerPage={limit}
-            onPageChange={(_, newPage) => setCurrentPage(newPage + 1)}
-            onRowsPerPageChange={(e) => setLimit(Number(e.target.value))}
-            sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
-          />
-          </Paper>
+            </>
+          }
+        />
+        <FileImportError allerrors={invoiceImportMutation?.error?.response?.data?.errors?.allErrors || []} message={invoiceImportMutation?.error?.response?.data?.message || "Error importing invoices"} />
+        <DataTable
+          columns={invoiceColumns}
+          data={Array.isArray(data?.data) ? data.data : []}
+          isLoading={isPending}
+          total={data?.pagination?.total ?? 0}
+          page={currentPage - 1}
+          rowsPerPage={limit}
+          onPageChange={(newPage) => setCurrentPage(newPage + 1)}
+          onRowsPerPageChange={(rows) => setLimit(rows)}
+          renderRow={(invoice) => (
+            <TableRow key={invoice._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+              <TableCell sx={{ py: 1.25 }}>{invoice.invoiceNumber}</TableCell>
+              <TableCell sx={{ py: 1.25 }}>{invoice.customer?.company || 'N/A'}</TableCell>
+              <TableCell sx={{ py: 1.25 }}>
+                <Chip size="small" {...getInvoiceStatus(invoice.dueAmount || 0, invoice.dueDate, "invoice")} />
+              </TableCell>
+              <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.invoiceDate)}</TableCell>
+              <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.dueDate)}</TableCell>
+              <TableCell sx={{ py: 1.25 }}>{invoice?.totalAmountWithTax?.toFixed(2) || '0.00'}</TableCell>
+              <TableCell sx={{ py: 1.25 }}>{invoice?.recievedAmount?.toFixed(2) || '0.00'}</TableCell>
+              <TableCell sx={{ py: 1.25 }}>{invoice?.dueAmount?.toFixed(2) || '0.00'}</TableCell>
+              <TableCell align="center" sx={{ py: 0.5 }}>
+                <Stack direction="row" spacing={0.5} justifyContent="center">
+                  <VerticalMenu
+                    actions={[
+                      hasAccess(["accounting"], "update", user)
+                        ? { label: 'Edit', icon: "edit", onClick: () => handleInvoiceClick(invoice) }
+                        : null,
+                      hasAccess(["accounting"], "delete", user)
+                        ? { label: 'Delete', icon: "delete", onClick: () => handleDeleteInvoice(invoice._id) }
+                        : null,
+                      hasAccess(["accounting"], "create", user)
+                        ? { label: 'Make Payment', icon: "payment", onClick: () => navigate(`/accounting/sales/accounts/recievedpayment/${invoice.customerId}?invoiceNumber=${invoice.invoiceNumber}`) }
+                        : null,
+                    ]}
+                  />
+                  <InvoiceDownloadButton invoiseId={invoice._id} invoiceType={invoice.type} />
+                </Stack>
+              </TableCell>
+            </TableRow>
+          )}
+        />
       </Box>
 
       {/* Invoice Modal */}

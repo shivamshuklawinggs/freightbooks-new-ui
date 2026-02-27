@@ -152,10 +152,10 @@ body {
 }
 
 /* ===== STATUS CHIP UTILITIES ===== */
-.status-pending   { background-color: #fff7e6 !important; color: #b45309 !important; }
-.status-completed { background-color: #f0fdf4 !important; color: #166534 !important; }
-.status-cancelled { background-color: #fff1f2 !important; color: #9f1239 !important; }
-.status-processing{ background-color: #eff6ff !important; color: #1e40af !important; }
+.status-pending   { background-color: rgba(245, 158, 11, 0.15) !important; color: #fbbf24 !important; }
+.status-completed { background-color: rgba(22, 163, 74, 0.15)  !important; color: #4ade80 !important; }
+.status-cancelled { background-color: rgba(239, 68, 68, 0.15)  !important; color: #f87171 !important; }
+.status-processing{ background-color: rgba(37, 99, 235, 0.15)  !important; color: #60a5fa !important; }
 
 /* ===== UTILITY CLASSES ===== */
 .flex-center  { display: flex !important; align-items: center !important; justify-content: center !important; }

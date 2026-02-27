@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiService from "@/service/apiService";
 import { toast } from "react-toastify";
-import { Modal, Box, Typography, Menu, MenuItem, Checkbox, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tabs, Tab, TablePagination, Tooltip, Divider, alpha } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { ViewColumn as ViewColumnIcon } from '@mui/icons-material';
-// import InvoiceForm from '@/pages/Invoice/InvoiceForm';
+import { Modal, Box, Typography, Menu, MenuItem, Checkbox, Button, TableRow, TableCell, Paper, Tabs, Tab, Tooltip, Divider, Drawer, IconButton } from '@mui/material';
+import { ViewColumn as ViewColumnIcon, FilterList as FilterListIcon } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetLoad } from '@/redux/Slice/EditloadSlice';
 import { setVisibleColumns, toggleColumn } from '@/redux/Slice/ColumnFilterSlice';
@@ -15,15 +13,15 @@ import { ILocationWithIds, IViewLoad } from '@/types';
 import { RootState } from '@/redux/store';
 import { BiewLoadModal } from './components/BiewLoadModal';
 import { paths } from '@/utils/paths';
-import {  AddressModal } from '@/components/common/renderAddress';
+import { AddressModal } from '@/components/common/renderAddress';
 import ViewLoadDetails from './ViewLoadDetails';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import FilterBox from '@/components/FilterBox';
 import renderCell from './renderCell';
-import {  hasAccess, HasPermission, withPermission } from '@/hooks/ProtectedRoute/authUtils';
+import { hasAccess, HasPermission, withPermission } from '@/hooks/ProtectedRoute/authUtils';
 import VerticalMenu from '@/components/VerticalMenu';
-import { useGenerateRateConfirmationPDF } from "@/hooks/useGenerateRateConfirmationPDF"
+import { useGenerateRateConfirmationPDF } from "@/hooks/useGenerateRateConfirmationPDF";
+import { PageHeader, DataTable, ColumnDef } from '@/components/ui';
 import { getIcon } from '@/components/common/icons/getIcon';
 interface LoadResponse {
   data: IViewLoad[];
@@ -47,8 +45,7 @@ const modalStyle = {
 };
 
 const ViewLoad: React.FC = () => {
-  const theme = useTheme();
-   const { generatePDF, isLoading: isGeneratingPdf, } = useGenerateRateConfirmationPDF({ type:"editload",  })
+  const { generatePDF, isLoading: isGeneratingPdf, } = useGenerateRateConfirmationPDF({ type:"editload",  })
   // Pagination and tab states
   const [activeTab, setActiveTab] = useState<string>('allLoad');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -65,6 +62,7 @@ const ViewLoad: React.FC = () => {
   const [showInvoiceModal, setShowInvoiceModal] = useState<boolean>(false);
   const [editingInvoice, setEditingInvoice] = useState<any>(null);
   const [columnMenuAnchor, setColumnMenuAnchor] = useState<null | HTMLElement>(null);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [currentLoad, setCurrentLoad] = useState<IViewLoad | null>(null);
   // State for address modal
@@ -210,15 +208,31 @@ const ViewLoad: React.FC = () => {
       deleteLoadDataMutation.mutate(loadId);
     }
   }
+  const tableColumns: ColumnDef[] = [
+    ...COLUMN_OPTIONS.filter((col) => visibleColumns.includes(col.key)).map((col) => ({
+      key: col.key,
+      label: col.label,
+    })),
+    { key: 'actions', label: 'Actions', align: 'center' as const },
+  ];
+
   return (
     <>
       <Box sx={{ minHeight: '100vh' }}>
-          <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
-            <Box>
-              <Typography variant="h5" fontWeight={700}>Loads</Typography>
-              <Typography variant="body2" color="text.secondary">Manage your freight loads</Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+        <PageHeader
+          title="Loads"
+          subtitle="Manage your freight loads"
+          actions={
+            <>
+              <Tooltip title="Filter">
+                <IconButton
+                  size="small"
+                  onClick={() => setFilterDrawerOpen(true)}
+                  sx={{ color: 'text.secondary', mr: 1 }}
+                >
+                  <FilterListIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Filter by column">
                 <Button
                   variant="outlined"
@@ -264,10 +278,20 @@ const ViewLoad: React.FC = () => {
                   </Button>
                 }
               />
-            </Box>
-          </Box>
+            </>
+          }
+        />
 
-          {/* Filter UI */}
+       
+
+        <Drawer
+          anchor="right"
+          open={filterDrawerOpen}
+          onClose={() => setFilterDrawerOpen(false)}
+          PaperProps={{ sx: { width: 320 } }}
+        >
+          <Box sx={{ p: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>Filter Loads</Typography>
             <FilterBox
               search={search}
               setSearch={setSearch}
@@ -275,129 +299,136 @@ const ViewLoad: React.FC = () => {
               setStartPickupDate={setStartPickupDate}
               endPickupDate={endPickupDate}
               setEndPickupDate={setEndPickupDate}
-              />
-          {/* Date Range Filters */}
-
-
-
-
-          <Paper elevation={0} sx={{ mb: 3, overflow: 'hidden',borderBottom: 1 }}>
-            <Tabs
-              value={activeTab}
-              onChange={(_, newValue) => {
-                setActiveTab(newValue);
-                setCurrentPage(1);
-              }}
-
-              variant="scrollable"
-              scrollButtons="auto"
-            >
-              {LOAD_STATUSES.map((status) => (
-                <Tab key={status.key} label={status.label} value={status.key} 
-                // sx={{ color: getStatusColor(status.key) }}
-                 />
-              ))}
-            </Tabs>
-          </Paper>
-
-          <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
-            <TableContainer>
-              <Table size="small">
-                <TableHead>
-                  <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.04) }}>
-                    {COLUMN_OPTIONS.map((col) =>
-                      visibleColumns.includes(col.key) ? (
-                        <TableCell key={col.key} sx={{ fontWeight: 700, whiteSpace: 'nowrap', py: 1.5 }}>
-                          {col.label}
-                        </TableCell>
-                      ) : null
-                    )}
-                    <TableCell align="center" sx={{ fontWeight: 700 }}>Actions</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {isPending ? (
-                    <TableRow>
-                      <TableCell colSpan={visibleColumns.length + 1} align="center" sx={{ py: 6 }}>
-                        <LoadingSpinner size={36} />
-                      </TableCell>
-                    </TableRow>
-                  ) : Array.isArray(data?.data) && data?.data.length > 0 ? (
-                    data.data.map((load: IViewLoad) => (
-                      <TableRow
-                        key={load._id}
-                        hover
-                        sx={{
-                          '&:last-child td': { border: 0 },
-                          borderLeft: getClaimedStatus(load.status)?.color
-                            ? `3px solid ${getClaimedStatus(load.status)?.color}`
-                            : undefined,
-                        }}
-                      >
-                        {COLUMN_OPTIONS.map((col) =>
-                          visibleColumns.includes(col.key) ? (
-                            <TableCell key={col.key} sx={{ py: 1.25 }}>
-                              {renderCell({
-                                column: col.key,
-                                load,
-                                setAddressModalOpen,
-                                setSelectedAddresses,
-                                openModal,
-                                expandedAddresses,
-                                setExpandedAddresses,
-                                anchorEl,
-                                setAnchorEl,
-                                setCurrentLoad,
-                                currentLoad,
-                              })}
-                            </TableCell>
-                          ) : null
-                        )}
-                        <TableCell align="center" sx={{ py: 0.5 }}>
-                          <VerticalMenu
-                            actions={[
-                              hasAccess(["loads"], "update", currentUser)
-                                ? { label: 'Edit', icon: "edit", onClick: () => handleEdit(load._id) }
-                                : null,
-                              hasAccess(["loads"], "update", currentUser) && load.isActive
-                                ? { label: 'Deactivate', icon: "cancel", disabled: deleteLoadMutation.isPending, onClick: () => handleToggleActivate(load._id, load.isActive) }
-                                : null,
-                              hasAccess(["loads"], "view", currentUser)
-                                ? { label: 'View', icon: "visibility", onClick: () => handleOpenViewLoadModal(load) }
-                                : null,
-                              hasAccess(["loads"], "view", currentUser)
-                                ? { label: 'Generate Rate Confirmation PDF', icon: "visibility", onClick: () => generatePDF(load._id), loading: isGeneratingPdf }
-                                : null,
-                              hasAccess(["loads"], "delete", currentUser)
-                                ? { label: 'Delete', icon: "delete", onClick: () => handleToggleDelete(load._id, load.isActive), loading: deleteLoadDataMutation.isPending }
-                                : null,
-                            ]}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={visibleColumns.length + 1} align="center" sx={{ py: 5 }}>
-                        <Typography variant="body2" color="text.secondary">No records found</Typography>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Divider />
-            <TablePagination
-              component="div"
-              count={data?.pagination?.total || 0}
-              page={currentPage - 1}
-              rowsPerPage={limit}
-              onPageChange={(_, newPage) => setCurrentPage(newPage + 1)}
-              onRowsPerPageChange={(event) => setLimit(Number(event.target.value))}
-              sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
             />
-          </Paper>
-      </Box>
+          </Box>
+        </Drawer>
+
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            mb: 3, 
+            overflow: 'hidden', 
+            borderRadius: 2,
+            border: 1,
+            borderColor: 'divider',
+            bgcolor: 'background.paper'
+          }}
+        >
+          <Tabs
+            value={activeTab}
+            onChange={(_, newValue) => { setActiveTab(newValue); setCurrentPage(1); }}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{
+              '& .MuiTab-root': {
+                textTransform: 'none',
+                fontWeight: 500,
+                minHeight: 48,
+                px: 3
+              },
+              '& .Mui-selected': {
+                color: 'primary.main',
+                fontWeight: 600
+              },
+              '& .MuiTabs-indicator': {
+                height: 3,
+                borderRadius: '3px 3px 0 0'
+              }
+            }}
+          >
+            {LOAD_STATUSES.map((status) => (
+              <Tab key={status.key} label={status.label} value={status.key} />
+            ))}
+          </Tabs>
+        </Paper>
+
+          <DataTable
+            columns={tableColumns}
+            data={Array.isArray(data?.data) ? data.data : []}
+            isLoading={isPending}
+            total={data?.pagination?.total ?? 0}
+            page={currentPage - 1}
+            rowsPerPage={limit}
+            onPageChange={(newPage) => setCurrentPage(newPage + 1)}
+            onRowsPerPageChange={(rows) => setLimit(rows)}
+          renderRow={(load: IViewLoad) => (
+            <TableRow
+              key={load._id}
+              hover
+              sx={{
+                '&:last-child td': { border: 0 },
+                borderLeft: getClaimedStatus(load.status)?.color
+                  ? `4px solid ${getClaimedStatus(load.status)?.color}`
+                  : undefined,
+                position: 'relative',
+                '&:hover': {
+                  bgcolor: 'action.hover',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 6px 16px rgba(0,0,0,0.12)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '& .MuiTableCell-root': {
+                    borderBottom: '1px solid transparent'
+                  }
+                },
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.02), transparent)',
+                  opacity: 0,
+                  transition: 'opacity 0.3s ease'
+                },
+                '&:hover::before': {
+                  opacity: 1
+                }
+              }}
+            >
+              {COLUMN_OPTIONS.map((col) =>
+                visibleColumns.includes(col.key) ? (
+                  <TableCell key={col.key} sx={{ py: 1.25 }}>
+                    {renderCell({
+                      column: col.key,
+                      load,
+                      setAddressModalOpen,
+                      setSelectedAddresses,
+                      openModal,
+                      expandedAddresses,
+                      setExpandedAddresses,
+                      anchorEl,
+                      setAnchorEl,
+                      setCurrentLoad,
+                      currentLoad,
+                    })}
+                  </TableCell>
+                ) : null
+              )}
+              <TableCell align="center" sx={{ py: 0.5 }}>
+                <VerticalMenu
+                  actions={[
+                    hasAccess(["loads"], "update", currentUser)
+                      ? { label: 'Edit', icon: "edit", onClick: () => handleEdit(load._id) }
+                      : null,
+                    hasAccess(["loads"], "update", currentUser) && load.isActive
+                      ? { label: 'Deactivate', icon: "cancel", disabled: deleteLoadMutation.isPending, onClick: () => handleToggleActivate(load._id, load.isActive) }
+                      : null,
+                    hasAccess(["loads"], "view", currentUser)
+                      ? { label: 'View', icon: "visibility", onClick: () => handleOpenViewLoadModal(load) }
+                      : null,
+                    hasAccess(["loads"], "view", currentUser)
+                      ? { label: 'Generate Rate Confirmation PDF', icon: "visibility", onClick: () => generatePDF(load._id), loading: isGeneratingPdf }
+                      : null,
+                    hasAccess(["loads"], "delete", currentUser)
+                      ? { label: 'Delete', icon: "delete", onClick: () => handleToggleDelete(load._id, load.isActive), loading: deleteLoadDataMutation.isPending }
+                      : null,
+                  ]}
+                />
+              </TableCell>
+            </TableRow>
+          )}
+        />
       <Modal
         open={showInvoiceModal}
         onClose={handleCloseModal}
@@ -429,6 +460,7 @@ const ViewLoad: React.FC = () => {
 
       <AddressModal addressModalOpen={addressModalOpen} selectedAddresses={selectedAddresses} setAddressModalOpen={setAddressModalOpen} />
       
+      </Box>
     </>
   );
 };

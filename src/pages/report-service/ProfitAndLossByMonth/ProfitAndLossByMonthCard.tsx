@@ -97,8 +97,8 @@ const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData })
             <>
                 <TableRow 
                     sx={{ 
-                        backgroundColor: '#fafafa',
-                        '&:hover': { backgroundColor: '#f0f0f0' },
+                        bgcolor: 'background.paper',
+                        '&:hover': { bgcolor: 'action.hover' },
                         cursor: 'pointer'
                     }}
                     onClick={() => setOpen(!open)}
@@ -121,9 +121,9 @@ const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData })
                     </TableCell>
                 </TableRow>
                 <TableRow>
-                    <TableCell style={{ paddingBottom: 0, paddingTop: 0, backgroundColor: '#fafafa' }} colSpan={months.length + 2}>
+                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={months.length + 2}>
                         <Collapse in={open} timeout="auto" unmountOnExit>
-                            <Box sx={{ py: 2, px: 3, backgroundColor: '#ffffff', borderRadius: 1, my: 1 }}>
+                            <Box sx={{ py: 2, px: 3, bgcolor: 'background.default', borderRadius: 1, my: 1 }}>
                                 <Table size="small">
                                     <TableBody>
                                         {section?.data?.map((row) => (
@@ -194,7 +194,7 @@ const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData })
             <TableContainer component={Paper} elevation={3} sx={{ overflowX: 'auto', borderRadius: 2 }}>
                 <Table aria-label="monthly profit and loss" size="small">
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
+                        <TableRow sx={{ bgcolor: 'background.paper' }}>
                             {/* <TableCell sx={{ minWidth: 200, fontWeight: 700, py: 2 }}>Account</TableCell> */}
                             {months.map(m => (
                                 <TableCell key={`header-${m.year}-${m.month}`} align="right" sx={{ minWidth: 120, fontWeight: 700, py: 2 }}>
@@ -210,7 +210,7 @@ const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData })
                         {incomeSection && <CollapsibleSection section={incomeSection} name="Income" />}
                         {COGSSection && <CollapsibleSection section={COGSSection} name="Cost of Goods Sold" isSubtraction />}
                         
-                        <TableRow sx={{ backgroundColor: '#e3f2fd', border: '1px solid #c6e2b5', borderTop: 'none', borderBottom: 'none' }}>
+                        <TableRow sx={{ bgcolor: 'rgba(37,99,235,0.12)' }}>
                             <TableCell sx={{ fontWeight: 'bold' }}>Gross Profit</TableCell>
                             {months.map(m => (
                                 <TableCell key={`gp-${m.year}-${m.month}`} align="right" sx={{ fontWeight: 'bold' }}>
@@ -224,7 +224,7 @@ const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData })
 
                         {expenseSection&& <CollapsibleSection section={expenseSection} name="Expenses" isSubtraction />}
                         
-                        <TableRow sx={{ backgroundColor: '#e3f2fd' }}>
+                        <TableRow sx={{ bgcolor: 'rgba(245,158,11,0.12)' }}>
                             <TableCell sx={{ fontWeight: 'bold' }}>Net Operating Income</TableCell>
                             {months.map(m => (
                                 <TableCell key={`noi-${m.year}-${m.month}`} align="right" sx={{ fontWeight: 'bold' }}>
@@ -239,7 +239,7 @@ const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData })
                         {otherIncomeSection && <CollapsibleSection section={otherIncomeSection} name="Other Income" />}
                         {otherExpenseSection && <CollapsibleSection section={otherExpenseSection} name="Other Expenses" isSubtraction />}
                         
-                        <TableRow sx={{ backgroundColor: '#e3f2fd' }}>
+                        <TableRow sx={{ bgcolor: 'rgba(124,58,237,0.12)' }}>
                             <TableCell sx={{ fontWeight: 'bold' }}>Net Other Income</TableCell>
                             {months.map(m => (
                                 <TableCell key={`noti-${m.year}-${m.month}`} align="right" sx={{ fontWeight: 'bold' }}>
@@ -251,7 +251,7 @@ const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData })
                             </TableCell>
                         </TableRow>
 
-                        <TableRow sx={{ backgroundColor: '#c8e6c9' }}>
+                        <TableRow sx={{ bgcolor: 'rgba(22,163,74,0.18)' }}>
                             <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Net Income</TableCell>
                             {months.map(m => (
                                 <TableCell key={`np-${m.year}-${m.month}`} align="right" sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>

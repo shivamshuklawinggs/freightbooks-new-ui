@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, Dialog, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, Typography } from '@mui/material';
+import { Box, Button, Dialog, TableRow, TableCell } from '@mui/material';
+import { PageHeader, DataTable } from '@/components/ui';
 import { IChartAccount } from '@/types';
 import ChartAccountForm from './ChartAccountForm';
 import apiService from '@/service/apiService';
@@ -8,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import FilterBox from './FilterBox';
 import useDebounce from '@/hooks/useDebounce';
 import { hasAccess,withPermission } from '@/hooks/ProtectedRoute/authUtils';
@@ -28,14 +28,6 @@ const ChartAccountsPage: React.FC = () => {
   const queryClient = useQueryClient();
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(1);
-  };
 
   // Fetch chart accounts using React Query
   const { data: chartAccountsData, isLoading, error,refetch } = useQuery({
@@ -81,21 +73,15 @@ const ChartAccountsPage: React.FC = () => {
   };
   return (
     <Box p={2}>
-      {/* Header */}
-      <Box display="flex" justifyContent="space-between" mb={2}>
-        <Typography variant="h6" component="h2">
-          Charts of Accounts
-        </Typography>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setEditing(null);
-            setOpen(true);
-          }}
-        >
-          + New Account
-        </Button>
-      </Box>
+      <PageHeader
+        title="Charts of Accounts"
+        subtitle="Manage your chart of accounts"
+        actions={
+          <Button variant="contained" size="small" onClick={() => { setEditing(null); setOpen(true); }} sx={{ borderRadius: 2 }}>
+            + New Account
+          </Button>
+        }
+      />
 
       <FilterBox
         searchQuery={searchQuery}
@@ -105,85 +91,40 @@ const ChartAccountsPage: React.FC = () => {
         setPage={setPage}
       />
    <ErrorHandlerAlert error={error}/>
-      {/* Table */}
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Account Type</TableCell>
-            <TableCell>Detail Type</TableCell>
-            <TableCell>Ending Balance</TableCell>
-            <TableCell align="right">Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell colSpan={4} align="center">
-                <LoadingSpinner size={40} />
-              </TableCell>
-            </TableRow>
-          ) : (
-            paginatedRows.map((row: IChartAccount) => (
-              <TableRow key={row._id} hover>
-                <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser)  && navigate(paths.AccountRegister +"/"+ row._id)}>{row.id}</TableCell>
-                <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser)  && navigate(paths.AccountRegister +"/"+ row._id)}>{row.name}</TableCell>
-                <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser)  && navigate(paths.AccountRegister +"/"+ row._id)}>{row?.accountTypeData?.name || row?.accountType}</TableCell>
-                <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser)  && navigate(paths.AccountRegister +"/"+ row._id)}>{row?.detailTypeData?.name || row?.detailType}</TableCell>
-                <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser)  && navigate(paths.AccountRegister +"/"+ row._id)}>{row?.endingBalance || 0}</TableCell>
-                <TableCell align="right">
-                  <VerticalMenu actions={[
-                        hasAccess(["accounting"],"update",currentUser) ? {
-                          onClick:() => {
-                            setEditing(row);
-                            setOpen(true);
-                          },
-                          label:"Edit",
-                          icon:"edit"
-                        } : null,
-                        hasAccess(["accounting"],"view",currentUser) ? {
-                            onClick:() => {
-                              navigate(paths.AccountRegister+"/" + row._id);
-                            },
-                            label:"View Register",
-                            icon:"RemoveRedEye"
-                        } : null,
-                        hasAccess(["accounting"],"delete",currentUser)  ? {
-                            onClick:() => {
-                              handleDeleteInvoice(row._id as string);
-                            },
-                            label:"Delete",
-                            icon:"delete"
-                        } : null,
-                        
-              
-                  ]}/>
-                
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-
-          {!isLoading &&  paginatedRows.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={4} align="center">
-                No accounts yet
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-
-      {/* Pagination */}
-      <TablePagination
-        component="div"
-        count={chartAccountsData?.total || 0}
-        page={page-1}
-        onPageChange={(_, newPage) => setPage(newPage + 1)}
+      <DataTable
+        columns={[
+          { key: 'id', label: 'ID' },
+          { key: 'name', label: 'Name' },
+          { key: 'accountType', label: 'Account Type' },
+          { key: 'detailType', label: 'Detail Type' },
+          { key: 'endingBalance', label: 'Ending Balance' },
+          { key: 'actions', label: 'Actions', align: 'right' },
+        ]}
+        data={paginatedRows}
+        isLoading={isLoading}
+        emptyMessage="No accounts yet"
+        total={chartAccountsData?.total ?? 0}
+        page={page - 1}
         rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 25, 50]}
+        onPageChange={(newPage) => setPage(newPage + 1)}
+        onRowsPerPageChange={(rows) => { setRowsPerPage(rows); setPage(1); }}
+        renderRow={(row: IChartAccount) => (
+          <TableRow key={row._id} hover>
+            <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser) && navigate(paths.AccountRegister +"/"+ row._id)}>{row.id}</TableCell>
+            <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser) && navigate(paths.AccountRegister +"/"+ row._id)}>{row.name}</TableCell>
+            <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser) && navigate(paths.AccountRegister +"/"+ row._id)}>{row?.accountTypeData?.name || row?.accountType}</TableCell>
+            <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser) && navigate(paths.AccountRegister +"/"+ row._id)}>{row?.detailTypeData?.name || row?.detailType}</TableCell>
+            <TableCell onClick={() => hasAccess(["accounting"],"view",currentUser) && navigate(paths.AccountRegister +"/"+ row._id)}>{row?.endingBalance || 0}</TableCell>
+            <TableCell align="right">
+              <VerticalMenu actions={[
+                hasAccess(["accounting"],"update",currentUser) ? { onClick: () => { setEditing(row); setOpen(true); }, label: "Edit", icon: "edit" } : null,
+                hasAccess(["accounting"],"view",currentUser) ? { onClick: () => navigate(paths.AccountRegister+"/" + row._id), label: "View Register", icon: "RemoveRedEye" } : null,
+                hasAccess(["accounting"],"delete",currentUser) ? { onClick: () => handleDeleteInvoice(row._id as string), label: "Delete", icon: "delete" } : null,
+              ]}/>
+            </TableCell>
+          </TableRow>
+        )}
       />
 
       {/* Dialog */}

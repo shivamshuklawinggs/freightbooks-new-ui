@@ -1,6 +1,6 @@
 import React, { FormEvent, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Tabs, Tab, Box, Paper, Button, Alert, Container, Stack, Divider } from "@mui/material";
+import { Box, Paper, Button, Alert, Container, Stack, Stepper, Step, StepLabel, Typography } from "@mui/material";
 import LoadDetails from "./LoadDetails";
 import Delivery from "./Delivery";
 import Pickup from "./Pickup";
@@ -24,6 +24,7 @@ import CustomerInformation from "./CustomerInformation/Index";
 import Carrier from "./Carrier/Index";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { withPermission } from "@/hooks/ProtectedRoute/authUtils";
+import { ArrowBack as ArrowBackIcon, ArrowForward as ArrowForwardIcon, Save as SaveIcon } from '@mui/icons-material';
 import SignatureBox from "@/components/SignatureBox";
 
 const EditLoad: React.FC = () => {
@@ -165,37 +166,45 @@ const EditLoad: React.FC = () => {
     }
   }, [loadId]);
 
-
-
-
+  const currentStepIndex = tabs.indexOf(activeTab || "load");
 
   return (
-    <Container maxWidth="lg" sx={{ py: 3 }}>
-      {updateLoadMutation.isError && <Alert severity="error" sx={{ mb: 2 }}>{updateLoadMutation.error.message}</Alert>}
-      {updateLoadMutation.isSuccess && <Alert severity="success" sx={{ mb: 2 }}>Load updated successfully!</Alert>}
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+     
 
       <Box component="form" className="loadForm" id="editLoadForm" onSubmit={handleSubmit}>
-        <Paper sx={{ mb: 3 }}>
-          <Tabs
-            value={activeTab || "load"}
-            onChange={(_, newValue) => handleTabChange(newValue)}
-            variant="scrollable"
-            scrollButtons="auto"
-            sx={{
-              borderBottom: 1,
-              borderColor: "divider",
-              "& .MuiTab-root": { textTransform: "none" },
-            }}
-          >
-            <Tab label="Load Details" value="load" />
-            <Tab label="Customer Information" value="customer" />
-            <Tab label="Carrier/Asset Information" value="asset" />
-            <Tab label="Pickup Information" value="pickup" />
-            <Tab label="Delivery Information" value="delivery" />
-            <Tab label="Upload Document" value="document" />
-          </Tabs>
+        {/* Progress Stepper */}
+        <Paper sx={{ p: 1, mb: 1, borderRadius: 2, bgcolor: 'background.paper' }}>
+          <Stepper activeStep={currentStepIndex} alternativeLabel sx={{ mb: 1 }}>
+            {[
+              { label: 'Load Details', value: 'load' },
+              { label: 'Customer', value: 'customer' },
+              { label: 'Carrier/Asset', value: 'asset' },
+              { label: 'Pickup', value: 'pickup' },
+              { label: 'Delivery', value: 'delivery' },
+              { label: 'Documents', value: 'document' }
+            ].map((step, index) => (
+              <Step key={step.value}>
+                <StepLabel 
+                  onClick={() => handleTabChange(step.value)}
+                  sx={{ 
+                    cursor: 'pointer',
+                    '& .MuiStepLabel-label': {
+                      fontSize: '0.875rem',
+                      fontWeight: currentStepIndex >= index ? 600 : 400
+                    }
+                  }}
+                >
+                  {step.label}
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+        </Paper>
 
-          <Box sx={{ p: 3 }}>
+        {/* Main Content */}
+        <Paper sx={{ borderRadius: 2, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+          <Box sx={{ p: 4 }}>
             {activeTab === "load" && (
               <Box className="tab-content-wrapper">
                 <LoadDetails />
@@ -259,55 +268,54 @@ const EditLoad: React.FC = () => {
             )}
           </Box>
         </Paper>
-
-        <Divider sx={{ my: 3 }} />
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-          <Box>
+           {updateLoadMutation.isError && <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>{updateLoadMutation.error.message}</Alert>}
+      {updateLoadMutation.isSuccess && <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>Load updated successfully!</Alert>}
+        {/* Action Buttons */}
+        <Paper sx={{ p: 3, mt: 3, borderRadius: 2, bgcolor: 'background.paper' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Button
               variant="outlined"
               color="error"
+              startIcon={<ArrowBackIcon />}
               onClick={async () => {
                 if (window.confirm("Are you sure you want to cancel? All unsaved changes will be lost.")) {
                   queryClient.refetchQueries({ queryKey: ['load', loadId] });
                 }
               }}
+              sx={{ borderRadius: 2, textTransform: 'none' }}
             >
               Cancel
             </Button>
+            
+            <Stack direction="row" spacing={2}>
+              <Button
+                variant="outlined"
+                startIcon={<ArrowBackIcon />}
+                onClick={() => {
+                  const currentIndex = tabs.indexOf(activeTab || "");
+                  if (currentIndex > 0) {
+                    dispatch(setActiveTab(tabs[currentIndex - 1]));
+                  }
+                }}
+                disabled={activeTab === "load"}
+                sx={{ borderRadius: 2, textTransform: 'none' }}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="contained"
+                endIcon={activeTab === "document" ? <SaveIcon /> : <ArrowForwardIcon />}
+                onClick={activeTab === "document" ? handleSubmit : handleNext}
+                disabled={updateLoadMutation.isPending}
+                sx={{ borderRadius: 2, textTransform: 'none', minWidth: 120 }}
+              >
+                {activeTab === "document" ? "Update Load" : updateLoadMutation.isPending ? "Processing..." : "Next"}
+              </Button>
+            </Stack>
           </Box>
-          <Stack direction="row" spacing={2}>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                const currentIndex = tabs.indexOf(activeTab || "");
-                if (currentIndex > 0) {
-                  dispatch(setActiveTab(tabs[currentIndex - 1]));
-                }
-              }}
-              disabled={activeTab === "load"}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={activeTab === "document" ? handleSubmit : handleNext}
-            >
-              {activeTab === "document" ? "Save" : updateLoadMutation.isPending ? "Saving..." : "Next"}
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={updateLoadMutation.isPending}
-            >
-              {updateLoadMutation.isPending ? "Saving..." : "Save"}
-            </Button>
-
-          </Stack>
-        </Box>
+        </Paper>
       </Box>
+    
     </Container>
   );
 };

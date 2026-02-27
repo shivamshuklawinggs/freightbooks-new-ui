@@ -66,6 +66,10 @@ const Dashboard = lazy(() => import('@/pages/dashboard-service'));
 const ViewCompany = lazy(() => import('@/pages/company-service'));
 // Documents 
 const Documents = lazy(() => import('@/pages/document-service'));
+// Email Reminder Components
+const InvoiceEmailReminders = lazy(() => import('@/pages/invoice-service/InvoiceEmailReminders'));
+const EmailReminderSettings = lazy(() => import('@/pages/Settings/EmailReminderSettings'));
+const EmailTemplateManager = lazy(() => import('@/pages/Settings/EmailTemplateManager'));
 // auth pages
 const Login = lazy(() => import('@/pages/auth-service/Login'));
 const ForgetPassword = lazy(() => import('@/pages/auth-service/ForgetPassword'));
@@ -615,6 +619,39 @@ const baseProtectedRoutes: Route[] = [
     currentCompany: false,
     action: 'view',
     resource: ['public'],
+  },
+  {
+    path: '/settings/email-reminders',
+    element: InvoiceEmailReminders,
+    title: 'Email Reminders',
+    key: "email-reminders",
+    icon: 'email',
+    currentCompany: true,
+   hideInMenu: false,
+    action: 'view',
+    resource: ['accounting'],
+  },
+  {
+    path: '/settings/email-templates',
+    element: EmailTemplateManager,
+    title: 'Email Templates',
+    key: "email-templates",
+    icon: 'email',
+    currentCompany: true,
+    hideInMenu: false,
+    action: 'view',
+    resource: ['accounting'],
+  },
+  {
+    path: '/settings/email-reminder-settings',
+    element: EmailReminderSettings,
+    title: 'Email Reminder Settings',
+    key: "email-reminder-settings",
+    icon: 'settings',
+    currentCompany: true,
+    hideInMenu: false,
+    action: 'view',
+    resource: ['accounting'],
   },
 
 

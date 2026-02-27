@@ -1,5 +1,6 @@
 // src/pages/Dashboard.js
 import React, { useEffect } from 'react';
+import { PageHeader } from '@/components/ui';
 import AccRecieveable from './Charts/AccRecieveable';
 import AccPayable from './Charts/AccPayable';
 import ExpenSes from './Charts/ExpenSes';
@@ -37,13 +38,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: '100vh' }}>
-      {/* Page Header */}
-      <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
-        <Box>
-          <Typography variant="h5" fontWeight={700}>Dashboard</Typography>
-          <Typography variant="body2" color="text.secondary">Overview of your freight operations</Typography>
-        </Box>
-      </Box>
+      <PageHeader title="Dashboard" subtitle="Overview of your freight operations" />
 
       {/* Load Status Cards */}
       {Array.isArray(dashboard.Loads) && dashboard.Loads.length > 0 && (

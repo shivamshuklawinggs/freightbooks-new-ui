@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, Typography, TablePagination } from '@mui/material';
+import { Button, Box, TableRow, TableCell } from '@mui/material';
+import { PageHeader, DataTable } from '@/components/ui';
 import CompanyForm from './components/CompanyForm';
 import { ICompany } from '@/types';
 
@@ -14,7 +15,6 @@ interface CompanyResponse {
 }
 
 type CompanyQueryKey = ['company', number, number, string];
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useQuery } from '@tanstack/react-query';
 import apiService from '@/service/apiService';
 import VerticalMenu from '@/components/VerticalMenu';
@@ -68,68 +68,45 @@ const CompanyList: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: '100vh' }}>
-      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
-        <Box>
-          <Typography variant="h5" fontWeight={700}>Companies</Typography>
-          <Typography variant="body2" color="text.secondary">Manage your company profiles</Typography>
-        </Box>
-        <Button variant="contained" size="small" onClick={() => handleOpenDialog()} sx={{ borderRadius: 2 }}>
-          Add New Company
-        </Button>
-      </Box>
+      <PageHeader
+        title="Companies"
+        subtitle="Manage your company profiles"
+        actions={
+          <Button variant="contained" size="small" onClick={() => handleOpenDialog()} sx={{ borderRadius: 2 }}>
+            Add New Company
+          </Button>
+        }
+      />
 
-      <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow sx={{ bgcolor: 'action.hover' }}>
-                <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Name</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={4} align="center" sx={{ py: 6 }}>
-                    <LoadingSpinner size={36} />
-                  </TableCell>
-                </TableRow>
-              ) : error ? (
-                <TableRow>
-                  <TableCell colSpan={4} align="center" sx={{ py: 5 }}>
-                    <Typography variant="body2" color="error">Error loading companies</Typography>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                companies.map((company) => (
-                  <TableRow key={company._id} hover sx={{ '&:last-child td': { border: 0 } }}>
-                    <TableCell sx={{ py: 1.25 }}>{company.label}</TableCell>
-                    <TableCell sx={{ py: 1.25 }}>{company.description}</TableCell>
-                    <TableCell sx={{ py: 1.25 }}>{company.type}</TableCell>
-                    <TableCell sx={{ py: 0.5 }}>
-                      <VerticalMenu actions={[
-                        { label: 'Edit', onClick: () => handleOpenDialog(company), icon: 'edit' },
-                        { label: 'Delete', onClick: () => handleDelete(company._id as string), icon: 'delete' },
-                      ]}/>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          component="div"
-          count={pagination?.total || 0}
-          page={currentPage - 1}
-          rowsPerPage={limit}
-          onPageChange={(_, newPage) => setCurrentPage(newPage + 1)}
-          onRowsPerPageChange={(event) => { setLimit(parseInt(event.target.value, 10)); setCurrentPage(1); }}
-          sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
-        />
-      </Paper>
+      <DataTable
+        columns={[
+          { key: 'name', label: 'Name' },
+          { key: 'description', label: 'Description' },
+          { key: 'type', label: 'Type' },
+          { key: 'actions', label: 'Actions' },
+        ]}
+        data={companies}
+        isLoading={isLoading}
+        emptyMessage={error ? 'Error loading companies' : 'No companies found'}
+        total={pagination?.total ?? 0}
+        page={currentPage - 1}
+        rowsPerPage={limit}
+        onPageChange={(newPage) => setCurrentPage(newPage + 1)}
+        onRowsPerPageChange={(rows) => { setLimit(rows); setCurrentPage(1); }}
+        renderRow={(company) => (
+          <TableRow key={company._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+            <TableCell sx={{ py: 1.25 }}>{company.label}</TableCell>
+            <TableCell sx={{ py: 1.25 }}>{company.description}</TableCell>
+            <TableCell sx={{ py: 1.25 }}>{company.type}</TableCell>
+            <TableCell sx={{ py: 0.5 }}>
+              <VerticalMenu actions={[
+                { label: 'Edit', onClick: () => handleOpenDialog(company), icon: 'edit' },
+                { label: 'Delete', onClick: () => handleDelete(company._id as string), icon: 'delete' },
+              ]}/>
+            </TableCell>
+          </TableRow>
+        )}
+      />
 
       <CompanyForm
         open={openDialog}

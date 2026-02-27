@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import {
-  Box, Button, Card, Container, Typography, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, IconButton, Dialog,
-  DialogTitle, DialogContent, DialogActions, Pagination,
-  Alert, CircularProgress
+  Box, Button, Container, Typography, TableRow, TableCell,
+  IconButton, Dialog, DialogTitle, DialogContent, DialogActions,
+  Pagination, Alert, CircularProgress
 } from '@mui/material';
+import { PageHeader, DataTable } from '@/components/ui';
 import {
   Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon,
 } from '@mui/icons-material';
@@ -100,108 +100,52 @@ const JournalEntryList: React.FC<JournalEntryListProps> = ({ onEdit }) => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
-      <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', mb: 3 }}>
-        <Box>
-          <Typography variant="h5" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
-            Journal Entries
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            View, edit, and manage your journal entries
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => navigate(`/accounting${paths.JournalEntry}`)}
-        >
-          New Journal Entry
-        </Button>
-      </Box>
+      <PageHeader
+        title="Journal Entries"
+        subtitle="View, edit, and manage your journal entries"
+        actions={
+          <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={() => navigate(`/accounting${paths.JournalEntry}`)} sx={{ borderRadius: 2 }}>
+            New Journal Entry
+          </Button>
+        }
+      />
 
-      <Card sx={{ borderRadius: 2 }}>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>Journal No</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Date</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Memo</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Total Debit</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Total Credit</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {journalEntries.map((entry: IJournalEntryWithId) => (
-                <TableRow key={entry._id} hover>
-                  <TableCell>{entry.journalNumber}</TableCell>
-                  <TableCell>
-                    {entry.journalDate ? format(new Date(entry.journalDate), 'MMM dd, yyyy') : ''}
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" noWrap sx={{ maxWidth: 200 }}>
-                      {entry.memo || '-'}
-                    </Typography>
-                  </TableCell>
-                  <TableCell >
-                    {formatCurrency(entry.totalDebit)}
-                  </TableCell>
-                  <TableCell >
-                    {formatCurrency(entry.totalCredit)}
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleEdit(entry)}
-                        title="Edit"
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleDelete(entry._id)}
-                        title="Delete"
-                        color="error"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {journalEntries.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      No journal entries found
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      onClick={() => navigate(`/accounting${paths.JournalEntry}`)}
-                      sx={{ mt: 2 }}
-                    >
-                      Create First Journal Entry
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        {totalPages > 1 && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={(_, newPage) => setPage(newPage)}
-              color="primary"
-            />
-          </Box>
+      <DataTable
+        columns={[
+          { key: 'journalNo', label: 'Journal No' },
+          { key: 'date', label: 'Date' },
+          { key: 'memo', label: 'Memo' },
+          { key: 'totalDebit', label: 'Total Debit' },
+          { key: 'totalCredit', label: 'Total Credit' },
+          { key: 'actions', label: 'Actions' },
+        ]}
+        data={journalEntries}
+        isLoading={false}
+        emptyMessage="No journal entries found"
+        renderRow={(entry: IJournalEntryWithId) => (
+          <TableRow key={entry._id} hover>
+            <TableCell>{entry.journalNumber}</TableCell>
+            <TableCell>{entry.journalDate ? format(new Date(entry.journalDate), 'MMM dd, yyyy') : ''}</TableCell>
+            <TableCell>
+              <Typography variant="body2" noWrap sx={{ maxWidth: 200 }}>{entry.memo || '-'}</Typography>
+            </TableCell>
+            <TableCell>{formatCurrency(entry.totalDebit)}</TableCell>
+            <TableCell>{formatCurrency(entry.totalCredit)}</TableCell>
+            <TableCell>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <IconButton size="small" onClick={() => handleEdit(entry)} title="Edit"><EditIcon fontSize="small" /></IconButton>
+                <IconButton size="small" onClick={() => handleDelete(entry._id)} title="Delete" color="error"><DeleteIcon fontSize="small" /></IconButton>
+              </Box>
+            </TableCell>
+          </TableRow>
         )}
-      </Card>
+      />
+
+      {totalPages > 1 && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+          <Pagination count={totalPages} page={page} onChange={(_, newPage) => setPage(newPage)} color="primary" />
+        </Box>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>

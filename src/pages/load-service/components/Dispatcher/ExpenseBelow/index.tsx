@@ -129,7 +129,7 @@ const ExpenseBelow: React.FC<IExpenseBelowProps> = ({ loadid }) => {
         <Table>
           <TableHead>
             <TableRow sx={{ 
-              background: 'linear-gradient(to right, #f5f5f5, #e0e0e0)',
+              bgcolor: 'background.paper',
               '& th': { 
                 borderBottom: '2px solid',
                 borderColor: 'primary.light'
@@ -433,7 +433,7 @@ const ExpenseBelow: React.FC<IExpenseBelowProps> = ({ loadid }) => {
                     <Divider />
                   </TableCell>
                 </TableRow>
-                <TableRow sx={{ backgroundColor: '#f9f9f9' }}>
+                <TableRow sx={{ bgcolor: 'background.default' }}>
                   <TableCell>
                     <Typography fontWeight="bold">Subtotal</Typography>
                   </TableCell>

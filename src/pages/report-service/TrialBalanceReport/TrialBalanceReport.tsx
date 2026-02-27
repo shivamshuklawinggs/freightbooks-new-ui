@@ -47,7 +47,7 @@ const TrialBalanceReport: React.FC<{ reportData: ITrialBalanceReport }> = ({ rep
       <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
         <Table size="small">
           <TableHead>
-            <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
+            <TableRow sx={{ bgcolor: 'background.paper' }}>
               <TableCell sx={{ fontWeight: 600 }}></TableCell>
               <TableCell sx={{ fontWeight: 600, textAlign: 'right' }}>Debit</TableCell>
               <TableCell sx={{ fontWeight: 600, textAlign: 'right' }}>Credit</TableCell>
@@ -56,7 +56,7 @@ const TrialBalanceReport: React.FC<{ reportData: ITrialBalanceReport }> = ({ rep
           <TableBody>
             {Array.isArray(reportData?.result) &&
               reportData.result.map((group) => (
-                <TableRow key={group._id} sx={{ backgroundColor: '#f9f9f9' }}>
+                <TableRow key={group._id} sx={{ bgcolor: 'background.paper' }}>
                   <TableCell sx={{ fontWeight: 600 ,cursor:"pointer"}} onClick={()=>navigate(`${paths.AccountRegister}/${group._id}`)}>{group.name || '-'}</TableCell>
                   <TableCell sx={{ textAlign: 'right', fontWeight: 600 }}>
                     {formatCurrency(group?.totalDebits || 0)}
@@ -68,7 +68,7 @@ const TrialBalanceReport: React.FC<{ reportData: ITrialBalanceReport }> = ({ rep
               ))}
 
             {/* Grand Total Row */}
-            <TableRow sx={{ backgroundColor: '#e8e8e8', fontWeight: 700 }}>
+            <TableRow sx={{ bgcolor: 'primary.dark', fontWeight: 700 }}>
               <TableCell sx={{ fontWeight: 700 }}>TOTAL</TableCell>
               <TableCell sx={{ textAlign: 'right', fontWeight: 700 }}>
                 {formatCurrency(reportData?.totals?.totalDebits || 0)}

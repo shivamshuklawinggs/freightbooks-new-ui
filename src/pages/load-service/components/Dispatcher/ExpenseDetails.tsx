@@ -165,7 +165,7 @@ const LumperFee: React.FC<LumperProps> = ({ load, service, OnSuccess }) => {
                     id="outlined-basic"
                     value={`LO-${load.loadNumber}`}
                     variant="outlined"
-                    sx={{ bgcolor: '#f8f8f8' }}
+                    sx={{ bgcolor: 'background.paper' }}
                     InputProps={{ readOnly: true }}
                   />
                 </Box>

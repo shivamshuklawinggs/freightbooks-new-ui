@@ -99,7 +99,7 @@ const CustomerRatingDetails: React.FC = () => {
   return (
     <Box sx={{ p: 3, minHeight: '100vh' }}>
       {/* Info Header */}
-      <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2, background: 'linear-gradient(to right, #ffffff, #f9fafb)', position: 'relative', overflow: 'hidden' }}>
+      <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2, bgcolor: 'background.paper', position: 'relative', overflow: 'hidden' }}>
         {/* Decorative accent */}
         <Box sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '4px', background: `linear-gradient(to right, ${overallColor}, #d1d5db)` }} />
         <Grid container spacing={3}>
@@ -165,7 +165,7 @@ const CustomerRatingDetails: React.FC = () => {
         </Grid>
       </Paper>
       {/* Rating Details */}
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 2, background: 'linear-gradient(to right, #ffffff, #f9fafb)', mb: 3 }}>
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2, bgcolor: 'background.paper', mb: 3 }}>
         <Grid container spacing={3}>
           {ratingCategories.map((cat) => (
             <Grid item xs={12} sm={cat.col} key={cat.key}>
@@ -209,7 +209,7 @@ const CustomerRatingDetails: React.FC = () => {
                       {percentage(cat.value || 0)}%
                     </Typography>
                   </Box>
-                  <Box sx={{ position: 'relative', height: 8, bgcolor: '#e0e0e0', borderRadius: 4, overflow: 'hidden' }}>
+                  <Box sx={{ position: 'relative', height: 8, bgcolor: 'action.disabledBackground', borderRadius: 4, overflow: 'hidden' }}>
                     <Box sx={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${percentage(cat.value || 0)}%`, bgcolor: getRatingColor(cat.value || 0), borderRadius: 4, transition: 'width 0.5s ease' }} />
                   </Box>
                 </Box>

@@ -18,8 +18,8 @@ const SectionRow: React.FC<{ section: BalanceSheetIassets, name: string }> = ({ 
             <TableRow 
                 sx={{ 
                     '& > *': { borderBottom: 'unset' },
-                    backgroundColor: '#fafafa',
-                    '&:hover': { backgroundColor: '#f0f0f0' },
+                    bgcolor: 'background.paper',
+                    '&:hover': { bgcolor: 'action.hover' },
                     cursor: 'pointer'
                 }}
                 onClick={() => setOpen(!open)}
@@ -39,9 +39,9 @@ const SectionRow: React.FC<{ section: BalanceSheetIassets, name: string }> = ({ 
                 </TableCell>
             </TableRow>
             <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0, backgroundColor: '#fafafa' }} colSpan={2}>
+                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={2}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ py: 2, px: 3, backgroundColor: '#ffffff', borderRadius: 1, my: 1 }}>
+                        <Box sx={{ py: 2, px: 3, bgcolor: 'background.default', borderRadius: 1, my: 1 }}>
                             <Table size="small" aria-label="details">
                                 <TableBody>
                                     {section?.data?.map((item) => (
@@ -52,19 +52,19 @@ const SectionRow: React.FC<{ section: BalanceSheetIassets, name: string }> = ({ 
                                                 transition: 'background-color 0.2s'
                                             }}
                                         >
-                                            <TableCell onClick={()=>navigate(`${paths.AccountRegister}/${item._id}`)}  component="th" scope="row" sx={{ pl: 8, py: 1.5, borderBottom: '1px solid #f0f0f0' }}>
+                                            <TableCell onClick={()=>navigate(`${paths.AccountRegister}/${item._id}`)}  component="th" scope="row" sx={{ pl: 8, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
                                                 {capitalizeFirstLetter(item.name)}
                                             </TableCell>
-                                            <TableCell align="right" sx={{ py: 1.5, borderBottom: '1px solid #f0f0f0', color: 'text.secondary' }}>
+                                            <TableCell align="right" sx={{ py: 1.5, borderBottom: '1px solid', borderColor: 'divider', color: 'text.secondary' }}>
                                                 ${item.endingBalance.toFixed(2)}
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                    <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
-                                        <TableCell sx={{ fontWeight: 600, pl: 8, py: 1.5, borderTop: '2px solid #dee2e6' }}>
+                                    <TableRow sx={{ bgcolor: 'background.paper' }}>
+                                        <TableCell sx={{ fontWeight: 600, pl: 8, py: 1.5, borderTop: '2px solid', borderColor: 'divider' }}>
                                             Total For {section.name}
                                         </TableCell>
-                                        <TableCell align="right" sx={{ fontWeight: 600, py: 1.5, borderTop: '2px solid #dee2e6' }}>
+                                        <TableCell align="right" sx={{ fontWeight: 600, py: 1.5, borderTop: '2px solid', borderColor: 'divider' }}>
                                             ${section?.endingBalance?.toFixed(2)}
                                         </TableCell>
                                     </TableRow>

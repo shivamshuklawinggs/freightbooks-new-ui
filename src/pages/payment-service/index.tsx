@@ -2,16 +2,11 @@ import React, { useState } from 'react';
 import {
   Button,
   Container,
-  TableContainer,
-  Table,
-  TableBody,
   TableCell,
-  TableHead,
   TableRow,
   Typography,
   Box,
   CircularProgress,
-  TablePagination,
   TextField,
   InputAdornment,
   Card,
@@ -19,6 +14,7 @@ import {
   Chip,
   Grid,
 } from '@mui/material';
+import { DataTable } from '@/components/ui';
 import { Search, FilterList as FilterIcon } from '@mui/icons-material';
 import {  useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
@@ -61,15 +57,6 @@ const PaymentsList: React.FC = () => {
 
   const payments = paymentsResponse?.data || [];
   const totalCount = paymentsResponse?.total || 0;
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
 
   const getTypeColor = (type: string) => {
@@ -184,92 +171,44 @@ const handleDelete = async (payment: IPayment) => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardContent sx={{ p: 0 }}>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Reference No</TableCell>
-                  <TableCell>Customer</TableCell>
-                  <TableCell>Type</TableCell>
-                  <TableCell>Payment Method</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {payments.map((payment: IPayment) => (
-                    <TableRow key={payment._id} hover>
-                      <TableCell>
-                        {format(new Date(payment.paymentDate), 'MMM dd, yyyy')}
-                      </TableCell>
-                      <TableCell>{payment.referenceNo}</TableCell>
-                      <TableCell>
-                        {payment.customer?.name || 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={payment.type || 'N/A'}
-                          color={getTypeColor(payment.type || '')}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>{capitalizeFirstLetter(payment.paymentMethod)}</TableCell>
-                  
-                      <TableCell>
-                        {formatCurrency(payment.amount)}
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            color="primary"
-                            onClick={() => handleView(payment)}
-                          >
-                            View
-                          </Button>
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            color="error"
-                            onClick={() => handleDelete(payment)}
-                          >
-                            Delete
-                          </Button>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                {payments.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={9} align="center">
-                      <Box py={4}>
-                        <Typography variant="body1" color="text.secondary">
-                          No payments found
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {payments.length > 0 && (
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, 50]}
-              component="div"
-              count={totalCount}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          )}
-        </CardContent>
-      </Card>
+      <DataTable
+        columns={[
+          { key: 'date', label: 'Date' },
+          { key: 'referenceNo', label: 'Reference No' },
+          { key: 'customer', label: 'Customer' },
+          { key: 'type', label: 'Type' },
+          { key: 'paymentMethod', label: 'Payment Method' },
+          { key: 'amount', label: 'Amount' },
+          { key: 'action', label: 'Action' },
+        ]}
+        data={payments}
+        isLoading={false}
+        emptyMessage="No payments found"
+        total={totalCount}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        rowsPerPageOptions={[5, 10, 25, 50]}
+        onPageChange={(newPage) => setPage(newPage)}
+        onRowsPerPageChange={(rows) => { setRowsPerPage(rows); setPage(0); }}
+        renderRow={(payment: IPayment) => (
+          <TableRow key={payment._id} hover>
+            <TableCell>{format(new Date(payment.paymentDate), 'MMM dd, yyyy')}</TableCell>
+            <TableCell>{payment.referenceNo}</TableCell>
+            <TableCell>{payment.customer?.name || 'N/A'}</TableCell>
+            <TableCell>
+              <Chip label={payment.type || 'N/A'} color={getTypeColor(payment.type || '')} size="small" />
+            </TableCell>
+            <TableCell>{capitalizeFirstLetter(payment.paymentMethod)}</TableCell>
+            <TableCell>{formatCurrency(payment.amount)}</TableCell>
+            <TableCell>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button variant="outlined" size="small" color="primary" onClick={() => handleView(payment)}>View</Button>
+                <Button variant="outlined" size="small" color="error" onClick={() => handleDelete(payment)}>Delete</Button>
+              </Box>
+            </TableCell>
+          </TableRow>
+        )}
+      />
     </Container>
   );
 };

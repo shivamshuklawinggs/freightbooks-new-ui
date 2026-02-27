@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+import { PageHeader, DataTable } from '@/components/ui';
 import apiService from "@/service/apiService";
 import { toast } from "react-toastify";
-import { Modal, Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Chip, } from '@mui/material';
+import { Modal, Box, Typography, Button, TableRow, TableCell, Chip } from '@mui/material';
 import CustomerInvoiseForm from './CustomerInvoiseForm';
 import { IInvoice, InvoiceResponse } from '@/types';
 import { RootState } from '@/redux/store';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useSelector } from 'react-redux';
 import { initialInvoiseData } from './genearateInvoiceSchema';
 import VerticalMenu from '@/components/VerticalMenu';
@@ -127,114 +127,58 @@ const GetInvoices: React.FC = () => {
   return (
     <>
       <Box sx={{ minHeight: '100vh' }}>
-          <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
-            <Box>
-              <Typography variant="h5" fontWeight={700}>Estimates</Typography>
-              <Typography variant="body2" color="text.secondary">Manage customer estimates and quotes</Typography>
-            </Box>
-            <HasPermission action="create" resource={["accounting"]} component={
-              <Button variant="contained" size="small" startIcon={getIcon("plus")} onClick={() => handleInvoiceClick(undefined)} sx={{ borderRadius: 2 }}>
-                Create New
-              </Button>
-            }/>
-          </Box>
-          <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <TableContainer>
-            <Table size="small">
-              <TableHead>
-                <TableRow sx={{ bgcolor: 'action.hover' }}>
-                  <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Estimate #</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Customer</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Invoice Date</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Due Date</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Total Amount</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Received Amount</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Due Amount</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 700 }}>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {isPending ? (
-                  <TableRow>
-                    <TableCell colSpan={8} align="center">
-                      <LoadingSpinner size={50} />
-                    </TableCell>
-                  </TableRow>
-                ) : Array.isArray(data?.data) && data?.data.length > 0 ? (
-                  data?.data.map((invoice) => (
-                    <TableRow key={invoice._id} hover sx={{ '&:last-child td': { border: 0 } }}>
-                      <TableCell sx={{ py: 1.25 }}>{invoice.invoiceNumber}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{invoice.customer?.company || 'N/A'}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>
-                        <Chip size="small" {...getInvoiceStatus(invoice.dueAmount || 0, invoice.dueDate, "invoice")} />
-                      </TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.invoiceDate)}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.dueDate)}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{invoice?.totalAmountWithTax?.toFixed(2) || '0.00'}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{invoice?.recievedAmount?.toFixed(2) || '0.00'}</TableCell>
-                      <TableCell sx={{ py: 1.25 }}>{invoice?.dueAmount?.toFixed(2) || '0.00'}</TableCell>
-                      <TableCell align="center" sx={{ py: 0.5 }}>
-                                              
-                                              <VerticalMenu actions={[
-                                                hasAccess(["accounting"],"update",user) ? {
-                                                  label: "Edit",
-                                                  icon: "edit",
-                                                  onClick: () => handleInvoiceClick(invoice)
-                                                }:null,
-                                                hasAccess(["accounting"],"delete",user) ? {
-                                                  label: "Delete",
-                                                  icon:"delete",
-                                                  onClick: () => handleDeleteLoad(invoice._id)
-                                                }:null,
-                                                hasAccess(["accounting"],"update",user) ? {
-                                                  label: "Convert to Invoice",
-                                                  icon:"convert",
-                                                  onClick: () => handleConvertEstimateToInvoice(invoice._id)
-                                                }:null
-                                              ]} />
-                                            </TableCell>
-                      {/* <TableCell align="center">
-                        <Stack direction="row" spacing={1} justifyContent="center">
-                          <IconButton
-                            color="error"
-                            onClick={() => handleDeleteLoad(invoice._id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                          <InvoiceDownloadButton invoiseId={invoice._id} invoiceType={invoice.type} />
-                          <IconButton
-                            color="primary"
-                            onClick={() => handleInvoiceClick(invoice)}
-                            disabled={currentRole?.includes("dispatcher")}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        
-                        </Stack>
-                      </TableCell> */}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={9} align="center" sx={{ py: 5 }}>
-                      <Typography variant="body2" color="text.secondary">No records found</Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-            <TablePagination
-              component="div"
-              count={data?.pagination?.total || 0}
-              page={currentPage - 1}
-              rowsPerPage={limit}
-              onPageChange={(_, newPage) => setCurrentPage(newPage + 1)}
-              onRowsPerPageChange={(e) => setLimit(Number(e.target.value))}
-              sx={{ '& .MuiTablePagination-toolbar': { minHeight: 48 } }}
-            />
-          </TableContainer>
-          </Paper>
+          <PageHeader
+            title="Estimates"
+            subtitle="Manage customer estimates and quotes"
+            actions={
+              <HasPermission action="create" resource={["accounting"]} component={
+                <Button variant="contained" size="small" startIcon={getIcon("plus")} onClick={() => handleInvoiceClick(undefined)} sx={{ borderRadius: 2 }}>
+                  Create New
+                </Button>
+              }/>
+            }
+          />
+          <DataTable
+            columns={[
+              { key: 'estimateNumber', label: 'Estimate #' },
+              { key: 'customer', label: 'Customer' },
+              { key: 'status', label: 'Status' },
+              { key: 'invoiceDate', label: 'Invoice Date' },
+              { key: 'dueDate', label: 'Due Date' },
+              { key: 'totalAmount', label: 'Total Amount' },
+              { key: 'receivedAmount', label: 'Received Amount' },
+              { key: 'dueAmount', label: 'Due Amount' },
+              { key: 'actions', label: 'Actions', align: 'center' },
+            ]}
+            data={Array.isArray(data?.data) ? data.data : []}
+            isLoading={isPending}
+            total={data?.pagination?.total ?? 0}
+            page={currentPage - 1}
+            rowsPerPage={limit}
+            onPageChange={(newPage) => setCurrentPage(newPage + 1)}
+            onRowsPerPageChange={(rows) => setLimit(rows)}
+            renderRow={(invoice) => (
+              <TableRow key={invoice._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+                <TableCell sx={{ py: 1.25 }}>{invoice.invoiceNumber}</TableCell>
+                <TableCell sx={{ py: 1.25 }}>{invoice.customer?.company || 'N/A'}</TableCell>
+                <TableCell sx={{ py: 1.25 }}>
+                  <Chip size="small" {...getInvoiceStatus(invoice.dueAmount || 0, invoice.dueDate, "invoice")} />
+                </TableCell>
+                <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.invoiceDate)}</TableCell>
+                <TableCell sx={{ py: 1.25 }}>{formatDate(invoice.dueDate)}</TableCell>
+                <TableCell sx={{ py: 1.25 }}>{invoice?.totalAmountWithTax?.toFixed(2) || '0.00'}</TableCell>
+                <TableCell sx={{ py: 1.25 }}>{invoice?.recievedAmount?.toFixed(2) || '0.00'}</TableCell>
+                <TableCell sx={{ py: 1.25 }}>{invoice?.dueAmount?.toFixed(2) || '0.00'}</TableCell>
+                <TableCell align="center" sx={{ py: 0.5 }}>
+                  <VerticalMenu actions={[
+                    hasAccess(["accounting"],"update",user) ? { label: "Edit", icon: "edit", onClick: () => handleInvoiceClick(invoice) } : null,
+                    hasAccess(["accounting"],"delete",user) ? { label: "Delete", icon: "delete", onClick: () => handleDeleteLoad(invoice._id) } : null,
+                    hasAccess(["accounting"],"update",user) ? { label: "Convert to Invoice", icon: "convert", onClick: () => handleConvertEstimateToInvoice(invoice._id) } : null,
+                  ]} />
+                </TableCell>
+              </TableRow>
+            )}
+          />
       </Box>
       <Modal
         open={showInvoiceModal}

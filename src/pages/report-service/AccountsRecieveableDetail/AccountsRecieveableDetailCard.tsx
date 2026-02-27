@@ -48,7 +48,7 @@ const AccountsRecieveableDetailCard: React.FC<{ reportData: IAccountsRecieveable
       <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
         <Table size="small">
           <TableHead>
-            <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
+            <TableRow sx={{ bgcolor: 'background.paper' }}>
               <TableCell sx={{ fontWeight: 700, width: 40, py: 2 }}></TableCell>
               <TableCell sx={{ fontWeight: 700, py: 2 }}>Date</TableCell>
               <TableCell sx={{ fontWeight: 700, py: 2 }}>Transaction Type</TableCell>
@@ -66,9 +66,9 @@ const AccountsRecieveableDetailCard: React.FC<{ reportData: IAccountsRecieveable
                 {/* Bucket Header Row */}
                 <TableRow
                   sx={{
-                    backgroundColor: '#f9f9f9',
+                    bgcolor: 'background.paper',
                     cursor: 'pointer',
-                    '&:hover': { backgroundColor: '#f0f0f0' }
+                    '&:hover': { bgcolor: 'action.hover' }
                   }}
                   onClick={() => toggleBucket(group.bucket)}
                 >
@@ -88,7 +88,7 @@ const AccountsRecieveableDetailCard: React.FC<{ reportData: IAccountsRecieveable
                     key={invoice._id}
                     sx={{
                       display: expandedBuckets[group.bucket] || index===0 ? 'table-row' : 'none',
-                      '&:hover': { backgroundColor: '#fafafa' }
+                      '&:hover': { bgcolor: 'action.hover' }
                     }}
                   >
                     <TableCell></TableCell>
@@ -108,7 +108,7 @@ const AccountsRecieveableDetailCard: React.FC<{ reportData: IAccountsRecieveable
                 ))}
 
                 {/* Subtotal Row */}
-                <TableRow sx={{ backgroundColor: '#f9f9f9', fontWeight: 600 }}>
+                <TableRow sx={{ bgcolor: 'background.paper', fontWeight: 600 }}>
                   <TableCell></TableCell>
                   <TableCell colSpan={6} sx={{ fontWeight: 600 }}>
                     Total for {bucketLabels[group.bucket]}
@@ -124,7 +124,7 @@ const AccountsRecieveableDetailCard: React.FC<{ reportData: IAccountsRecieveable
             ))}
 
             {/* Grand Total Row */}
-            <TableRow sx={{ backgroundColor: '#e8e8e8', fontWeight: 700 }}>
+            <TableRow sx={{ bgcolor: 'primary.dark', fontWeight: 700 }}>
               <TableCell></TableCell>
               <TableCell colSpan={6} sx={{ fontWeight: 700 }}>
                 TOTAL

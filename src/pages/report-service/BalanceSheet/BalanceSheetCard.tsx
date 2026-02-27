@@ -69,28 +69,28 @@ const BalanceSheetCard: FC<BalanceSheetProps> = ({ reportData }) => {
                 <Table aria-label="balance sheet table">
                     <TableBody>
                         {/* Assets Section */}
-                        <TableRow sx={{ backgroundColor: '#1976d2' }}>
+                        <TableRow sx={{ bgcolor: 'primary.main' }}>
                             <TableCell sx={{ fontWeight: 700, fontSize: '1.1rem', color: 'white', py: 2 }}>ASSETS</TableCell>
                             <TableCell align="right" sx={{ color: 'white' }}></TableCell>
                         </TableRow>
                         {renderSections(reportData?.Assets)}
-                        <TableRow sx={{ backgroundColor: '#1976d2', borderTop: '3px solid #0d47a1' }}>
+                        <TableRow sx={{ bgcolor: 'primary.dark', borderTop: '3px solid', borderColor: 'primary.main' }}>
                             <TableCell sx={{ fontWeight: 700, fontSize: '1.05rem', color: 'white', py: 2 }}>TOTAL ASSETS</TableCell>
                             <TableCell align="right" sx={{ fontWeight: 700, fontSize: '1.05rem', color: 'white', py: 2 }}>${totalAssets.toFixed(2)}</TableCell>
                         </TableRow>
 
                         {/* Spacer Row */}
                         <TableRow sx={{ height: 24 }}>
-                            <TableCell colSpan={2} sx={{ border: 'none', backgroundColor: '#fafafa' }}></TableCell>
+                            <TableCell colSpan={2} sx={{ border: 'none' }}></TableCell>
                         </TableRow>
 
                         {/* Liabilities and Equity Section */}
-                        <TableRow sx={{ backgroundColor: '#f57c00' }}>
+                        <TableRow sx={{ bgcolor: 'warning.dark' }}>
                             <TableCell sx={{ fontWeight: 700, fontSize: '1.1rem', color: 'white', py: 2 }}>LIABILITIES & EQUITY</TableCell>
                             <TableCell align="right" sx={{ color: 'white' }}></TableCell>
                         </TableRow>
                         {renderSections(reportData?.Liabilities)}
-                        <TableRow sx={{ backgroundColor: '#f57c00', borderTop: '3px solid #e65100' }}>
+                        <TableRow sx={{ bgcolor: 'warning.dark', borderTop: '3px solid', borderColor: 'warning.main' }}>
                             <TableCell sx={{ fontWeight: 700, fontSize: '1.05rem', color: 'white', py: 2 }}>TOTAL LIABILITIES & EQUITY</TableCell>
                             <TableCell align="right" sx={{ fontWeight: 700, fontSize: '1.05rem', color: 'white', py: 2 }}>${totalLiabilitiesAndEquity.toFixed(2)}</TableCell>
                         </TableRow>

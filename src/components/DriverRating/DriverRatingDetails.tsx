@@ -241,7 +241,7 @@ const DriverRatingDetails: React.FC = () => {
           p: 3, 
           mb: 3, 
           borderRadius: 2,
-          background: 'linear-gradient(to right, #ffffff, #f9fafb)',
+          bgcolor: 'background.paper',
           position: 'relative',
           overflow: 'hidden'
         }}
@@ -333,7 +333,7 @@ const DriverRatingDetails: React.FC = () => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                background: 'linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)',
+                bgcolor: 'background.paper',
                 borderRadius: 2,
                 position: 'relative',
                 overflow: 'hidden'
@@ -400,7 +400,7 @@ const DriverRatingDetails: React.FC = () => {
         sx={{ 
           p: 3, 
           borderRadius: 2,
-          background: 'linear-gradient(to right, #ffffff, #f9fafb)',
+          bgcolor: 'background.paper',
         }}
       >
       
@@ -461,7 +461,7 @@ const DriverRatingDetails: React.FC = () => {
                       {getPercentage(category.value).toFixed(0)}%
                     </Typography>
                   </Box>
-                  <Box sx={{ position: 'relative', height: 8, bgcolor: '#e0e0e0', borderRadius: 4, overflow: 'hidden' }}>
+                  <Box sx={{ position: 'relative', height: 8, bgcolor: 'action.disabledBackground', borderRadius: 4, overflow: 'hidden' }}>
                     <Box
                       sx={{
                         position: 'absolute',

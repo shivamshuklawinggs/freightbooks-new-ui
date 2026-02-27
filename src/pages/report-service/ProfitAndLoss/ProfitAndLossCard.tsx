@@ -49,7 +49,7 @@ const ProfitAndLossCard: FC<ProfitAndLossProps> = ({ reportData }) => {
             <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
                 <Table aria-label="profit and loss table">
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
+                        <TableRow sx={{ bgcolor: 'background.paper' }}>
                             <TableCell sx={{ fontWeight: 700, fontSize: '1rem', py: 2 }}></TableCell>
                             <TableCell align="right" sx={{ fontWeight: 700, fontSize: '1rem', py: 2 }}>Total</TableCell>
                         </TableRow>
@@ -57,18 +57,18 @@ const ProfitAndLossCard: FC<ProfitAndLossProps> = ({ reportData }) => {
                     <TableBody>
                         {incomeSection && <SectionRow section={incomeSection} name="Income" total={totalIncome} />}
                         {COGSSection && <SectionRow section={COGSSection} name="Cost of Goods Sold" total={totalCOGS} />}
-                        <TableRow sx={{ backgroundColor: '#e3f2fd', borderTop: '2px solid #2196f3', borderBottom: '2px solid #2196f3' }}>
+                        <TableRow sx={{ bgcolor: 'rgba(37,99,235,0.12)', borderTop: '2px solid', borderColor: 'info.main', borderBottom: '2px solid' }}>
                             <TableCell sx={{ fontWeight: 700, fontSize: '1.05rem', py: 2 }}>Gross Profit</TableCell>
-                            <TableCell align="right" sx={{ fontWeight: 700, fontSize: '1.05rem', py: 2, color: grossProfit >= 0 ? '#2e7d32' : '#d32f2f' }}>
+                            <TableCell align="right" sx={{ fontWeight: 700, fontSize: '1.05rem', py: 2, color: grossProfit >= 0 ? 'success.main' : 'error.main' }}>
                                 {
                                     formatCurrency(grossProfit)
                                 }
                             </TableCell>
                         </TableRow>
                         {expenseSection && <SectionRow section={expenseSection} name="Expenses" total={totalExpense} />}
-                        <TableRow sx={{ backgroundColor: '#fff3e0', borderTop: '2px solid #ff9800', borderBottom: '2px solid #ff9800' }}>
+                        <TableRow sx={{ bgcolor: 'rgba(245,158,11,0.12)', borderTop: '2px solid', borderColor: 'warning.main', borderBottom: '2px solid' }}>
                             <TableCell sx={{ fontWeight: 700, fontSize: '1.05rem', py: 2 }}>Net Operating Income</TableCell>
-                            <TableCell align="right" sx={{ fontWeight: 700, fontSize: '1.05rem', py: 2, color: totalNetOperatingIncome >= 0 ? '#2e7d32' : '#d32f2f' }}>
+                            <TableCell align="right" sx={{ fontWeight: 700, fontSize: '1.05rem', py: 2, color: totalNetOperatingIncome >= 0 ? 'success.main' : 'error.main' }}>
                               {
                                 formatCurrency(totalNetOperatingIncome)
                               }
@@ -76,17 +76,17 @@ const ProfitAndLossCard: FC<ProfitAndLossProps> = ({ reportData }) => {
                         </TableRow>
                         {otherIncomeSection && <SectionRow section={otherIncomeSection} name="Other Income" total={totalOtherIncome} />}
                         {otherExpenseSection && <SectionRow section={otherExpenseSection} name="Other Expenses" total={totalOtherExpense} />}
-                        <TableRow sx={{ backgroundColor: '#f3e5f5', borderTop: '2px solid #9c27b0', borderBottom: '2px solid #9c27b0' }}>
+                        <TableRow sx={{ bgcolor: 'rgba(124,58,237,0.12)', borderTop: '2px solid', borderColor: 'secondary.main', borderBottom: '2px solid' }}>
                             <TableCell sx={{ fontWeight: 700, fontSize: '1.05rem', py: 2 }}>Net Other Income</TableCell>
-                            <TableCell align="right" sx={{ fontWeight: 700, fontSize: '1.05rem', py: 2, color: totalNetOtherIncome >= 0 ? '#2e7d32' : '#d32f2f' }}>
+                            <TableCell align="right" sx={{ fontWeight: 700, fontSize: '1.05rem', py: 2, color: totalNetOtherIncome >= 0 ? 'success.main' : 'error.main' }}>
                                 {
                                     formatCurrency(totalNetOtherIncome)
                                 }
                             </TableCell>
                         </TableRow>
-                        <TableRow sx={{ backgroundColor: totalNetProfit >= 0 ? '#c8e6c9' : '#ffcdd2', borderTop: '3px solid #1b5e20', borderBottom: '3px solid #1b5e20' }}>
+                        <TableRow sx={{ bgcolor: totalNetProfit >= 0 ? 'rgba(22,163,74,0.18)' : 'rgba(220,38,38,0.18)', borderTop: '3px solid', borderColor: totalNetProfit >= 0 ? 'success.main' : 'error.main', borderBottom: '3px solid' }}>
                             <TableCell sx={{ fontWeight: 800, fontSize: '1.15rem', py: 2.5 }}>Net Income</TableCell>
-                            <TableCell align="right" sx={{ fontWeight: 800, fontSize: '1.15rem', py: 2.5, color: totalNetProfit >= 0 ? '#1b5e20' : '#c62828' }}>
+                            <TableCell align="right" sx={{ fontWeight: 800, fontSize: '1.15rem', py: 2.5, color: totalNetProfit >= 0 ? 'success.main' : 'error.main' }}>
                                 {
                                     formatCurrency(totalNetProfit)
                                 }

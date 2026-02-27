@@ -3,19 +3,13 @@ import React, { useState } from 'react';
 
 import apiService from '@/service/apiService';
 import { ITaxOption } from '@/types';
+import { PageHeader, DataTable } from '@/components/ui';
 import { 
   Button, 
-  Typography, 
-  Table, 
-  TableBody, 
   TableCell, 
-  TableContainer, 
-  TableHead, 
   TableRow, 
-  Paper, 
   Box, 
   IconButton, 
-  CircularProgress,
 } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
@@ -75,65 +69,46 @@ const TaxServicesList: React.FC = () => {
   };
   return (
    <Box sx={{ minHeight: '100vh' }}>
-      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2.5} flexWrap="wrap" gap={1}>
-        <Box>
-          <Typography variant="h5" fontWeight={700}>Tax Options</Typography>
-          <Typography variant="body2" color="text.secondary">Manage tax rates and labels</Typography>
-        </Box>
-        <HasPermission action="create" resource={["accounting"]} component={
-          <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={handleModalShow} sx={{ borderRadius: 2 }}>
-            Add New
-          </Button>
-        }/>
-      </Box>
+      <PageHeader
+        title="Tax Options"
+        subtitle="Manage tax rates and labels"
+        actions={
+          <HasPermission action="create" resource={["accounting"]} component={
+            <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={handleModalShow} sx={{ borderRadius: 2 }}>
+              Add New
+            </Button>
+          }/>
+        }
+      />
 
-      <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow sx={{ bgcolor: 'action.hover' }}>
-                <TableCell sx={{ fontWeight: 700, py: 1.5 }}>Label</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Value</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={3} align="center" sx={{ py: 6 }}>
-                    <CircularProgress size={32} />
-                  </TableCell>
-                </TableRow>
-              ) : Array.isArray(data) && data.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={3} align="center" sx={{ py: 5 }}>
-                    <Typography variant="body2" color="text.secondary">No tax options found</Typography>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                data.map((item: ITaxOption) => (
-                  <TableRow key={item._id} hover sx={{ '&:last-child td': { border: 0 } }}>
-                    <TableCell sx={{ py: 1.25 }}>{item.label}</TableCell>
-                    <TableCell sx={{ py: 1.25 }}>{item.value}</TableCell>
-                    <TableCell sx={{ py: 0.5 }}>
-                      <Box display="flex" gap={0.5}>
-                        <HasPermission action="update" resource={["accounting"]} component={
-                          <IconButton size="small" color="primary" onClick={() => handleEdit(item)}>
-                            {getIcon("edit")}
-                          </IconButton>
-                        }/>
-                        <IconButton size="small" color="error" onClick={() => item._id && handleDelete(item._id)}>
-                          {getIcon("delete")}
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+      <DataTable
+        columns={[
+          { key: 'label', label: 'Label' },
+          { key: 'value', label: 'Value' },
+          { key: 'actions', label: 'Actions' },
+        ]}
+        data={Array.isArray(data) ? data : []}
+        isLoading={isLoading}
+        emptyMessage="No tax options found"
+        renderRow={(item: ITaxOption) => (
+          <TableRow key={item._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+            <TableCell sx={{ py: 1.25 }}>{item.label}</TableCell>
+            <TableCell sx={{ py: 1.25 }}>{item.value}</TableCell>
+            <TableCell sx={{ py: 0.5 }}>
+              <Box display="flex" gap={0.5}>
+                <HasPermission action="update" resource={["accounting"]} component={
+                  <IconButton size="small" color="primary" onClick={() => handleEdit(item)}>
+                    {getIcon("edit")}
+                  </IconButton>
+                }/>
+                <IconButton size="small" color="error" onClick={() => item._id && handleDelete(item._id)}>
+                  {getIcon("delete")}
+                </IconButton>
+              </Box>
+            </TableCell>
+          </TableRow>
+        )}
+      />
       <TaxForm 
         showModal={showModal}
         handleModalClose={handleModalClose}

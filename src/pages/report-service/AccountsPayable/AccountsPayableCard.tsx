@@ -42,24 +42,24 @@ const AccountsPayableCard: FC<AccountsPayableCardProps> = ({ reportData }) => {
       <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
         <Table>
           <TableHead>
-            <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
+            <TableRow sx={{ bgcolor: 'background.paper' }}>
               <TableCell sx={{ fontWeight: 700, py: 2 }}>Customer</TableCell>
-              <TableCell align="right" sx={{ fontWeight: 700, py: 2, backgroundColor: '#e8f5e9' }}>
+              <TableCell align="right" sx={{ fontWeight: 700, py: 2, bgcolor: 'rgba(22,163,74,0.12)' }}>
                 Current
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: 700, py: 2, backgroundColor: '#fff9c4' }}>
+              <TableCell align="right" sx={{ fontWeight: 700, py: 2, bgcolor: 'rgba(245,158,11,0.12)' }}>
                 1 - 30
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: 700, py: 2, backgroundColor: '#ffe0b2' }}>
+              <TableCell align="right" sx={{ fontWeight: 700, py: 2, bgcolor: 'rgba(234,88,12,0.12)' }}>
                 31 - 60
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: 700, py: 2, backgroundColor: '#ffccbc' }}>
+              <TableCell align="right" sx={{ fontWeight: 700, py: 2, bgcolor: 'rgba(239,68,68,0.12)' }}>
                 61 - 90
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: 700, py: 2, backgroundColor: '#ffcdd2' }}>
+              <TableCell align="right" sx={{ fontWeight: 700, py: 2, bgcolor: 'rgba(220,38,38,0.15)' }}>
                 91 and over
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: 700, py: 2, backgroundColor: '#e3f2fd' }}>
+              <TableCell align="right" sx={{ fontWeight: 700, py: 2, bgcolor: 'rgba(37,99,235,0.12)' }}>
                 Total
               </TableCell>
             </TableRow>
@@ -104,7 +104,7 @@ const AccountsPayableCard: FC<AccountsPayableCardProps> = ({ reportData }) => {
             )}
 
             {/* Total row */}
-            <TableRow sx={{ backgroundColor: '#1976d2', borderTop: '3px solid #0d47a1' }}>
+            <TableRow sx={{ bgcolor: 'primary.dark', borderTop: '3px solid', borderColor: 'primary.main' }}>
               <TableCell sx={{ fontWeight: 700, color: 'white', py: 2, fontSize: '1.05rem' }}>TOTAL</TableCell>
               <TableCell align="right" sx={{ fontWeight: 700, color: 'white', py: 2 }}>
                 ${reportData?.totalData?.currentDueAmount?.toFixed(2) || "0.00"}

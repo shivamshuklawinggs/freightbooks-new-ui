@@ -71,7 +71,7 @@ const UpdateRecievepayment: React.FC<UpdateRecievepaymentProps> = ({ isLoading }
           sx={{
             mb: 3,
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            border: '1px solid #e0e0e0',
+            border: '1px solid', borderColor: 'divider',
             borderRadius: 2,
             overflow: 'hidden'
           }}
@@ -129,26 +129,26 @@ const UpdateRecievepayment: React.FC<UpdateRecievepaymentProps> = ({ isLoading }
             <TableContainer>
               <Table>
                 <TableHead>
-                  <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
-                    <TableCell sx={{ fontWeight: 600, color: '#495057', py: 2 }}>
+                  <TableRow sx={{ bgcolor: 'background.paper' }}>
+                    <TableCell sx={{ fontWeight: 600, py: 2 }}>
                       <Stack direction="row" alignItems="center" spacing={1}>
-                        <AccountBalance sx={{ fontSize: 20, color: '#6c757d' }} />
+                        <AccountBalance sx={{ fontSize: 20, color: 'text.secondary' }} />
                         <Typography variant="subtitle1" fontWeight={600}>
                           Original Amount
                         </Typography>
                       </Stack>
                     </TableCell>
-                    <TableCell sx={{ fontWeight: 600, color: '#495057', py: 2 }}>
+                    <TableCell sx={{ fontWeight: 600, py: 2 }}>
                       <Stack direction="row" alignItems="center" spacing={1}>
-                        <Payment sx={{ fontSize: 20, color: '#6c757d' }} />
+                        <Payment sx={{ fontSize: 20, color: 'text.secondary' }} />
                         <Typography variant="subtitle1" fontWeight={600}>
                           Amount to Apply
                         </Typography>
                       </Stack>
                     </TableCell>
-                    <TableCell sx={{ fontWeight: 600, color: '#495057', py: 2 }}>
+                    <TableCell sx={{ fontWeight: 600, py: 2 }}>
                       <Stack direction="row" alignItems="center" spacing={1}>
-                        <Delete sx={{ fontSize: 20, color: '#6c757d' }} />
+                        <Delete sx={{ fontSize: 20, color: 'text.secondary' }} />
                         <Typography variant="subtitle1" fontWeight={600}>
                           Delete
                         </Typography>
@@ -162,13 +162,14 @@ const UpdateRecievepayment: React.FC<UpdateRecievepaymentProps> = ({ isLoading }
                         key={(invoice as any)?._id}
                         sx={{
                           '&:hover': {
-                            backgroundColor: '#f8f9fa'
+                            bgcolor: 'action.hover'
                           },
-                          borderBottom: index === payments.length - 1 ? 'none' : '1px solid #e9ecef'
+                          borderBottom: index === payments.length - 1 ? 'none' : '1px solid',
+                          borderColor: 'divider'
                         }}
                       >
                         <TableCell sx={{ py: 2.5 }}>
-                          <Typography variant="h6" sx={{ fontWeight: 600, color: '#28a745' }}>
+                          <Typography variant="h6" sx={{ fontWeight: 600, color: 'success.main' }}>
                             {formatCurrency(Number((invoice as any)?.amount || 0))}
                           </Typography>
                         </TableCell>
@@ -195,31 +196,31 @@ const UpdateRecievepayment: React.FC<UpdateRecievepaymentProps> = ({ isLoading }
 
       <Card sx={{
         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-        border: '1px solid #e0e0e0',
+        border: '1px solid', borderColor: 'divider',
         borderRadius: 2,
-        background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)'
+        bgcolor: 'background.paper'
       }}>
         <CardContent sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#495057' }}>
+          <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: 'text.primary' }}>
             Payment Summary
           </Typography>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Box sx={{ flex: 1 }}>
               <Stack spacing={2}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body1" sx={{ fontWeight: 500, color: '#6c757d' }}>
+                  <Typography variant="body1" sx={{ fontWeight: 500, color: 'text.secondary' }}>
                     Amount To Apply:
                   </Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#28a745' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: 'success.main' }}>
                     {formatCurrency(amountApplied || 0)}
                   </Typography>
                 </Box>
                 <Divider />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body1" sx={{ fontWeight: 500, color: '#6c757d' }}>
+                  <Typography variant="body1" sx={{ fontWeight: 500, color: 'text.secondary' }}>
                     Amount To Credit:
                   </Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#17a2b8' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: 'info.main' }}>
                     {formatCurrency(Number(creditLeft) || 0)}
                   </Typography>
                 </Box>

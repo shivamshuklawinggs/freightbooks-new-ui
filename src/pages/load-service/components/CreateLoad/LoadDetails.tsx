@@ -65,10 +65,6 @@ const LoadDetails: React.FC = () => {
       }}
     >
       <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" gutterBottom color="primary" sx={{ mb: 3, fontWeight: 600 }}>
-          Load Details
-        </Typography>
-        
         <Grid container spacing={3}>
           {/* First row */}
           <Grid item xs={12} md={3}>

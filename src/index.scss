@@ -70,9 +70,9 @@ input[type="text"].numeric-input {
 
 // View Loads
 .load-th {
-    background-color: #f8f9fa;
+    background-color: rgba(255,255,255,0.05);
     font-weight: 600;
-    color: #495057;
+    color: inherit;
 }
 
 .load-td {
@@ -92,24 +92,24 @@ input[type="text"].numeric-input {
     font-weight: 500;
     
     &.pending {
-        background-color: #ffe082;
-        color: #f59e0b;
+        background-color: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
     }
     &.delivered {
-        background-color: #cce5ff;
-        color: #004085;
+        background-color: rgba(22, 163, 74, 0.15);
+        color: #4ade80;
     }
     &.cancelled {
-        background-color: #f8d7da;
-        color: #721c24;
+        background-color: rgba(239, 68, 68, 0.15);
+        color: #f87171;
     }
     &.dispatched {
-        background-color: #d1ecf1;
-        color: #0c5460;
+        background-color: rgba(6, 182, 212, 0.15);
+        color: #22d3ee;
     }
     &.unknown {
-        background-color: #e2e3e5;
-        color: #383d41;
+        background-color: rgba(148, 163, 184, 0.15);
+        color: #94a3b8;
     }
 }
 
@@ -145,7 +145,7 @@ body {
 h1, h2, h3, h4 {
   font-family: 'Poppins', sans-serif;
   font-weight: bold;
-  color: #333;
+  color: inherit;
 }
 
 /* Form Styling */
@@ -156,15 +156,17 @@ h1, h2, h3, h4 {
 .form-label {
   font-size: 1rem;
   font-weight: 500;
-  color: #495057;
+  color: inherit;
   margin-bottom: 0.5rem;
 }
 
 .form-control {
   border-radius: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255,255,255,0.15);
   padding: 10px;
   font-size: 0.9rem;
+  background-color: transparent;
+  color: inherit;
 }
 
 .form-control:focus {
@@ -184,8 +186,9 @@ h1, h2, h3, h4 {
 }
 
 select.form-control {
-  background-color: #f1f1f1;
+  background-color: transparent;
   font-size: 0.9rem;
+  color: inherit;
 }
 
 /* Input Group Styling */
@@ -200,11 +203,12 @@ select.form-control {
 }
 
 textarea.form-control {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
+  background-color: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
   font-size: 1rem;
   border-radius: 8px;
   padding: 10px;
+  color: inherit;
 }
 
 textarea.form-control:focus {
@@ -221,12 +225,14 @@ textarea.form-control:focus {
 }
 
 input[type="text"] {
-  background-color: #f9f9f9;
+  background-color: transparent;
 }
 
 input[type="date"] {
-  background-color: #ffffff;
-  border-color: #ced4da;
+  background-color: transparent;
+  border-color: rgba(255,255,255,0.15);
+  color: inherit;
+  color-scheme: dark;
 }
 
 /* Hover Effects */

@@ -39,8 +39,8 @@ const VendorRatingDisplay: FC<VendorRatingDisplayProps> = ({ overallScore }) => 
         p: 3, 
         mt: 2, 
         borderRadius: 2,
-        background: 'linear-gradient(to bottom, #ffffff, #f9fafb)',
-        border: '1px solid #f0f0f0',
+        bgcolor: 'background.paper',
+        border: '1px solid', borderColor: 'divider',
         position: 'relative',
         overflow: 'hidden'
       }}
@@ -151,7 +151,7 @@ const VendorRatingDisplay: FC<VendorRatingDisplayProps> = ({ overallScore }) => 
             {percentage.toFixed(0)}%
           </Typography>
         </Box>
-        <Box sx={{ position: 'relative', height: 8, bgcolor: '#e0e0e0', borderRadius: 4, overflow: 'hidden' }}>
+        <Box sx={{ position: 'relative', height: 8, bgcolor: 'action.disabledBackground', borderRadius: 4, overflow: 'hidden' }}>
           <Box
             sx={{
               position: 'absolute',

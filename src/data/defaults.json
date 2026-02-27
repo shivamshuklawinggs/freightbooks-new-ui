@@ -1,13 +1,13 @@
 {
   "defaultSettings": {
-    "mode": "light",
+    "mode": "dark",
     "primaryColor": "teal",
     "secondaryColor": "amber",
-    "backgroundTone": "dark",
+    "backgroundTone": "charcoal",
     "borderRadius": 8,
     "sidebarStyle": "solid",
-    "fontFamily": "roboto",
-    "typographyScale": "compact",
+    "fontFamily": "inter",
+    "typographyScale": "default",
     "formFontSize": "medium",
     "sidebarCollapsed": false
   },
@@ -55,10 +55,10 @@
       "contrast": "#FFFFFF"
     },
     "teal": {
-      "main": "#0D9488",
-      "light": "#2DD4BF",
-      "dark": "#0F766E",
-      "contrast": "#FFFFFF"
+      "main": "#00C48C",
+      "light": "#33D9A8",
+      "dark": "#00A374",
+      "contrast": "#000000"
     },
     "cyan": {
       "main": "#0891B2",
@@ -141,9 +141,9 @@
   },
   "darkBackgrounds": {
     "charcoal": {
-      "default": "#0F172A",
-      "paper": "#1E293B",
-      "sidebar": "#0F172A"
+      "default": "#0D1B2A",
+      "paper": "#132234",
+      "sidebar": "#0A1520"
     },
     "dark": {
       "default": "#111827",
