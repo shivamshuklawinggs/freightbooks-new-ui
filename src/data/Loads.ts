@@ -98,8 +98,6 @@ const EquipmentType=[
   ];
 const COLUMN_OPTIONS = [
   { key: 'loadNumber', label: 'Load No',color:Colors.loadNumber },
-  { key: 'pickDate', label: 'Pick Up Date',color:Colors.pickDate },
-  { key: 'dropDate', label: 'Drop Date',color:Colors.dropDate },
   { key: 'status', label: 'Status',color:Colors.status },
   { key: 'loadAmount', label: 'Load Pay',color:Colors.loadAmount },
   

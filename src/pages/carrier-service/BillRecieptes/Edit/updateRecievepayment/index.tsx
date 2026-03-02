@@ -1,5 +1,5 @@
 import React, {  useMemo } from 'react';
-import { Typography, TableContainer, Box, Table, TableHead, TableRow, TableCell, TableBody, Stack, Chip, Divider, Card, CardContent, IconButton } from '@mui/material';
+import { Typography, TableContainer, Box, Table, TableHead, TableRow, TableCell, TableBody, Stack, Chip, Divider, Card, CardContent, IconButton, useTheme } from '@mui/material';
 import { formatCurrency, calculateTotalRecievedAmount,  } from '@/utils';
 import { Receipt, AccountBalance, Payment, Delete } from '@mui/icons-material';
 import { useFormContext } from 'react-hook-form';
@@ -13,6 +13,7 @@ interface UpdateRecievepaymentProps {
 }
 
 const UpdateRecievepayment: React.FC<UpdateRecievepaymentProps> = ({ isLoading }) => {
+  const theme = useTheme();
   const { setValue, watch } = useFormContext<UpdateRecievedPamentSchemaType>();
   const recievedPayments = watch('recievedPayments')?.map((item)=>({
     invoiceId: item.invoiceId as string , amount: item.amount as number,_id:item?._id  || undefined,totalAmountWithTax:item?.totalAmountWithTax || 0,invoiceNumber:item?.invoiceNumber || ""
@@ -78,8 +79,7 @@ const UpdateRecievepayment: React.FC<UpdateRecievepaymentProps> = ({ isLoading }
         >
           <CardContent sx={{ p: 0 }}>
             <Box sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
+               background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.main} 100%)`,
               p: 3
             }}>
               <Stack direction="row" alignItems="center" spacing={2}>

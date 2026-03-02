@@ -45,10 +45,11 @@ const RecievedPaymentFormFields: React.FC<RecievedPaymentFormFieldsProps> = ({ i
         const value = e.target.value || null;
         setValue(field, value, { shouldValidate: true });
     };
+    console.log("errrors",errors)
     return (
         <>
             <Grid item xs={12} md={6}>
-                <TextField label="Vendor" value={getFullName(watch("customer") as Record<string, any>)} disabled fullWidth />
+                <TextField label="Vendor" value={getFullName(watch("customer") as Record<string, any>)} disabled fullWidth helperText={errors.customer?.message}  error={!!errors.customer}/>
             </Grid>
             <Grid item xs={12} md={6}>
                 <Tooltip title="Enter invoice number to filter invoices" placement="top">
