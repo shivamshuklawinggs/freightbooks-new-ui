@@ -11,18 +11,17 @@ import {
   Toolbar,
   Divider,
   IconButton,
-  Collapse,
   Typography,
   Tooltip,
   Box,
   alpha,
+  Popover,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
   ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
-  ExpandLess,
-  ExpandMore,
+  ChevronRight as ChevronRightIcon,
   Logout as LogoutIcon,
 } from "@mui/icons-material";
 import { protectedRoutes } from "@/routes";
@@ -39,44 +38,190 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ drawerWidth }) => {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
-  const [openSubMenus, setOpenSubMenus] = React.useState<Record<string, boolean>>({});
+  const [hoveredMenu, setHoveredMenu] = React.useState<string | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const [openMenus, setOpenMenus] = React.useState<Set<string>>(new Set());
 
   // Use dynamic routes if available, otherwise fallback to static routes
   const menuRoutes = protectedRoutes;
   
+  // Generate unique menu key for nested items
+  const getMenuKey = (item: SidebarMenuItem, parentKey: string = '') => {
+    return parentKey ? `${parentKey}-${item.title}` : item.title;
+  };
 
-  // On location change, auto-open any parent menus whose children match the current path
+  const handleMenuHover = (event: React.MouseEvent<HTMLElement>, menuKey: string) => {
+    // Clear any pending close timeout
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setAnchorEl(event.currentTarget);
+    setHoveredMenu(menuKey);
+  };
+
+  const handleMenuLeave = () => {
+    // Delay closing to allow moving mouse to popover
+    closeTimeoutRef.current = setTimeout(() => {
+      setAnchorEl(null);
+      setHoveredMenu(null);
+    }, 100);
+  };
+
+  const handlePopoverEnter = () => {
+    // Clear close timeout when entering popover
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+
+  const handlePopoverLeave = () => {
+    // Close immediately when leaving popover
+    setAnchorEl(null);
+    setHoveredMenu(null);
+  };
+
+  const handleMenuClick = (menuKey: string) => {
+    setOpenMenus(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(menuKey)) {
+        newSet.delete(menuKey);
+      } else {
+        newSet.add(menuKey);
+      }
+      return newSet;
+    });
+  };
+
+  // Cleanup timeout on unmount
   React.useEffect(() => {
-    const expanded: Record<string, boolean> = {};
-
-    const stripParams = (path: string) => path.split(":")[0].replace(/\/$/, "");
-
-    const expandMatchingSubMenus = (items: SidebarMenuItem[]) => {
-      items.forEach((item) => {
-        if (item.children && item.children.length > 0) {
-          const hasMatch = item.children.some((child) => {
-            if (!child.path) return false;
-            const base = stripParams(child.path);
-            return location.pathname.startsWith(base);
-          });
-          if (hasMatch) {
-            expanded[item.title] = true;
-          }
-          // Recurse into deeper levels if nested
-          expandMatchingSubMenus(item.children);
-        }
-      });
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
     };
+  }, []);
 
-    expandMatchingSubMenus(menuRoutes as SidebarMenuItem[]);
-    setOpenSubMenus((prev) => ({ ...prev, ...expanded }));
-  }, [location.pathname, menuRoutes]);
+  // Recursive component for rendering nested menu items
+  const renderNestedMenuItems = (items: SidebarMenuItem[], parentKey: string = '', level: number = 0) => {
+    return items.map((item, index) => {
+      const menuKey = getMenuKey(item, parentKey);
+      const icon = getIcon(item.icon as iconType);
+      const basePath = item.path ? normalizePath(item.path) : "";
+      const isActive = basePath && location.pathname.startsWith(basePath);
+      const hasChildren = item.children && item.children.length > 0;
+      const isHovered = hoveredMenu === menuKey;
+      const isOpen = openMenus.has(menuKey);
 
-  const handleSubMenuToggle = (title: string) => {
-    setOpenSubMenus((prev) => ({
-      ...prev,
-      [title]: !prev[title],
-    }));
+      return (
+        <ListItem key={`${level}-${index}`} disablePadding sx={{ px: 1, position: 'relative' }}>
+          <ListItemButton
+            component={hasChildren ? 'div' : Link}
+            to={hasChildren ? undefined : basePath}
+            onClick={hasChildren ? () => handleMenuClick(menuKey) : undefined}
+            onMouseEnter={hasChildren ? (e: React.MouseEvent<HTMLElement>) => handleMenuHover(e, menuKey) : undefined}
+            onMouseLeave={hasChildren ? handleMenuLeave : undefined}
+            sx={{
+              borderRadius: 1,
+              minHeight: Math.max(32 - level * 2, 24), // Decrease height for deeper levels
+              bgcolor: isActive ? alpha('#fff', 0.18) : 'transparent',
+              '&:hover': { bgcolor: alpha('#fff', 0.12) },
+              position: 'relative',
+              '&::before': isActive ? {
+                content: '""',
+                position: 'absolute',
+                left: 0,
+                top: '20%',
+                height: '60%',
+                width: 3,
+                borderRadius: '0 3px 3px 0',
+                bgcolor: 'rgba(255,255,255,0.9)',
+              } : {},
+            }}
+          >
+            {icon && (
+              <ListItemIcon sx={{ 
+                color: isActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.75)', 
+                minWidth: Math.max(32 - level * 4, 20), 
+                '& svg': { fontSize: Math.max(18 - level * 2, 14) } 
+              }}>
+                {icon}
+              </ListItemIcon>
+            )}
+            <ListItemText
+              primary={item.title}
+              primaryTypographyProps={{
+                fontSize: Math.max(0.75 - level * 0.05, 0.6),
+                fontWeight: isActive ? 600 : 500,
+                color: isActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.85)'
+              }}
+            />
+            {hasChildren && (
+              isOpen ? 
+                <ChevronRightIcon sx={{ color: 'rgba(255,255,255,0.8)', fontSize: Math.max(16 - level, 12), transform: 'rotate(90deg)' }} /> :
+                <ChevronRightIcon sx={{ color: 'rgba(255,255,255,0.6)', fontSize: Math.max(16 - level, 12) }} />
+            )}
+          </ListItemButton>
+          
+          {/* Recursive Popover for children */}
+          {hasChildren && (
+            <Popover
+              open={isHovered || isOpen}
+              anchorEl={anchorEl}
+              onClose={handlePopoverLeave}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              sx={{
+                pointerEvents: 'none',
+                '& .MuiPopover-paper': {
+                  pointerEvents: 'auto',
+                  ml: 0.5,
+                  bgcolor: theme.palette.primary.main,
+                  backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+                  boxShadow: '4px 4px 20px rgba(0,0,0,0.3)',
+                  borderRadius: 2,
+                  minWidth: Math.max(200 - level * 20, 140),
+                }
+              }}
+              disableRestoreFocus
+            >
+              <Box
+                onMouseEnter={handlePopoverEnter}
+                onMouseLeave={handlePopoverLeave}
+                sx={{ py: 1 }}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{
+                    px: 2,
+                    py: 0.5,
+                    display: 'block',
+                    color: 'rgba(255,255,255,0.6)',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    fontSize: Math.max(0.65 - level * 0.05, 0.55),
+                  }}
+                >
+                  {item.title}
+                </Typography>
+                <List disablePadding>
+                  {renderNestedMenuItems(item.children!, menuKey, level + 1)}
+                </List>
+              </Box>
+            </Popover>
+          )}
+        </ListItem>
+      );
+    });
   };
 
   const stripParams = (path: string) => path.split(":")[0].replace(/\/$/, "");
@@ -90,15 +235,16 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ drawerWidth }) => {
         const basePath = item.path ? normalizePath(item.path) : "";
         const isActive = basePath && location.pathname.startsWith(basePath);
         const hasChildren = item.children && item.children.length > 0;
-        const isSubMenuOpen = openSubMenus[item.title] || false;
 
         if (hasChildren) {
+          const isHovered = hoveredMenu === item.title;
           return (
             <React.Fragment key={`${level}-${index}`}>
               <ListItem disablePadding sx={{ px: 1, mb: 0.25 }}>
                 <Tooltip title={!isExpanded ? item.title : ""} placement="right">
                   <ListItemButton
-                    onClick={() => handleSubMenuToggle(item.title)}
+                    onMouseEnter={(e) => handleMenuHover(e, item.title)}
+                    onMouseLeave={handleMenuLeave}
                     sx={{
                       borderRadius: 1.5,
                       pl: isExpanded ? level * 1.5 + 1.5 : 1,
@@ -119,19 +265,213 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ drawerWidth }) => {
                           primary={item.title}
                           primaryTypographyProps={{ fontSize: '0.8rem', fontWeight: isActive ? 700 : 500, color: 'rgba(255,255,255,0.95)' }}
                         />
-                        {isSubMenuOpen
-                          ? <ExpandLess sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 18 }} />
-                          : <ExpandMore sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 18 }} />}
+                        <ChevronRightIcon sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 18 }} />
                       </>
                     )}
                   </ListItemButton>
                 </Tooltip>
               </ListItem>
-              <Collapse in={isExpanded && isSubMenuOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  {item.children && renderMenuItems(item.children, level + 1)}
-                </List>
-              </Collapse>
+              {/* Hover Popover for children */}
+              <Popover
+                open={isHovered}
+                anchorEl={anchorEl}
+                onClose={handlePopoverLeave}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                sx={{
+                  pointerEvents: 'none',
+                  '& .MuiPopover-paper': {
+                    pointerEvents: 'auto',
+                    ml: 0.5,
+                    bgcolor: theme.palette.primary.main,
+                    backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+                    boxShadow: '4px 4px 20px rgba(0,0,0,0.3)',
+                    borderRadius: 2,
+                    minWidth: 200,
+                  }
+                }}
+                disableRestoreFocus
+              >
+                <Box
+                  onMouseEnter={handlePopoverEnter}
+                  onMouseLeave={handlePopoverLeave}
+                  sx={{ py: 1 }}
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      px: 2,
+                      py: 0.5,
+                      display: 'block',
+                      color: 'rgba(255,255,255,0.6)',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      fontSize: '0.65rem',
+                    }}
+                  >
+                    {item.title}
+                  </Typography>
+                  <List disablePadding>
+                    {item.children?.map((child, childIndex) => {
+                      const childIcon = getIcon(child.icon as iconType);
+                      const childPath = child.path ? normalizePath(child.path) : "#";
+                      const isChildActive = childPath && location.pathname.startsWith(childPath);
+                      const hasGrandChildren = child.children && child.children.length > 0;
+                      
+                      return (
+                        <ListItem key={childIndex} disablePadding sx={{ px: 1, position: 'relative' }}>
+                          <ListItemButton
+                            component={hasGrandChildren ? 'div' : Link}
+                            to={hasGrandChildren ? undefined : childPath}
+                            onMouseEnter={hasGrandChildren ? (e: React.MouseEvent<HTMLElement>) => handleMenuHover(e, `${item.title}-${child.title}`) : undefined}
+                            onMouseLeave={hasGrandChildren ? handleMenuLeave : undefined}
+                            sx={{
+                              borderRadius: 1,
+                              minHeight: 36,
+                              bgcolor: isChildActive ? alpha('#fff', 0.18) : 'transparent',
+                              '&:hover': { bgcolor: alpha('#fff', 0.12) },
+                              position: 'relative',
+                              '&::before': isChildActive ? {
+                                content: '""',
+                                position: 'absolute',
+                                left: 0,
+                                top: '20%',
+                                height: '60%',
+                                width: 3,
+                                borderRadius: '0 3px 3px 0',
+                                bgcolor: 'rgba(255,255,255,0.9)',
+                              } : {},
+                            }}
+                          >
+                            {childIcon && (
+                              <ListItemIcon sx={{ color: isChildActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.75)', minWidth: 32, '& svg': { fontSize: 18 } }}>
+                                {childIcon}
+                              </ListItemIcon>
+                            )}
+                            <ListItemText
+                              primary={child.title}
+                              primaryTypographyProps={{
+                                fontSize: '0.75rem',
+                                fontWeight: isChildActive ? 600 : 500,
+                                color: isChildActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.85)'
+                              }}
+                            />
+                            {hasGrandChildren && (
+                              <ChevronRightIcon sx={{ color: 'rgba(255,255,255,0.6)', fontSize: 16 }} />
+                            )}
+                          </ListItemButton>
+                          
+                          {/* Nested Popover for grandchildren */}
+                          {hasGrandChildren && (
+                            <Popover
+                              open={hoveredMenu === `${item.title}-${child.title}`}
+                              anchorEl={anchorEl}
+                              onClose={handlePopoverLeave}
+                              anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                              }}
+                              transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                              }}
+                              sx={{
+                                pointerEvents: 'none',
+                                '& .MuiPopover-paper': {
+                                  pointerEvents: 'auto',
+                                  ml: 0.5,
+                                  bgcolor: theme.palette.primary.main,
+                                  backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+                                  boxShadow: '4px 4px 20px rgba(0,0,0,0.3)',
+                                  borderRadius: 2,
+                                  minWidth: 180,
+                                }
+                              }}
+                              disableRestoreFocus
+                            >
+                              <Box
+                                onMouseEnter={handlePopoverEnter}
+                                onMouseLeave={handlePopoverLeave}
+                                sx={{ py: 1 }}
+                              >
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    px: 2,
+                                    py: 0.5,
+                                    display: 'block',
+                                    color: 'rgba(255,255,255,0.6)',
+                                    fontWeight: 600,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em',
+                                    fontSize: '0.65rem',
+                                  }}
+                                >
+                                  {child.title}
+                                </Typography>
+                                <List disablePadding>
+                                  {child.children?.map((grandChild, grandChildIndex) => {
+                                    const grandChildIcon = getIcon(grandChild.icon as iconType);
+                                    const grandChildPath = grandChild.path ? normalizePath(grandChild.path) : "#";
+                                    const isGrandChildActive = grandChildPath && location.pathname.startsWith(grandChildPath);
+                                    
+                                    return (
+                                      <ListItem key={grandChildIndex} disablePadding sx={{ px: 1 }}>
+                                        <ListItemButton
+                                          component={Link}
+                                          to={grandChildPath}
+                                          sx={{
+                                            borderRadius: 1,
+                                            minHeight: 32,
+                                            bgcolor: isGrandChildActive ? alpha('#fff', 0.18) : 'transparent',
+                                            '&:hover': { bgcolor: alpha('#fff', 0.12) },
+                                            position: 'relative',
+                                            '&::before': isGrandChildActive ? {
+                                              content: '""',
+                                              position: 'absolute',
+                                              left: 0,
+                                              top: '20%',
+                                              height: '60%',
+                                              width: 3,
+                                              borderRadius: '0 3px 3px 0',
+                                              bgcolor: 'rgba(255,255,255,0.9)',
+                                            } : {},
+                                          }}
+                                        >
+                                          {grandChildIcon && (
+                                            <ListItemIcon sx={{ color: isGrandChildActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.75)', minWidth: 28, '& svg': { fontSize: 16 } }}>
+                                              {grandChildIcon}
+                                            </ListItemIcon>
+                                          )}
+                                          <ListItemText
+                                            primary={grandChild.title}
+                                            primaryTypographyProps={{
+                                              fontSize: '0.7rem',
+                                              fontWeight: isGrandChildActive ? 600 : 500,
+                                              color: isGrandChildActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.85)'
+                                            }}
+                                          />
+                                        </ListItemButton>
+                                      </ListItem>
+                                    );
+                                  })}
+                                </List>
+                              </Box>
+                            </Popover>
+                          )}
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                </Box>
+              </Popover>
             </React.Fragment>
           );
         }

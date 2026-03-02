@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef, RefObject, } from 'react';
+import React, { useState, useEffect, useCallback, useRef, RefObject, } from 'react';
 import { PageHeader, DataTable } from '@/components/ui';
 import { Button, TableCell, TableRow, Paper, Typography, Box, Menu, MenuItem, Checkbox, Tooltip, IconButton, Divider, Drawer } from '@mui/material';
 import AddAccountsCustomer from './components/AddCustomer';
 import AddCustomer from '@/pages/customer-service/load-customers/components/AddCustomer';
 import { ICustomer, IAccountsCustomerView, IPaymentTerm, CustomerStatus, } from '@/types';
-import { useTheme } from '@mui/material/styles';
 import { fetchAccountsCustomers } from '@/redux/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
@@ -30,7 +29,6 @@ import { getIcon } from '@/components/common/icons/getIcon';
 const DEFAULT_PAGE_SIZE = 10;
 
 const ViewCustomers: React.FC = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
@@ -179,14 +177,7 @@ const ViewCustomers: React.FC = () => {
     }
   }, [currentPage, limit, filters.search]);
 
-  // Memoized visible column definitions for table head to avoid recompute
-  const displayedColumns = useMemo(
-    () =>
-      AccountsCustomerColumns.filter((col) =>
-        visibleColumns.includes(col.key)
-      ),
-    [visibleColumns]
-  );
+
   const customers = customer?.data || [];
   const total = customer?.pagination?.total || 0;
   return (

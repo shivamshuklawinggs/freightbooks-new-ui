@@ -1,6 +1,6 @@
 import React, { FormEvent, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, Paper, Button, Alert, Container, Stack, Stepper, Step, StepLabel, Typography } from "@mui/material";
+import { Box, Paper, Button, Alert, Container, Stack, Stepper, Step, StepLabel } from "@mui/material";
 import LoadDetails from "./LoadDetails";
 import Delivery from "./Delivery";
 import Pickup from "./Pickup";

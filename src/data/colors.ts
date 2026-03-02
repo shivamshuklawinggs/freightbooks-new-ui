@@ -16,6 +16,7 @@ export type SemanticColorPreset = {
   main: string;
   light: string;
   dark: string;
+  contrastText?: string;
 };
 
 export type ColorPresets = Record<string, ColorPreset>;
@@ -46,70 +47,75 @@ export const sidebarStyles = defaults.sidebarStyles.reduce<Record<string, string
   {}
 );
 export const Colors = {
-     PartiallyPaid:"#ffc107",
-     Paid:"#8bc34a",
-     Overdue:"#e53935",
-     Pending:"#ffc107",
-     Delivered:"#8bc34a",
-     Cancelled:"#e53935",
-     InProgress:"#64b5f6",
-     Dispatched:"#4caf50",
-     PickedUp:"#4582ec",
-     Claimed:"#d50000",
-     ClaimedDelivered:"#cc1619",
-     loadNumber:"#4582ec",
-     loadAmount:"#4582ec",
-     customeramt:"#4582ec",
-     dipsatchRateAmt:"#4582ec",
-     carrierPay:"#4582ec",
-     status:"#4582ec",
-     invoice:"#4582ec",
-     customer:"#b14749",
-     repair:"#885824",
-     picks:"#4582ec",
-     pickDate:"#4582ec",
-     currentLocation:"#4582ec",
-     drops:"#4582ec",
-     dropDate:"#4582ec",
-     carrier:"#2f8280",
-     driver:"#4582ec",
-     equipment:"#4582ec",
-     powerUnit:"#4582ec",
-     trailer:"#4582ec",
-     createdBy:"#4582ec",
-     equipmentType:"#4582ec",
-     Partial:"#4582ec",
-     Full:"#4582ec",
-     Van:"#4582ec",
-     Reefer:"#4582ec",
-     VanAirRide:"#4582ec",
-     VanHazardous:"#4582ec",
-     VanVented:"#4582ec",
-     VanCurtains:"#4582ec",
-     VanPalletExchange:"#4582ec",
-     ReeferHazardous:"#4582ec",
-     ReeferPalletExchange:"#4582ec",
-     DoubleDrop:"#4582ec",
-     Flatbed:"#4582ec",
-     FlatbedHazardous:"#4582ec",
-     FlatbedPalletExchange:"#4582ec",
-     FlatbedSides:"#4582ec",
-     Lowboy:"#4582ec",
-     Maxi:"#4582ec",
-     RemovableGooseneck:"#4582ec",
-     StepDeck:"#4582ec",
-     AutoCarrier:"#4582ec",
-     DumpTrailer:"#4582ec",
-     HopperBottom:"#4582ec",
-     Hotshot:"#4582ec",
-     Tanker:"#4582ec",
-     FlatbedStepDeck:"#4582ec",
-     FlatbedVan:"#4582ec",
-     FlatbedReefer:"#4582ec",
-     ReeferVan:"#4582ec",
-     FlatbedReeferVan:"#4582ec",
-     PowerOnly:"#4582ec",
-     unknown:"#e47a51"
+     // Status colors - matching new theme
+     PartiallyPaid: "#f59e0b",  // amber
+     Paid: "#10b981",           // green
+     Overdue: "#ef4444",        // red
+     Pending: "#f59e0b",        // amber
+     Delivered: "#10b981",      // green
+     Cancelled: "#ef4444",      // red
+     InProgress: "#3b82f6",     // blue
+     Dispatched: "#10b981",     // green
+     PickedUp: "#3b82f6",       // blue
+     Claimed: "#ef4444",        // red
+     ClaimedDelivered: "#ef4444", // red
+     
+     // Load/Data colors - using teal accent
+     loadNumber: "#00c9a7",     // teal
+     loadAmount: "#00c9a7",     // teal
+     customeramt: "#00c9a7",    // teal
+     dipsatchRateAmt: "#00c9a7", // teal
+     carrierPay: "#00c9a7",     // teal
+     status: "#00c9a7",         // teal
+     invoice: "#00c9a7",        // teal
+     customer: "#8b5cf6",       // purple
+     repair: "#f59e0b",         // amber
+     picks: "#00c9a7",          // teal
+     pickDate: "#00c9a7",       // teal
+     currentLocation: "#00c9a7", // teal
+     drops: "#00c9a7",          // teal
+     dropDate: "#00c9a7",       // teal
+     carrier: "#00c9a7",        // teal
+     driver: "#00c9a7",         // teal
+     equipment: "#00c9a7",      // teal
+     powerUnit: "#00c9a7",      // teal
+     trailer: "#00c9a7",        // teal
+     createdBy: "#94a3b8",      // grey
+     
+     // Equipment types - using blue/teal variants
+     equipmentType: "#3b82f6",  // blue
+     Partial: "#3b82f6",        // blue
+     Full: "#10b981",           // green
+     Van: "#3b82f6",            // blue
+     Reefer: "#60a5fa",         // light blue
+     VanAirRide: "#3b82f6",     // blue
+     VanHazardous: "#f59e0b",   // amber warning
+     VanVented: "#3b82f6",      // blue
+     VanCurtains: "#3b82f6",    // blue
+     VanPalletExchange: "#3b82f6", // blue
+     ReeferHazardous: "#f59e0b", // amber warning
+     ReeferPalletExchange: "#60a5fa", // light blue
+     DoubleDrop: "#8b5cf6",     // purple
+     Flatbed: "#00c9a7",        // teal
+     FlatbedHazardous: "#f59e0b", // amber warning
+     FlatbedPalletExchange: "#00c9a7", // teal
+     FlatbedSides: "#00c9a7",   // teal
+     Lowboy: "#8b5cf6",         // purple
+     Maxi: "#8b5cf6",           // purple
+     RemovableGooseneck: "#8b5cf6", // purple
+     StepDeck: "#00c9a7",       // teal
+     AutoCarrier: "#ec4899",    // pink
+     DumpTrailer: "#f59e0b",    // amber
+     HopperBottom: "#f59e0b",   // amber
+     Hotshot: "#ef4444",        // red
+     Tanker: "#3b82f6",         // blue
+     FlatbedStepDeck: "#00c9a7", // teal
+     FlatbedVan: "#3b82f6",     // blue
+     FlatbedReefer: "#60a5fa",  // light blue
+     ReeferVan: "#60a5fa",      // light blue
+     FlatbedReeferVan: "#60a5fa", // light blue
+     PowerOnly: "#94a3b8",      // grey
+     unknown: "#64748b"         // grey
 }
 
 

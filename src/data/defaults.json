@@ -55,10 +55,10 @@
       "contrast": "#FFFFFF"
     },
     "teal": {
-      "main": "#00C48C",
-      "light": "#33D9A8",
-      "dark": "#00A374",
-      "contrast": "#000000"
+      "main": "#00c9a7",
+      "light": "#33d4b8",
+      "dark": "#00a08c",
+      "contrast": "#ffffff"
     },
     "cyan": {
       "main": "#0891B2",
@@ -141,9 +141,10 @@
   },
   "darkBackgrounds": {
     "charcoal": {
-      "default": "#0D1B2A",
-      "paper": "#132234",
-      "sidebar": "#0A1520"
+      "default": "#0a0f1e",
+      "paper": "#111827",
+      "sidebar": "#0a0f1e",
+      "card": "#1e293b"
     },
     "dark": {
       "default": "#111827",
@@ -168,31 +169,35 @@
       "disabled": "#94A3B8"
     },
     "dark": {
-      "primary": "#F1F5F9",
-      "secondary": "#94A3B8",
-      "disabled": "#475569"
+      "primary": "#ffffff",
+      "secondary": "#94a3b8",
+      "disabled": "#64748b"
     }
   },
   "semanticColors": {
     "success": {
-      "main": "#16A34A",
-      "light": "#DCFCE7",
-      "dark": "#15803D"
+      "main": "#10b981",
+      "light": "#34d399",
+      "dark": "#059669",
+      "contrastText": "#ffffff"
     },
     "warning": {
-      "main": "#F59E0B",
-      "light": "#FEF3C7",
-      "dark": "#D97706"
+      "main": "#f59e0b",
+      "light": "#fcd34d",
+      "dark": "#d97706",
+      "contrastText": "#ffffff"
     },
     "error": {
-      "main": "#DC2626",
-      "light": "#FEE2E2",
-      "dark": "#B91C1C"
+      "main": "#ef4444",
+      "light": "#f87171",
+      "dark": "#dc2626",
+      "contrastText": "#ffffff"
     },
     "info": {
-      "main": "#2563EB",
-      "light": "#DBEAFE",
-      "dark": "#1D4ED8"
+      "main": "#3b82f6",
+      "light": "#60a5fa",
+      "dark": "#2563eb",
+      "contrastText": "#ffffff"
     }
   },
   "sidebarStyles": [

@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef, RefObject, } from 'react';
+import React, { useState, useEffect, useCallback, useRef, RefObject, } from 'react';
 import { Button, TableCell, TableRow, Paper, Typography, Box, CircularProgress, Menu, MenuItem, Checkbox, Tooltip, IconButton, Divider, Drawer } from '@mui/material';
 import { DataTable } from '@/components/ui';
 import { CustomerStatus, ICarrier, } from '@/types';
-import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { Add as AddIcon, Settings as SettingsIcon, Print as PrintIcon, Download, FilterList as FilterListIcon } from '@mui/icons-material';
@@ -29,7 +28,6 @@ import { PageHeader } from '@/components/ui';
 const DEFAULT_PAGE_SIZE = 10;
 
 const View: React.FC = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
   const currentUser = useSelector((state: RootState) => state.user);
 
@@ -184,25 +182,8 @@ const View: React.FC = () => {
   const handleExportData = useCallback(() => {
     exportVendorsMutation.mutate();
   }, [exportVendorsMutation]);
-  // Memoized visible column definitions for table head to avoid recompute
-  const displayedColumns = useMemo(
-    () =>
-      AccountsCustomerColumns.filter((col) =>
-        visibleColumns.includes(col.key)
-      ),
-    [visibleColumns]
-  );
+ 
 
-  // Handlers for pagination
-  const handleChangePage = (_: unknown, newPage: number) => {
-    setCurrentPage(newPage + 1);
-  };
-  const handleChangeRowsPerPage = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
-    setLimit(parseInt(e.target.value, 10));
-    setCurrentPage(1);
-  };
     const handleImportInvoice = (file: File) => {
     invoiceImportMutation.mutate({ file });
   };

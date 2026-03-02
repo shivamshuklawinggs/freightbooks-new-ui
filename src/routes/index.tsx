@@ -384,7 +384,6 @@ const baseProtectedRoutes: Route[] = [
       {
         title: "Sales",
         path: "/sales",
-        element: GetInvoices,
         icon: "sales",
         key: "accounting",
         action: 'view',

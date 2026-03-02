@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, Paper, Button, Alert, Container, Stack, Stepper, Step, StepLabel, Typography } from "@mui/material";
+import { Box, Paper, Button, Alert, Container, Stack, Stepper, Step, StepLabel } from "@mui/material";
 import { AppDispatch, RootState } from "@/redux/store";
 import LoadDetails from "./LoadDetails";
 import Carrier from "./Carrier/Index";
