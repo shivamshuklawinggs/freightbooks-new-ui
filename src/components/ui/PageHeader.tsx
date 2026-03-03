@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, Stack } from '@mui/material';
 
 interface PageHeaderProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   actions?: React.ReactNode;
 }
@@ -18,9 +18,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, subtitle, actions }) => 
       gap={1}
     >
       <Box>
-        <Typography variant="h5" fontWeight={700}>
-          {title}
-        </Typography>
+        {title && (
+          <Typography variant="h5" fontWeight={700}>
+            {title}
+          </Typography>
+        )}
         {subtitle && (
           <Typography variant="body2" color="text.secondary">
             {subtitle}
