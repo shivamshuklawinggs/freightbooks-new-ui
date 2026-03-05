@@ -17,13 +17,10 @@ import {
   Tab,
   Tooltip,
   Divider,
-  Drawer,
-  IconButton,
 
 } from '@mui/material';
 import {
   ViewColumn as ViewColumnIcon,
-  FilterList as FilterListIcon,
 
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -84,7 +81,6 @@ const ViewLoad: React.FC = () => {
   const [showInvoiceModal, setShowInvoiceModal] = useState<boolean>(false);
   const [editingInvoice, setEditingInvoice] = useState<any>(null);
   const [columnMenuAnchor, setColumnMenuAnchor] = useState<null | HTMLElement>(null);
-  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [currentLoad, setCurrentLoad] = useState<IViewLoad | null>(null);
   // State for address modal
@@ -238,23 +234,24 @@ const ViewLoad: React.FC = () => {
     { key: 'actions', label: 'Actions', align: 'center' as const },
   ];
 
+
+
   return (
     <>
       <Box sx={{ minHeight: '100vh' }}>
+         <FilterBox
+              search={search}
+              setSearch={setSearch}
+              startPickupDate={startPickupDate}
+              setStartPickupDate={setStartPickupDate}
+              endPickupDate={endPickupDate}
+              setEndPickupDate={setEndPickupDate}
+            />
         <PageHeader
-          title="Loads"
-          subtitle="Manage your freight loads"
+          // title="Loads"
+          // subtitle="Manage your freight loads"
           actions={
-            <>
-              <Tooltip title="Filter">
-                <IconButton
-                  size="small"
-                  onClick={() => setFilterDrawerOpen(true)}
-                  sx={{ color: 'text.secondary', mr: 1 }}
-                >
-                  <FilterListIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
+            <Box margin={1}>
               <Tooltip title="Filter by column">
                 <Button
                   variant="outlined"
@@ -300,31 +297,9 @@ const ViewLoad: React.FC = () => {
                   </Button>
                 }
               />
-            </>
+            </Box>
           }
         />
-
-       
-
-        <Drawer
-          anchor="right"
-          open={filterDrawerOpen}
-          onClose={() => setFilterDrawerOpen(false)}
-          PaperProps={{ sx: { width: 320 } }}
-        >
-          <Box sx={{ p: 2 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>Filter Loads</Typography>
-            <FilterBox
-              search={search}
-              setSearch={setSearch}
-              startPickupDate={startPickupDate}
-              setStartPickupDate={setStartPickupDate}
-              endPickupDate={endPickupDate}
-              setEndPickupDate={setEndPickupDate}
-            />
-          </Box>
-        </Drawer>
-
         <Paper 
           elevation={0} 
           sx={{ 
@@ -376,30 +351,62 @@ const ViewLoad: React.FC = () => {
           renderRow={(load: IViewLoad) => (
             <TableRow
               key={load._id}
-              hover
+              // hover
               sx={{
                 '&:last-child td': { border: 0 },
                 borderLeft: getClaimedStatus(load.status)?.color
                   ? `4px solid ${getClaimedStatus(load.status)?.color}`
                   : undefined,
                 position: 'relative',
-                '&:hover': {
-                  bgcolor: 'action.hover',
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 6px 16px rgba(0,0,0,0.12)',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  '& .MuiTableCell-root': {
-                    borderBottom: '1px solid transparent'
-                  }
-                },
-             
-                '&:hover::before': {
-                  opacity: 1
-                }
+                // '&:hover': {
+                //   bgcolor: 'action.hover',
+                //   transform: 'translateY(-2px)',
+                //   boxShadow: '0 6px 16px rgba(0,0,0,0.12)',
+                //   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                //   '& .MuiTableCell-root': {
+                //     borderBottom: '1px solid transparent'
+                //   }
+                // },
+                // '&::before': {
+                //   content: '""',
+                //   position: 'absolute',
+                //   top: 0,
+                //   left: 0,
+                //   right: 0,
+                //   bottom: 0,
+                //   background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.02), transparent)',
+                //   opacity: 0,
+                //   transition: 'opacity 0.3s ease'
+                // },
+                // '&:hover::before': {
+                //   opacity: 1
+                // }
               }}
             >
-              {COLUMN_OPTIONS.map((col) =>
-                visibleColumns.includes(col.key) ? (
+              {tableColumns.map((col) =>
+                col.key === 'actions' ? (
+                  <TableCell key="actions" align="center" sx={{ py: 0.5 }}>
+                    <VerticalMenu
+                      actions={[
+                        hasAccess(["loads"], "update", currentUser)
+                          ? { label: 'Edit', icon: "edit", onClick: () => handleEdit(load._id) }
+                          : null,
+                        hasAccess(["loads"], "update", currentUser) && load.isActive
+                          ? { label: 'Deactivate', icon: "cancel", disabled: deleteLoadMutation.isPending, onClick: () => handleToggleActivate(load._id, load.isActive) }
+                          : null,
+                        hasAccess(["loads"], "view", currentUser)
+                          ? { label: 'View', icon: "visibility", onClick: () => handleOpenViewLoadModal(load) }
+                          : null,
+                        hasAccess(["loads"], "view", currentUser)
+                          ? { label: 'Generate Rate Confirmation PDF', icon: "visibility", onClick: () => generatePDF(load._id), loading: isGeneratingPdf }
+                          : null,
+                        hasAccess(["loads"], "delete", currentUser)
+                          ? { label: 'Delete', icon: "delete", onClick: () => handleToggleDelete(load._id, load.isActive), loading: deleteLoadDataMutation.isPending }
+                          : null,
+                      ]}
+                    />
+                  </TableCell>
+                ) : (
                   <TableCell key={col.key} sx={{ py: 1.25 }}>
                     {renderCell({
                       column: col.key,
@@ -415,29 +422,8 @@ const ViewLoad: React.FC = () => {
                       currentLoad,
                     })}
                   </TableCell>
-                ) : null
+                )
               )}
-              <TableCell align="center" sx={{ py: 0.5 }}>
-                <VerticalMenu
-                  actions={[
-                    hasAccess(["loads"], "update", currentUser)
-                      ? { label: 'Edit', icon: "edit", onClick: () => handleEdit(load._id) }
-                      : null,
-                    hasAccess(["loads"], "update", currentUser) && load.isActive
-                      ? { label: 'Deactivate', icon: "cancel", disabled: deleteLoadMutation.isPending, onClick: () => handleToggleActivate(load._id, load.isActive) }
-                      : null,
-                    hasAccess(["loads"], "view", currentUser)
-                      ? { label: 'View', icon: "visibility", onClick: () => handleOpenViewLoadModal(load) }
-                      : null,
-                    hasAccess(["loads"], "view", currentUser)
-                      ? { label: 'Generate Rate Confirmation PDF', icon: "visibility", onClick: () => generatePDF(load._id), loading: isGeneratingPdf }
-                      : null,
-                    hasAccess(["loads"], "delete", currentUser)
-                      ? { label: 'Delete', icon: "delete", onClick: () => handleToggleDelete(load._id, load.isActive), loading: deleteLoadDataMutation.isPending }
-                      : null,
-                  ]}
-                />
-              </TableCell>
             </TableRow>
           )}
         />

@@ -94,7 +94,7 @@ const CompanyList: React.FC = () => {
         onPageChange={(newPage) => setCurrentPage(newPage + 1)}
         onRowsPerPageChange={(rows) => { setLimit(rows); setCurrentPage(1); }}
         renderRow={(company) => (
-          <TableRow key={company._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+          <TableRow key={company._id} sx={{ '&:last-child td': { border: 0 } }}>
             <TableCell sx={{ py: 1.25 }}>{company.label}</TableCell>
             <TableCell sx={{ py: 1.25 }}>{company.description}</TableCell>
             <TableCell sx={{ py: 1.25 }}>{company.type}</TableCell>

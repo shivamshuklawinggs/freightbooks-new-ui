@@ -9,7 +9,8 @@ import {
   TableRow,
   Paper,
   Typography,
-  Box
+  Box,
+  useTheme
 } from '@mui/material';
 import { Reporttitle } from "../constant";
 import { useNavigate, useParams } from 'react-router-dom';
@@ -19,6 +20,7 @@ import { formatCurrency } from '@/utils';
 import { paths } from '@/utils/paths';
 
 const TrialBalanceReport: React.FC<{ reportData: ITrialBalanceReport }> = ({ reportData }) => {
+  const theme=useTheme()
   const navigate=useNavigate()
   const { type = "TrialBalanceReport" } = useParams<{ type: allowedreports }>();
   const filters = useAppSelector((state) => state.report);
@@ -30,7 +32,7 @@ const TrialBalanceReport: React.FC<{ reportData: ITrialBalanceReport }> = ({ rep
         sx={{
           p: 4,
           mb: 4,
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.main} 100%)`,
           color: 'white',
           textAlign: 'center'
         }}

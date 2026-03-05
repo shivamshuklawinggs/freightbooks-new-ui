@@ -66,17 +66,17 @@ const renderCell = ({ column, load, setAddressModalOpen, setSelectedAddresses, o
         powerUnit: () => load.carrierIds?.powerunit || 'N/A',
 
         temperature: () => load.temperature || 'N/A',
-        pickDate: () => load.pickupLocationId?.[0]?.date ? moment(load.pickupLocationId?.[0]?.date).format('DD-MM-YYYY') : 'N/A',
-        dropDate: () => load.deliveryLocationId?.[0]?.date ? moment(load.deliveryLocationId?.[0]?.date).format('DD-MM-YYYY') : 'N/A',
         currentLocation: () => load.currentLocation || 'N/A',
         createdBy: () => load?.createdUser?.name || '-',
         carrier: () => load.carrierIds?.carrier?.company || 'N/A',
 
         equipment: () => load.equipmentType || 'N/A',
-        "carrierPay": () => load?.carrierIds?.carrierPay || 'N/A',
-        "carrierTotal": () => load?.carrierIds?.carrierTotal || 'N/A',
-        "margin": () => load?.carrierIds?.margin || 'N/A',
-        "dipsatchRateAmt": () => load?.carrierIds?.dipsatchRateAmt || 'N/A',
+        carrierPay: () => load?.carrierIds?.carrierPay || 'N/A',
+        carrierTotal: () => load?.carrierIds?.carrierTotal || 'N/A',
+        margin: () => load?.carrierIds?.margin || 'N/A',
+        dipsatchRateAmt: () => load?.carrierIds?.dipsatchRateAmt || 'N/A',
+        customeramt: () => load?.loadAmount || 'N/A',
+        loadAmount: () => load?.loadAmount || 'N/A',
         default: () => renderDefaultCellValue(load[column as keyof IViewLoad]),
     }
     // Get the renderer for the column, fallback to default

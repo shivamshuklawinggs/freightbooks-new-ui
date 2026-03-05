@@ -72,16 +72,18 @@ const ItemServicesList: React.FC = () => {
         columns={[
           { key: 'label', label: 'Label' },
           { key: 'type', label: 'Type' },
+          { key: 'productservices', label: 'Product/Service' },
           { key: 'actions', label: 'Actions' },
         ]}
         data={itemServices}
         isLoading={isLoading}
         emptyMessage={isError ? 'Failed to fetch item services' : 'No expense types found'}
         renderRow={(item) => (
-          <TableRow key={item._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+          <TableRow key={item._id} sx={{ '&:last-child td': { border: 0 } }}>
             <TableCell sx={{ py: 1.25 }}>{item.label}</TableCell>
             <TableCell sx={{ py: 1.25 }}>{item.value}</TableCell>
-            <TableCell sx={{ py: 0.5 }}>
+            <TableCell sx={{ py: 1.25 }}>{item.productservices?.name || 'N/A'}</TableCell>
+            <TableCell sx={{ py: 1.25 }}>
               <VerticalMenu actions={[
                 { label: 'Edit', onClick: () => handleEdit(item), icon: 'edit' },
               ]}/>

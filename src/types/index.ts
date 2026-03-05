@@ -1395,6 +1395,10 @@ export interface IitemService {
   label: string;
   value: string;
   productservice: string;
+  productservices?: {
+    _id: string;
+    name: string;
+  };
 }
 export enum LocationClass {
   WAREHOUSE = 'warehouse',

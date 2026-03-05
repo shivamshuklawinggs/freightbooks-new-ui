@@ -10,7 +10,7 @@ import {
   Paper,
   Typography,
   Box,
-  IconButton
+  IconButton,useTheme
 } from '@mui/material'
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
 import { Reporttitle ,bucketLabels} from "../constant";
@@ -21,6 +21,7 @@ import moment from 'moment';
 import { useAppSelector } from '@/redux/store';
 import { paths } from '@/utils/paths';
 const AccountsRecieveableDetailCard: React.FC<{ reportData: IAccountsRecieveableDetail }> = ({ reportData }) => {
+  const theme=useTheme()
   const navigate=useNavigate()
   const [expandedBuckets, setExpandedBuckets] = React.useState<Record<string, boolean>>({})
     const filters = useAppSelector((state) => state.report);
@@ -35,7 +36,7 @@ const AccountsRecieveableDetailCard: React.FC<{ reportData: IAccountsRecieveable
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1600px', mx: 'auto' }}>
       {/* Header */}
-      <Paper elevation={2} sx={{ p: 4, mb: 4, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', textAlign: 'center' }}>
+      <Paper elevation={2} sx={{ p: 4, mb: 4, background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', textAlign: 'center' }}>
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           {Reporttitle[type]}
         </Typography>

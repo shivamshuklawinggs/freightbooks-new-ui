@@ -1,4 +1,4 @@
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Collapse, IconButton } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Collapse, IconButton,useTheme } from "@mui/material";
 import  { FC, useMemo, useState } from "react";
 import { allowedreports, ReportData, ReportSection, ReportRowData } from "@/types";
 import { useSelector } from "react-redux";
@@ -25,6 +25,7 @@ interface MonthYear {
 }
 
 const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData }) => {
+    const theme=useTheme()
     const navigate = useNavigate();
     const filters = useSelector((state: RootState) => state.report);
     const { type = "balance-sheet" } = useParams<{ type: allowedreports }>()
@@ -183,7 +184,7 @@ const ProfitAndLossByMonthCard: FC<ProfitAndLossByMonthProps> = ({ reportData })
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '100%', mx: 'auto' }}>
-            <Paper elevation={2} sx={{ p: 4, mb: 4, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+            <Paper elevation={2} sx={{ p: 4, mb: 4, background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white' }}>
                 <Typography variant="h4" align="center" sx={{ fontWeight: 700, mb: 1 }}>
                     {Reporttitle[type]}
                 </Typography>

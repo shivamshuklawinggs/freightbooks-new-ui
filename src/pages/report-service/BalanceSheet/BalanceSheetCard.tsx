@@ -1,4 +1,4 @@
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import React, { FC } from "react";
 import SectionRow from "./SectionRow";
 import { useSelector } from "react-redux";
@@ -35,6 +35,7 @@ interface BalanceSheetProps {
 }
 
 const BalanceSheetCard: FC<BalanceSheetProps> = ({ reportData }) => {
+    const theme=useTheme()
     const filters = useSelector((state: RootState) => state.report);
      const {type="balance-sheet"}=useParams<{type:allowedreports}>()
     const renderSections = (sections: BalanceSheetIassets[] = []) => (
@@ -57,7 +58,7 @@ const BalanceSheetCard: FC<BalanceSheetProps> = ({ reportData }) => {
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1400px', mx: 'auto' }}>
-            <Paper elevation={2} sx={{ p: 4, mb: 4, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+            <Paper elevation={2} sx={{ p: 4, mb: 4, background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white' }}>
                 <Typography variant="h4" align="center" sx={{ fontWeight: 700, mb: 1 }}>
                     {Reporttitle[type]}
                 </Typography>

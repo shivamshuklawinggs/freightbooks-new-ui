@@ -235,7 +235,7 @@ const VendorBills: React.FC = () => {
             onPageChange={(newPage) => setCurrentPage(newPage + 1)}
             onRowsPerPageChange={(rows) => setLimit(rows)}
             renderRow={(invoice) => (
-              <TableRow key={invoice._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+              <TableRow key={invoice._id} sx={{ '&:last-child td': { border: 0 } }}>
                 <TableCell sx={{ py: 1.25 }}>{invoice.BillNumber}</TableCell>
                 <TableCell sx={{ py: 1.25 }}>{invoice.carrier?.company || 'N/A'}</TableCell>
                 <TableCell sx={{ py: 1.25 }}>

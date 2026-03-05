@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   Box, 
   Paper, 
@@ -18,6 +18,7 @@ import {
   CircularProgress
 } from '@mui/material';
 import { Behavior, Communication  ,ReportScore} from '@/components/common/icons/RatingIcons';
+import { useQuery } from '@tanstack/react-query';
 import apiService from '@/service/apiService';
 import { IDriver, ICarrier } from '@/types';
 import { getRatingColor, getRatingLabel } from '@/utils';
@@ -38,99 +39,66 @@ interface IDriverWithCarrier extends IDriver {
 }
 
 const DriverRatingDetails: React.FC = () => {
-  const [loadingDrivers, setLoading] = useState<boolean>(true);
-  const [Driver, setDriver] = useState<IDriverWithCarrier | null>(null);
-  const [carriers, setCarriers] = useState<ICarrier[]>([]);
-  const [drivers, setDrivers] = useState<IDriver[]>([]);
   const [selectedCarrierId, setSelectedCarrierId] = useState<string>('');
   const [selectedDriverId, setSelectedDriverId] = useState<string>('');
   const theme = useTheme();
 
-  useEffect(() => {
-    const fetchDriverDetails = async () => {
-      if (!selectedDriverId) return;
-      
-      try {
-        setLoading(true);
-        const response = await apiService.getDriver(selectedDriverId);
-        
-        if (response.success && response.data) {
-          const driverData = response.data as IDriverWithCarrier;
-          setDriver(driverData);
-          if (driverData.carrierId) {
-            setSelectedCarrierId(driverData.carrierId);
-          }
-          if (driverData._id) {
-            setSelectedDriverId(driverData._id);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching Driver details:', error);
-      } finally {
-        setLoading(false);
+  // Query for carriers list
+  const { data: carriers = [] } = useQuery({
+    queryKey: ['carriers'],
+    queryFn: async () => {
+      const response = await apiService.getCarriers({ page: 1, limit: 100, search: '' });
+      if (response.success && response.data) {
+        return response.data as ICarrier[];
       }
-    };
+      return [];
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
-    fetchDriverDetails();
-  }, [selectedDriverId]);
-
-  // Fetch carriers list once
-  useEffect(() => {
-    const fetchCarriers = async () => {
-      try {
-        const response = await apiService.getCarriers({ page: 1, limit: 100, search: '' });
-        if (response.success && response.data) {
-          setCarriers(response.data as ICarrier[]);
-        }
-      } catch (error) {
-        console.error('Error fetching carriers:', error);
+  // Query for drivers based on selected carrier
+  const { data: drivers = [], isLoading: isLoadingDrivers } = useQuery({
+    queryKey: ['drivers', selectedCarrierId],
+    queryFn: async () => {
+      if (!selectedCarrierId) return [];
+      const response = await apiService.getDrivers({ page: 1, limit: 100, search: '', carrierId: selectedCarrierId });
+      if (response.success && response.data) {
+        return response.data as IDriver[];
       }
-    };
+      return [];
+    },
+    enabled: !!selectedCarrierId,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
 
-    fetchCarriers();
-  }, []);
-
-  // Fetch drivers when carrier changes
-  useEffect(() => {
-    const fetchDrivers = async () => {
-      if (!selectedCarrierId) return;
-
-      try {
-        const response = await apiService.getDrivers({ page: 1, limit: 100, search: '', carrierId: selectedCarrierId });
-        if (response.success && response.data) {
-          setDrivers(response.data as IDriver[]);
+  // Query for selected driver details
+  const { data: Driver, isLoading: isLoadingDriver } = useQuery({
+    queryKey: ['driver', selectedDriverId],
+    queryFn: async () => {
+      if (!selectedDriverId) return null;
+      const response = await apiService.getDriver(selectedDriverId);
+      if (response.success && response.data) {
+        const driverData = response.data as IDriverWithCarrier;
+        if (driverData.carrierId) {
+          setSelectedCarrierId(driverData.carrierId);
         }
-      } catch (error) {
-        console.error('Error fetching drivers:', error);
+        return driverData;
       }
-    };
-
-    fetchDrivers();
-  }, [selectedCarrierId]);
+      return null;
+    },
+    enabled: !!selectedDriverId,
+    staleTime: 1 * 60 * 1000, // 1 minute
+  });
 
   const handleCarrierChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const carrierId = event.target.value as string;
     setSelectedCarrierId(carrierId);
     setSelectedDriverId('');
-    setDrivers([]);
-    setDriver(null)
   };
 
-  const handleDriverChange = async (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleDriverChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const driverId = event.target.value as string;
     setSelectedDriverId(driverId);
-    try {
-      setLoading(true);
-      const response = await apiService.getDriver(driverId);
-      if (response.success && response.data) {
-        const driverData = response.data as IDriverWithCarrier;
-        setDriver(driverData);
-      }
-    } catch (error) {
-      console.error('Error fetching Driver details:', error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   
@@ -215,7 +183,7 @@ const DriverRatingDetails: React.FC = () => {
                 <MenuItem value="">
                   <em>Select Driver</em>
                 </MenuItem>
-                {loadingDrivers ? (
+                {isLoadingDrivers ? (
                   <MenuItem disabled>
                     <CircularProgress size={16} sx={{ mr: 1 }} />
                     Loading Drivers...
@@ -233,7 +201,11 @@ const DriverRatingDetails: React.FC = () => {
         </Grid>
       </Box>
        {
-        Driver && <>
+        isLoadingDriver ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+            <CircularProgress size={40} />
+          </Box>
+        ) : Driver && <>
           {/* Driver Info Card */}
       <Paper 
         elevation={3} 

@@ -61,7 +61,25 @@ const DataTable = <T,>({
 
   return (
     <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
-      <TableContainer>
+      <TableContainer 
+        sx={{ 
+          overflowX: 'auto',
+          '&::-webkit-scrollbar': {
+            height: 8,
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            borderRadius: 4,
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: theme.palette.primary.main,
+            borderRadius: 4,
+            '&:hover': {
+              backgroundColor: theme.palette.primary.dark,
+            },
+          },
+        }}
+      >
         <Table size={size} stickyHeader={stickyHeader}>
           <TableHead>
             <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.06) }}>

@@ -91,7 +91,7 @@ const TaxServicesList: React.FC = () => {
         isLoading={isLoading}
         emptyMessage="No tax options found"
         renderRow={(item: ITaxOption) => (
-          <TableRow key={item._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+          <TableRow key={item._id}  sx={{ '&:last-child td': { border: 0 } }}>
             <TableCell sx={{ py: 1.25 }}>{item.label}</TableCell>
             <TableCell sx={{ py: 1.25 }}>{item.value}</TableCell>
             <TableCell sx={{ py: 0.5 }}>

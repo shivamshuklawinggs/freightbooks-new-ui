@@ -275,7 +275,7 @@ const View: React.FC = () => {
           onPageChange={(newPage) => setCurrentPage(newPage + 1)}
           onRowsPerPageChange={(rows) => { setLimit(rows); setCurrentPage(1); }}
           renderRow={(vendor: ICarrier) => (
-            <TableRow key={vendor._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+            <TableRow key={vendor._id} sx={{ '&:last-child td': { border: 0 } }}>
               {AccountsCustomerColumns
                 .filter((col) => col.key !== 'invoice' && visibleColumns.includes(col.key))
                 .map((col) => (

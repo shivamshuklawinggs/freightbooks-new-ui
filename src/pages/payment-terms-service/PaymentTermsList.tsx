@@ -72,7 +72,7 @@ const PaymentTermsList: React.FC = () => {
         onPageChange={(newPage) => setState({ ...State, page: newPage + 1 })}
         onRowsPerPageChange={(rows) => setState({ ...State, limit: rows })}
         renderRow={(term: IPaymentTerm) => (
-          <TableRow key={term._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+          <TableRow key={term._id}  sx={{ '&:last-child td': { border: 0 } }}>
             <TableCell sx={{ py: 1.25 }}>{term.name}</TableCell>
             <TableCell sx={{ py: 1.25 }}>{term.description}</TableCell>
             <TableCell sx={{ py: 1.25 }}>{term.days}</TableCell>

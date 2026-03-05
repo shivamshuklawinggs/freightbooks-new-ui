@@ -86,7 +86,7 @@ const ProductServices: React.FC = () => {
         onPageChange={(newPage) => setIsPagination({ ...isPagination, page: newPage + 1 })}
         onRowsPerPageChange={(rows) => setIsPagination({ ...isPagination, limit: rows, page: 1 })}
         renderRow={(item: IProductService) => (
-          <TableRow key={item._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+          <TableRow key={item._id}  sx={{ '&:last-child td': { border: 0 } }}>
             <TableCell sx={{ py: 1.25 }}>{capitalizeFirstLetter(item.name || 'N/A')}</TableCell>
             <TableCell sx={{ py: 1.25 }}>{capitalizeFirstLetter(item.category || 'N/A')}</TableCell>
             <TableCell sx={{ py: 1.25 }}>{item.description || 'N/A'}</TableCell>

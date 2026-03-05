@@ -109,7 +109,7 @@ const ViewCustomers: React.FC = () => {
   });
 
   useEffect(() => {
-    const initialColumns = CustomerColumns.slice(0, 6).map((col) => (col.key))
+    const initialColumns = CustomerColumns.map((col) => (col.key))
     visibleColumns?.length == 0 && dispatch(setCustomerVisibleColumns(initialColumns))
   }, [])
 
@@ -304,7 +304,7 @@ const ViewCustomers: React.FC = () => {
 
       <DataTable
         columns={CustomerColumns.filter(col => visibleColumns.includes(col.key)).concat([{ key: 'actions', label: 'Actions' }])}
-        data={customers.filter((item: ICustomer) => item._id !== "")}
+        data={customers}
         isLoading={isLoading}
         emptyMessage="No customers found"
         total={total}
@@ -314,8 +314,8 @@ const ViewCustomers: React.FC = () => {
         onPageChange={(newPage) => setCurrentPage(newPage + 1)}
         onRowsPerPageChange={(rows) => { setLimit(rows); setCurrentPage(1); }}
         renderRow={(customer: ICustomer) => (
-          <TableRow key={customer._id} hover sx={{ '&:last-child td': { border: 0 } }}>
-            {CustomerColumns.filter((col) => col.key !== 'invoice' && visibleColumns.includes(col.key)).map((col) => (
+          <TableRow key={customer._id}  sx={{ '&:last-child td': { border: 0 } }}>
+            {CustomerColumns.filter((col) =>visibleColumns.includes(col.key)).map((col) => (
               <TableCell
                 key={col.key}
                 onClick={() => col.key !== 'rating' && navigate(paths.customertransactionlist + '/' + customer._id, { state: { page: currentPage, limit } })}

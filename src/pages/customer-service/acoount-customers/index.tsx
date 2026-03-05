@@ -303,7 +303,7 @@ const ViewCustomers: React.FC = () => {
           onPageChange={(newPage) => setCurrentPage(newPage + 1)}
           onRowsPerPageChange={(rows) => { setLimit(rows); setCurrentPage(1); }}
           renderRow={(customer: Omit<IAccountsCustomerView, 'paymentTerms'> & { paymentTerms: IPaymentTerm }) => (
-            <TableRow key={customer._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+            <TableRow key={customer._id}  sx={{ '&:last-child td': { border: 0 } }}>
               {AccountsCustomerColumns
                 .filter((col) => col.key !== 'invoice' && visibleColumns.includes(col.key))
                 .map((col) => (

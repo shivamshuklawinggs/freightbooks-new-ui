@@ -84,7 +84,7 @@ const {isLoading,data,refetch} = useQuery<IsuerResponse>({
         onPageChange={(newPage) => setCurrentPage(newPage + 1)}
         onRowsPerPageChange={(rows) => setLimit(rows)}
         renderRow={(user) => (
-          <TableRow key={user._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+          <TableRow key={user._id}  sx={{ '&:last-child td': { border: 0 } }}>
             <TableCell sx={{ py: 1.25 }}>{user.name}</TableCell>
             <TableCell sx={{ py: 1.25 }}>{user.email}</TableCell>
             <TableCell sx={{ py: 1.25, textTransform: 'capitalize' }}>{user.role}</TableCell>

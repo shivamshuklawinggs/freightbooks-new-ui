@@ -46,19 +46,37 @@ const ReportIndex = () => {
    
     return (
         <Box sx={{ p: 3 }}>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom color="text.primary">
                 Reports
             </Typography>
 
-            <Typography variant="h6" gutterBottom sx={{mt: 4}}>
+            <Typography variant="h6" gutterBottom sx={{mt: 4}} color="text.primary">
                 Favorites
             </Typography>
             <Paper>
                 <List>
                     {favoriteReports.map((report, index) => (
                         <React.Fragment key={report.name}>
-                            <ListItem  color='primary' component={Link} to={`/reports/${report.path}`}>
-                                <ListItemText primary={report.name}   /> 
+                            <ListItem  
+                                component={Link} 
+                                to={`/reports/${report.path}`}
+                                sx={{ 
+                                    textDecoration: 'none',
+                                    color: 'inherit',
+                                    '&:hover': {
+                                        bgcolor: 'action.hover',
+                                    }
+                                }}
+                            >
+                                <ListItemText 
+                                    primary={report.name}
+                                    sx={{ 
+                                        '& .MuiListItemText-primary': {
+                                            color: 'text.primary',
+                                            fontWeight: 500
+                                        }
+                                    }}
+                                /> 
                                 <ListItemIcon>
                                     <StarIcon color="success" />
                                 </ListItemIcon>
@@ -69,15 +87,33 @@ const ReportIndex = () => {
                 </List>
             </Paper>
 
-            <Typography variant="h6" gutterBottom sx={{mt: 4}}>
+            <Typography variant="h6" gutterBottom sx={{mt: 4}} color="text.primary">
                 Business overview
             </Typography>
             <Paper>
                 <List>
                     {otherReports.map((report, index) => (
                         <React.Fragment key={report.name}>
-                            <ListItem  component={Link} to={report.path}>
-                                <ListItemText primary={report.name} />
+                            <ListItem 
+                                component={Link} 
+                                to={report.path}
+                                sx={{ 
+                                    textDecoration: 'none',
+                                    color: 'inherit',
+                                    '&:hover': {
+                                        bgcolor: 'action.hover',
+                                    }
+                                }}
+                            >
+                                <ListItemText 
+                                    primary={report.name}
+                                    sx={{ 
+                                        '& .MuiListItemText-primary': {
+                                            color: 'text.primary',
+                                            fontWeight: 500
+                                        }
+                                    }}
+                                />
                             </ListItem>
                             {index < otherReports.length - 1 && <Divider />}
                         </React.Fragment>

@@ -8,7 +8,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
+  Typography,useTheme
 } from "@mui/material";
 import { allowedreports, IAccountsPayableReportData } from "@/types";
 import { useSelector } from "react-redux";
@@ -25,12 +25,13 @@ interface AccountsPayableCardProps {
 }
 
 const AccountsPayableCard: FC<AccountsPayableCardProps> = ({ reportData }) => {
+  const theme=useTheme()
    const navigate=useNavigate()
   const filters = useSelector((state: RootState) => state.report);
      const {type="AccountsPayable"}=useParams<{type:allowedreports}>()
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1600px', mx: 'auto' }}>
-      <Paper elevation={2} sx={{ p: 4, mb: 4, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', textAlign: 'center' }}>
+      <Paper elevation={2} sx={{ p: 4, mb: 4, background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', textAlign: 'center' }}>
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           {Reporttitle[type]}
         </Typography>

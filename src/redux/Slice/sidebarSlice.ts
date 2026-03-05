@@ -2,7 +2,7 @@ import { SidebarState } from '@/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: SidebarState = {
-  isOpen: true,
+  isOpen: false,
   activeMenu: '',
   openMenus: []
 };

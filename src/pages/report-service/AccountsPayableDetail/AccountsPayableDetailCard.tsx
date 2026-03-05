@@ -9,7 +9,7 @@ import {
   TableRow,
   Paper,
   Typography,
-  Box,
+  Box,useTheme,
   IconButton
 } from '@mui/material'
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
@@ -20,6 +20,7 @@ import { formatDate } from '@/utils/dateUtils';
 import { useAppSelector } from '@/redux/store';
 import { paths } from '@/utils/paths';
 const AccountsPayableDetailCard: React.FC<{ reportData: IAccountsPayableDetail }> = ({ reportData }) => {
+  const theme=useTheme()
      const navigate=useNavigate()
   const filters = useAppSelector((state) => state.report);
   const [expandedBuckets, setExpandedBuckets] = React.useState<Record<string, boolean>>({})
@@ -34,7 +35,7 @@ const AccountsPayableDetailCard: React.FC<{ reportData: IAccountsPayableDetail }
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1600px', mx: 'auto' }}>
       {/* Header */}
-      <Paper elevation={2} sx={{ p: 4, mb: 4, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', textAlign: 'center' }}>
+      <Paper elevation={2} sx={{ p: 4, mb: 4, background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', textAlign: 'center' }}>
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           {Reporttitle[type]}
         </Typography>

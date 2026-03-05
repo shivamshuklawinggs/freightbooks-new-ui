@@ -182,7 +182,7 @@ const StatementsTable: React.FC = () => {
                   const invoiceId = invoice._id as string;
                   const isSelected = selectedIds.has(invoiceId);
                   return (
-                    <TableRow key={invoiceId} hover selected={isSelected}>
+                    <TableRow key={invoiceId}  selected={isSelected}>
                       <TableCell padding="checkbox">
                         <Checkbox
                           checked={isSelected}

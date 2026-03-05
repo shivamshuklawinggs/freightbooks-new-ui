@@ -208,7 +208,7 @@ const Carriers: React.FC = () => {
               onPageChange={(page) => setCurrentPage(page + 1)}
               onRowsPerPageChange={(rows) => { setLimit(rows); setCurrentPage(1); }}
               renderRow={(carrier: ICarrier) => (
-                <TableRow key={carrier._id} hover sx={{ '&:last-child td': { border: 0 } }}>
+                <TableRow key={carrier._id}  sx={{ '&:last-child td': { border: 0 } }}>
                   <TableCell sx={{ py: 1.25 }}>{carrier.id}</TableCell>
                   <TableCell sx={{ py: 1.25 }}>{carrier.company}</TableCell>
                   <TableCell sx={{ py: 1.25 }}>{carrier.mcNumber}</TableCell>

@@ -67,7 +67,7 @@ const FilterBox = ({
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={ 6}>
               <TextField
                 fullWidth
                 label="Search Loads"
@@ -83,7 +83,7 @@ const FilterBox = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={3}>
               <CustomDatePicker
                 name="startPickupDate"
                 label="Start Pickup Date"
@@ -93,7 +93,7 @@ const FilterBox = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={3}>
               <CustomDatePicker
                 name="endPickupDate"
                 label="End Pickup Date"
