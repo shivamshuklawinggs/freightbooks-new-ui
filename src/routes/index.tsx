@@ -624,7 +624,7 @@ const baseProtectedRoutes: Route[] = [
     element: InvoiceEmailReminders,
     title: 'Email Reminders',
     key: "email-reminders",
-    icon: 'email',
+    icon: 'markEmailRead',
     currentCompany: true,
    hideInMenu: false,
     action: 'view',
@@ -646,14 +646,12 @@ const baseProtectedRoutes: Route[] = [
     element: EmailReminderSettings,
     title: 'Email Reminder Settings',
     key: "email-reminder-settings",
-    icon: 'settings',
+    icon: 'settingsSuggest',
     currentCompany: true,
     hideInMenu: false,
     action: 'view',
     resource: ['accounting'],
   },
-
-
 ];
 
 export const publicRoutes: RoteExtended[] = [
