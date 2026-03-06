@@ -25,7 +25,7 @@ import {
   Logout as LogoutIcon,
 } from "@mui/icons-material";
 import { protectedRoutes } from "@/routes";
-// import { toggleSidebar } from "@/redux/Slice/sidebarSlice";
+import { toggleSidebar } from "@/redux/Slice/sidebarSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { UserLogout } from "@/redux/api";
 import { getIcon, iconType } from "@/components/common/icons/getIcon";
@@ -33,9 +33,9 @@ import { SidebarMenuItem, SideDrawerProps } from "@/types";
 import { hasAccess } from "@/hooks/ProtectedRoute/authUtils";
 
 const SideDrawer: React.FC<SideDrawerProps> = ({ drawerWidth }) => {
-  // const isExpanded = useSelector((state: RootState) => state.sidebar.isOpen);
-  const isExpanded = false
+  const isExpanded = useSelector((state: RootState) => state.sidebar.isOpen);
   const user = useSelector((state: RootState) => state.user);
+  const {primaryColor}=user
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
@@ -633,7 +633,7 @@ const handleNestedPopoverLeave = () => {
           boxSizing: "border-box",
           bgcolor: 'primary.main',
           backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
-          borderRight: 'none',
+          borderRight: primaryColor ? `2px solid ${primaryColor}` : 'none',
           boxShadow: '2px 0 12px rgba(0,0,0,0.15)',
           transition: theme.transitions.create("width", {
             easing: theme.transitions.easing.sharp,
@@ -684,7 +684,7 @@ const handleNestedPopoverLeave = () => {
         )}
         <Tooltip title={isExpanded ? 'Collapse' : 'Expand'} placement="right">
           <IconButton
-            // onClick={() => dispatch(toggleSidebar())}
+            onClick={() => dispatch(toggleSidebar())}
             size="small"
             sx={{
               color: 'rgba(255,255,255,0.8)',

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { Grid, TextField, Typography, Paper, Box, IconButton } from '@mui/material';
+import { Grid, TextField, Typography, Paper,Tooltip, Box, IconButton, useTheme, alpha } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import { CloudUpload, Delete } from '@mui/icons-material';
+import { CloudUpload, Delete, Note as NoteIcon } from '@mui/icons-material';
 import { IJournalEntry } from './Schema/JournalEntrySchema';
 import { getFileName, getFilePreview, getFileSize } from '@/utils/getFilePreview';
 import { JOURNAL_ENTRY_UPLOAD_URL } from '@/config';
@@ -10,7 +10,8 @@ import { toast } from 'react-toastify';
 
 const JournalEntryFooter: React.FC = () => {
   const { control, setValue, watch } = useFormContext<IJournalEntry>();
-  const uploadedFile = watch('attachments'); // watch uploaded file
+  const theme = useTheme();
+  const uploadedFile = watch('attachments');
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -22,7 +23,6 @@ const JournalEntryFooter: React.FC = () => {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
     },
     maxFiles: 1,
-    // error throw on max file 
     onDropRejected: (fileRejections) => {
       toast.error("Only one file is allowed");
     },
@@ -40,10 +40,21 @@ const JournalEntryFooter: React.FC = () => {
     <Grid container spacing={3}>
       {/* Memo */}
       <Grid item xs={12} md={6}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
-          Memo
-        </Typography>
-        <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <NoteIcon sx={{ fontSize: 20, color: theme.palette.primary.main }} />
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            Memo
+          </Typography>
+        </Box>
+        <Paper 
+          elevation={0}
+          sx={{ 
+            p: 2.5, 
+            borderRadius: 2,
+            bgcolor: alpha(theme.palette.background.paper, 0.8),
+            border: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+          }}
+        >
           <Controller
             name="memo"
             control={control}
@@ -54,7 +65,18 @@ const JournalEntryFooter: React.FC = () => {
                 rows={4}
                 variant="outlined"
                 fullWidth
-                placeholder="Add a memo for this journal entry"
+                placeholder="Add a memo for this journal entry..."
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.primary.main, 0.3),
+                    },
+                    '&.Mui-focused': {
+                      boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`
+                    }
+                  }
+                }}
               />
             )}
           />
@@ -63,64 +85,99 @@ const JournalEntryFooter: React.FC = () => {
 
       {/* Attachments */}
       <Grid item xs={12} md={6}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
-          Attachments
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <CloudUpload sx={{ fontSize: 20, color: theme.palette.primary.main }} />
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            Attachments
+          </Typography>
+        </Box>
 
         {!uploadedFile ? (
           <Paper
-            variant="outlined"
+            elevation={0}
             sx={{
               p: 3,
               textAlign: 'center',
               borderStyle: 'dashed',
-              borderColor: 'grey.400',
+              borderWidth: 2,
+              borderColor: alpha(theme.palette.primary.main, 0.3),
               borderRadius: 2,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
-              bgcolor: 'action.hover',
+              bgcolor: alpha(theme.palette.primary.main, 0.02),
+              transition: 'all 0.2s ease-in-out',
+              '&:hover': {
+                bgcolor: alpha(theme.palette.primary.main, 0.05),
+                borderColor: alpha(theme.palette.primary.main, 0.5),
+              }
             }}
             {...getRootProps()}
           >
             <input {...getInputProps()} />
-            <CloudUpload sx={{ fontSize: 40, color: 'grey.500' }} />
-            <Typography variant="body1" color="textSecondary">
-              Choose a file or drag & drop it here
+            <CloudUpload sx={{ fontSize: 48, color: theme.palette.primary.main, mb: 2 }} />
+            <Typography variant="h6" color="textPrimary" sx={{ mb: 1, fontWeight: 600 }}>
+              Choose a file or drag & drop
             </Typography>
-            <Typography variant="caption" color="textSecondary">
+            <Typography variant="body2" color="textSecondary">
               JPEG, PNG, PDF, DOC, XLS (up to 50MB)
             </Typography>
           </Paper>
         ) : (
           <Paper
-            variant="outlined"
-            sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2, borderRadius: 2 }}
+            elevation={0}
+            sx={{ 
+              p: 2.5, 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 2, 
+              borderRadius: 2,
+              bgcolor: alpha(theme.palette.success.main, 0.02),
+              border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`
+            }}
           >
             {/* Show preview if image */}
             {uploadedFile ? (
               <Box
                 component="img"
-                src={getFilePreview(uploadedFile as any,JOURNAL_ENTRY_UPLOAD_URL) || ""}
+                src={getFilePreview(uploadedFile as any, JOURNAL_ENTRY_UPLOAD_URL) || ""}
                 alt="preview"
-                sx={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 1 }}
+                sx={{ 
+                  width: 80, 
+                  height: 80, 
+                  objectFit: 'cover', 
+                  borderRadius: 2,
+                  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+                }}
               />
             ) : (
-              <CloudUpload sx={{ fontSize: 40, color: 'grey.500' }} />
+              <CloudUpload sx={{ fontSize: 40, color: theme.palette.primary.main }} />
             )}
 
             <Box sx={{ flexGrow: 1 }}>
-              <Typography variant="body2">{getFileName(uploadedFile as any)}</Typography>
-              <Typography variant="caption" color="textSecondary">
+              <Typography variant="body1" sx={{ fontWeight: 500, mb: 0.5 }}>
+                {getFileName(uploadedFile as any)}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
                 {getFileSize(uploadedFile as any)}
               </Typography>
             </Box>
 
-            <IconButton color="error" onClick={handleRemoveFile}>
-              <Delete />
-            </IconButton>
+            <Tooltip title="Remove file">
+              <IconButton 
+                color="error" 
+                onClick={handleRemoveFile}
+                sx={{
+                  '&:hover': {
+                    bgcolor: alpha(theme.palette.error.main, 0.1),
+                  }
+                }}
+              >
+                <Delete />
+              </IconButton>
+            </Tooltip>
           </Paper>
         )}
       </Grid>

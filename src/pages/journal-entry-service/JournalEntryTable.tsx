@@ -3,9 +3,17 @@ import { useFormContext, useFieldArray, Controller, useWatch } from 'react-hook-
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   TextField, IconButton, Button, Typography, Box,
-  Dialog
+  Dialog, Paper, Chip, Tooltip, Alert, Collapse
 } from '@mui/material';
-import { AddCircleOutline, DeleteOutline, List as ListIcon } from '@mui/icons-material';
+import { 
+  AddCircleOutline, 
+  DeleteOutline, 
+  List as ListIcon,
+  AccountBalance,
+  TrendingUp,
+  TrendingDown,
+  Info
+} from '@mui/icons-material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import apiService from '@/service/apiService';
 import { IJournalEntry } from './Schema/JournalEntrySchema';
@@ -15,15 +23,17 @@ import { SelectOption } from '@/components/ui/FormSelect';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '@/utils/paths';
 import ChartAccountForm from '../chart-accounts-service/ChartAccountForm';
+import { useTheme, alpha } from '@mui/material/styles';
 
 const JournalEntryTable: React.FC = () => {
-  const navigate=useNavigate()
-  const qc=useQueryClient()
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const theme = useTheme();
   const { control, formState: { errors }, setValue, trigger } = useFormContext<IJournalEntry>();
   const { fields, append, remove } = useFieldArray({ control, name: 'entries' });
   const [nameOptions, setNameOptions] = React.useState<any[]>([]);
-
   const [showChartModal, setShowChartModal] = React.useState(false);
+  const [showBalanceInfo, setShowBalanceInfo] = React.useState(false);
 
   const { data: chartOfAccounts = [] } = useQuery({
     queryKey: ['chartOfAccounts'],
@@ -139,248 +149,460 @@ const JournalEntryTable: React.FC = () => {
 
   return (
     <>
-    <TableContainer
-      sx={{
-        width: '100%',
-        overflowX: 'auto',
-        border: '1px solid',
-        borderColor: 'divider',
-        borderRadius: 1,
-        bgcolor: 'background.paper',
-      }}
-    >
-      <Box
-        sx={{
-          px: 2,
-          py: 1.25,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-        }}
-      >
-        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-          Lines
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Add debit/credit lines. Totals must balance.
-        </Typography>
-      </Box>
-      <Table stickyHeader sx={{ tableLayout: 'fixed', width: '100%', minWidth: 1220 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell sx={{ width: 56, fontWeight: 700, bgcolor: 'background.paper' }}>#</TableCell>
-            <TableCell sx={{ width: 320, fontWeight: 700, bgcolor: 'background.paper' }}>ACCOUNT</TableCell>
-            <TableCell sx={{ width: 180, fontWeight: 700, bgcolor: 'background.paper' }} align="right">DEBITS</TableCell>
-            <TableCell sx={{ width: 180, fontWeight: 700, bgcolor: 'background.paper' }} align="right">CREDITS</TableCell>
-            <TableCell sx={{ width: 280, fontWeight: 700, bgcolor: 'background.paper' }}>DESCRIPTION</TableCell>
-            <TableCell sx={{ width: 320, fontWeight: 700, bgcolor: 'background.paper' }}>NAME</TableCell>
-            <TableCell sx={{ width: 64, bgcolor: 'background.paper' }}></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {fields.map((field, index) => (
-            <TableRow
-              key={field.id}
-              hover
-              sx={{
-                '&:nth-of-type(odd)': { bgcolor: 'action.hover' },
-                '& td': { py: 1 },
-              }}
-            >
-              <TableCell>{index + 1}</TableCell>
-              <TableCell sx={{ verticalAlign: 'top' }}>
-                <Controller
-                  name={`entries.${index}.account`}
-                  control={control}
-                  render={({ field: controllerField }) => {
-                    
-                    const accountOptions: SelectOption[] = chartOfAccounts.map((account: IChartAccount) => ({
-                      value: account._id,
-                      label: account.name
-                    }))
-                    
-                    return (
-
-                      <FormSelect
-                        
-                        value={accountOptions.find(option => option.value === controllerField.value) || null}
-                        onChange={(option) => controllerField.onChange(option?.value || '')}
-                        options={accountOptions}
-                        placeholder="Select account"
-                        error={errors.entries?.[index]?.account?.message || ''}
-                        helperText={errors.entries?.[index]?.account?.message}
-                        addNewLabel="+ Create New Chart Account"
-                        showModal={showChartModal}
-                        setShowModal={setShowChartModal}
-                      />
-                    );
-                  }}
-                />
-              </TableCell>
-
-              <TableCell sx={{ verticalAlign: 'top' }}>
-                <Controller
-                  name={`entries.${index}.debit`}
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      onChange={(e) => handleChangeDebit(index, e.target.value)}
-                      fullWidth
-                      type="number"
-                      variant="outlined"
-                      size="small"
-                      inputProps={{ inputMode: 'decimal', style: { textAlign: 'right' } }}
-                      error={!!errors.entries?.[index]?.debit}
-                      helperText={errors.entries?.[index]?.debit?.message}
-                      sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
-                    />
-                  )}
-                />
-              </TableCell>
-
-              <TableCell sx={{ verticalAlign: 'top' }}>
-                <Controller
-                  name={`entries.${index}.credit`}
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      onChange={(e) => handleChangeCredit(index, e.target.value)}
-                      fullWidth
-                      type="number"
-                      variant="outlined"
-                      size="small"
-                      inputProps={{ inputMode: 'decimal', style: { textAlign: 'right' } }}
-                      error={!!errors.entries?.[index]?.credit}
-                      helperText={errors.entries?.[index]?.credit?.message}
-                      sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
-                    />
-                  )}
-                />
-              </TableCell>
-
-              <TableCell sx={{ verticalAlign: 'top' }}>
-                <Controller
-                  name={`entries.${index}.description`}
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      error={!!errors.entries?.[index]?.description}
-                      helperText={errors.entries?.[index]?.description?.message}
-                      sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
-                    />
-                  )}
-                />
-              </TableCell>
-
-              <TableCell sx={{ verticalAlign: 'top' }}>
-                <Controller
-                  name={`entries.${index}.nameId`}
-                  control={control}
-                  render={({ field }) => {
-                    const filteredOptions = nameOptions.filter((opt) => opt.type === (Accountmatertype(entries?.[index]?.account as string)));
-                    const nameSelectOptions: SelectOption[] = filteredOptions.map((option) => ({
-                      value: option.id,
-                      label: `${option.label}(${option.type})`
-                    }));
-                    
-                    return (
-                      <FormSelect
-                        value={nameSelectOptions.find(option => option.value === field.value) || null}
-                        onChange={(option) => {
-                          field.onChange(option?.value || '');
-                          trigger(`entries.${index}.nameId`);
-                        }}
-                        options={nameSelectOptions}
-                        placeholder="Select name"
-                        isDisabled={chartOfAccounts.find((a: IChartAccount) => a._id === entries?.[index]?.account)?.accountTypeData?.masterType === "other"}
-                        error={errors.entries?.[index]?.nameId?.message || ''}
-                        helperText={errors.entries?.[index]?.nameId?.message}
-                      />
-                    );
-                  }}
-                />
-              </TableCell>
-
-              <TableCell>
-                <IconButton color="error" onClick={() => remove(index)}><DeleteOutline /></IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      <Box
-        sx={{
-          px: 2,
-          py: 1.25,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 2,
-          borderTop: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          flexWrap: 'wrap',
-        }}
-      >
-        <Button
-          size="small"
-          variant="outlined"
-          startIcon={<AddCircleOutline />}
-          onClick={() =>
-            append({ account: '', debit: 0, credit: 0, description: '', nameId: '', nameModel: null })
-          }
-        >
-          Add line
-        </Button>
-        <Button
-          size="small"
-          variant="text"
-          startIcon={<ListIcon />}
-          onClick={() =>navigate(`/accounting${paths.JournalEntryList}`)}
-        >
-          View All Entries
-        </Button>
-
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3, flexWrap: 'wrap' }}>
-          <Box sx={{ textAlign: 'right' }}>
-            <Typography variant="caption" color="text.secondary">Total Debit</Typography>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>${totalDebit?.toFixed(2)}</Typography>
+      {/* Table Header */}
+      <Box sx={{ mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <AccountBalance sx={{ fontSize: 24, color: theme.palette.primary.main }} />
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Entry Lines
+            </Typography>
+            <Tooltip title="Learn about journal entry lines">
+              <IconButton size="small" onClick={() => setShowBalanceInfo(!showBalanceInfo)}>
+                <Info sx={{ fontSize: 18, color: theme.palette.text.secondary }} />
+              </IconButton>
+            </Tooltip>
           </Box>
-          <Box sx={{ textAlign: 'right' }}>
-            <Typography variant="caption" color="text.secondary">Total Credit</Typography>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>${totalCredit?.toFixed(2)}</Typography>
+          <Chip 
+            label={`${fields.length} line${fields.length !== 1 ? 's' : ''}`}
+            size="small"
+            color="primary"
+            variant="outlined"
+          />
+        </Box>
+        
+        <Collapse in={showBalanceInfo}>
+          <Alert severity="info" sx={{ mb: 2 }}>
+            <Typography variant="body2">
+              Every journal entry must have balanced debits and credits. The total debits must equal the total credits for the entry to be valid.
+            </Typography>
+          </Alert>
+        </Collapse>
+      </Box>
+
+      <Paper 
+        elevation={0}
+        sx={{ 
+          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          borderRadius: 2,
+          overflow: 'hidden'
+        }}
+      >
+        <TableContainer sx={{ maxHeight: 600 }}>
+          <Table stickyHeader sx={{ tableLayout: 'fixed', width: '100%', minWidth: 1220 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ 
+                width: 56, 
+                fontWeight: 600, 
+                bgcolor: alpha(theme.palette.primary.main, 0.04),
+                color: theme.palette.primary.main,
+                borderBottom: `2px solid ${alpha(theme.palette.primary.main, 0.1)}`
+              }}>
+                #
+              </TableCell>
+              <TableCell sx={{ 
+                width: 320, 
+                fontWeight: 600, 
+                bgcolor: alpha(theme.palette.primary.main, 0.04),
+                color: theme.palette.primary.main,
+                borderBottom: `2px solid ${alpha(theme.palette.primary.main, 0.1)}`
+              }}>
+                ACCOUNT
+              </TableCell>
+              <TableCell sx={{ 
+                width: 180, 
+                fontWeight: 600, 
+                align: 'right',
+                bgcolor: alpha(theme.palette.success.main, 0.04),
+                color: theme.palette.success.main,
+                borderBottom: `2px solid ${alpha(theme.palette.success.main, 0.1)}`
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5 }}>
+                  <TrendingUp sx={{ fontSize: 16 }} />
+                  DEBITS
+                </Box>
+              </TableCell>
+              <TableCell sx={{ 
+                width: 180, 
+                fontWeight: 600, 
+                align: 'right',
+                bgcolor: alpha(theme.palette.error.main, 0.04),
+                color: theme.palette.error.main,
+                borderBottom: `2px solid ${alpha(theme.palette.error.main, 0.1)}`
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5 }}>
+                  <TrendingDown sx={{ fontSize: 16 }} />
+                  CREDITS
+                </Box>
+              </TableCell>
+              <TableCell sx={{ 
+                width: 280, 
+                fontWeight: 600, 
+                bgcolor: alpha(theme.palette.primary.main, 0.04),
+                color: theme.palette.primary.main,
+                borderBottom: `2px solid ${alpha(theme.palette.primary.main, 0.1)}`
+              }}>
+                DESCRIPTION
+              </TableCell>
+              <TableCell sx={{ 
+                width: 320, 
+                fontWeight: 600, 
+                bgcolor: alpha(theme.palette.primary.main, 0.04),
+                color: theme.palette.primary.main,
+                borderBottom: `2px solid ${alpha(theme.palette.primary.main, 0.1)}`
+              }}>
+                NAME
+              </TableCell>
+              <TableCell sx={{ 
+                width: 64, 
+                bgcolor: alpha(theme.palette.primary.main, 0.04),
+                borderBottom: `2px solid ${alpha(theme.palette.primary.main, 0.1)}`
+              }}></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {fields.map((field, index) => (
+              <TableRow
+                key={field.id}
+                hover
+                sx={{
+                  '&:nth-of-type(odd)': { 
+                    bgcolor: alpha(theme.palette.action.hover, 0.3) 
+                  },
+                  '&:hover': {
+                    bgcolor: alpha(theme.palette.primary.main, 0.02)
+                  },
+                  '& td': { 
+                    py: 1.5, 
+                    borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+                  },
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                <TableCell>
+                  <Chip 
+                    label={index + 1}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    sx={{ fontWeight: 600 }}
+                  />
+                </TableCell>
+                <TableCell sx={{ verticalAlign: 'top' }}>
+                  <Controller
+                    name={`entries.${index}.account`}
+                    control={control}
+                    render={({ field: controllerField }) => {
+                      const accountOptions: SelectOption[] = chartOfAccounts.map((account: IChartAccount) => ({
+                        value: account._id,
+                        label: account.name
+                      }));
+                      
+                      return (
+                        <FormSelect
+                          value={accountOptions.find(option => option.value === controllerField.value) || null}
+                          onChange={(option) => controllerField.onChange(option?.value || '')}
+                          options={accountOptions}
+                          placeholder="Select account"
+                          error={errors.entries?.[index]?.account?.message || ''}
+                          helperText={errors.entries?.[index]?.account?.message}
+                          addNewLabel="+ Create New Chart Account"
+                          showModal={showChartModal}
+                          setShowModal={setShowChartModal}
+                        />
+                      );
+                    }}
+                  />
+                </TableCell>
+
+                <TableCell sx={{ verticalAlign: 'top' }}>
+                  <Controller
+                    name={`entries.${index}.debit`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        onChange={(e) => handleChangeDebit(index, e.target.value)}
+                        fullWidth
+                        type="number"
+                        variant="outlined"
+                        size="small"
+                        placeholder="0.00"
+                        inputProps={{ 
+                          inputMode: 'decimal', 
+                          style: { textAlign: 'right' },
+                          step: '0.01'
+                        }}
+                        error={!!errors.entries?.[index]?.debit}
+                        helperText={errors.entries?.[index]?.debit?.message}
+                        sx={{ 
+                          '& .MuiOutlinedInput-root': { 
+                            bgcolor: alpha(theme.palette.success.main, 0.02),
+                            borderRadius: 1,
+                            '&:hover': {
+                              bgcolor: alpha(theme.palette.success.main, 0.04)
+                            },
+                            '&.Mui-focused': {
+                              bgcolor: 'background.paper',
+                              boxShadow: `0 0 0 2px ${alpha(theme.palette.success.main, 0.2)}`
+                            }
+                          }
+                        }}
+                      />
+                    )}
+                  />
+                </TableCell>
+
+                <TableCell sx={{ verticalAlign: 'top' }}>
+                  <Controller
+                    name={`entries.${index}.credit`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        onChange={(e) => handleChangeCredit(index, e.target.value)}
+                        fullWidth
+                        type="number"
+                        variant="outlined"
+                        size="small"
+                        placeholder="0.00"
+                        inputProps={{ 
+                          inputMode: 'decimal', 
+                          style: { textAlign: 'right' },
+                          step: '0.01'
+                        }}
+                        error={!!errors.entries?.[index]?.credit}
+                        helperText={errors.entries?.[index]?.credit?.message}
+                        sx={{ 
+                          '& .MuiOutlinedInput-root': { 
+                            bgcolor: alpha(theme.palette.error.main, 0.02),
+                            borderRadius: 1,
+                            '&:hover': {
+                              bgcolor: alpha(theme.palette.error.main, 0.04)
+                            },
+                            '&.Mui-focused': {
+                              bgcolor: 'background.paper',
+                              boxShadow: `0 0 0 2px ${alpha(theme.palette.error.main, 0.2)}`
+                            }
+                          }
+                        }}
+                      />
+                    )}
+                  />
+                </TableCell>
+
+                <TableCell sx={{ verticalAlign: 'top' }}>
+                  <Controller
+                    name={`entries.${index}.description`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        placeholder="Enter description"
+                        error={!!errors.entries?.[index]?.description}
+                        helperText={errors.entries?.[index]?.description?.message}
+                        sx={{ 
+                          '& .MuiOutlinedInput-root': { 
+                            borderRadius: 1,
+                            '&:hover': {
+                              bgcolor: alpha(theme.palette.action.hover, 0.04)
+                            },
+                            '&.Mui-focused': {
+                              boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`
+                            }
+                          }
+                        }}
+                      />
+                    )}
+                  />
+                </TableCell>
+
+                <TableCell sx={{ verticalAlign: 'top' }}>
+                  <Controller
+                    name={`entries.${index}.nameId`}
+                    control={control}
+                    render={({ field }) => {
+                      const filteredOptions = nameOptions.filter((opt) => opt.type === (Accountmatertype(entries?.[index]?.account as string)));
+                      const nameSelectOptions: SelectOption[] = filteredOptions.map((option) => ({
+                        value: option.id,
+                        label: `${option.label}(${option.type})`
+                      }));
+                      
+                      return (
+                        <FormSelect
+                          value={nameSelectOptions.find(option => option.value === field.value) || null}
+                          onChange={(option) => {
+                            field.onChange(option?.value || '');
+                            trigger(`entries.${index}.nameId`);
+                          }}
+                          options={nameSelectOptions}
+                          placeholder="Select name"
+                          isDisabled={chartOfAccounts.find((a: IChartAccount) => a._id === entries?.[index]?.account)?.accountTypeData?.masterType === "other"}
+                          error={errors.entries?.[index]?.nameId?.message || ''}
+                          helperText={errors.entries?.[index]?.nameId?.message}
+                        />
+                      );
+                    }}
+                  />
+                </TableCell>
+
+                <TableCell>
+                  <Tooltip title="Remove line">
+                    <IconButton 
+                      color="error" 
+                      size="small"
+                      onClick={() => remove(index)}
+                      sx={{
+                        '&:hover': {
+                          bgcolor: alpha(theme.palette.error.main, 0.1),
+                        }
+                      }}
+                    >
+                      <DeleteOutline />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        </TableContainer>
+
+        {/* Table Footer */}
+        <Box
+          sx={{
+            p: 2.5,
+            bgcolor: alpha(theme.palette.primary.main, 0.02),
+            borderTop: `2px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 2,
+            flexWrap: 'wrap',
+          }}
+        >
+          <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+            <Button
+              size="medium"
+              variant="outlined"
+              startIcon={<AddCircleOutline />}
+              onClick={() =>
+                append({ account: '', debit: 0, credit: 0, description: '', nameId: '', nameModel: null })
+              }
+              sx={{ borderRadius: 2 }}
+            >
+              Add Line
+            </Button>
+            <Button
+              size="medium"
+              variant="text"
+              startIcon={<ListIcon />}
+              onClick={() => navigate(`/accounting${paths.JournalEntryList}`)}
+              sx={{ borderRadius: 2 }}
+            >
+              View All Entries
+            </Button>
+          </Box>
+
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3, flexWrap: 'wrap' }}>
+            <Box sx={{ textAlign: 'right', minWidth: 120 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
+                Total Debit
+              </Typography>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  fontWeight: 700, 
+                  color: theme.palette.success.main,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  gap: 0.5
+                }}
+              >
+                <TrendingUp sx={{ fontSize: 18 }} />
+                ${totalDebit?.toFixed(2)}
+              </Typography>
+            </Box>
+            <Box sx={{ textAlign: 'right', minWidth: 120 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
+                Total Credit
+              </Typography>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  fontWeight: 700, 
+                  color: theme.palette.error.main,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  gap: 0.5
+                }}
+              >
+                <TrendingDown sx={{ fontSize: 18 }} />
+                ${totalCredit?.toFixed(2)}
+              </Typography>
+            </Box>
           </Box>
         </Box>
-      </Box>
+      </Paper>
 
+      {/* Balance Error Alert */}
       {totalBalanceError && (
-        <Typography color="error" align="right" sx={{ mt: 1 }}>
+        <Alert 
+          severity="error" 
+          sx={{ 
+            mt: 2,
+            borderRadius: 2,
+            '& .MuiAlert-message': {
+              fontWeight: 500
+            }
+          }}
+        >
           {totalBalanceError?.message}
-        </Typography>
+        </Alert>
       )}
-    </TableContainer>
-       <Dialog open={showChartModal} onClose={() => {
-        setShowChartModal(false)
 
-       }} maxWidth="md" fullWidth>
-          <ChartAccountForm
-            initial={undefined}
-            onSuccess={()=>{
-              setShowChartModal(false)
-              qc.invalidateQueries({ queryKey: ['chartOfAccounts'] })
-            }}
-          />
-        </Dialog>
+      {/* Balance Status Indicator */}
+      {totalDebit !== totalCredit && (
+        <Alert 
+          severity="warning" 
+          sx={{ 
+            mt: 2,
+            borderRadius: 2,
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <Typography variant="body2">
+            Debits and credits must balance. Current difference: <strong>${Math.abs((totalDebit || 0) - (totalCredit || 0)).toFixed(2)}</strong>
+          </Typography>
+        </Alert>
+      )}
+      {/* Chart Account Modal */}
+      <Dialog 
+        open={showChartModal} 
+        onClose={() => setShowChartModal(false)}
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2
+          }
+        }}
+      >
+        <ChartAccountForm
+          initial={undefined}
+          onSuccess={() => {
+            setShowChartModal(false);
+            qc.invalidateQueries({ queryKey: ['chartOfAccounts'] });
+          }}
+        />
+      </Dialog>
     </>
   );
 };

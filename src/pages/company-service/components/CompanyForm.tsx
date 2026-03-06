@@ -299,7 +299,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ open, onClose, initialData, t
                     <FormControl fullWidth error={!!errors.color}>
                       <FormLabel>Company Color</FormLabel>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-                        <Box
+                        {/* <Box
                           sx={{
                             width: 40,
                             height: 40,
@@ -307,14 +307,37 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ open, onClose, initialData, t
                             border: '2px solid #ddd',
                             backgroundColor: field.value,
                           }}
-                        />
-                        <TextField
+                        /> */}
+                        {/* <TextField
                           {...field}
                           type="color"
                           sx={{ width: 150 }}
                           error={!!errors.color}
                           helperText={errors.color?.message}
-                        />
+                        /> */}
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                          {[
+                            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+                            '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'
+                          ].map((color) => (
+                            <Box
+                              key={color}
+                              onClick={() => field.onChange(color)}
+                              sx={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: '50%',
+                                backgroundColor: color,
+                                cursor: 'pointer',
+                                border: field.value === color ? '2px solid #000' : '1px solid #ddd',
+                                transition: 'transform 0.2s',
+                                '&:hover': {
+                                  transform: 'scale(1.2)',
+                                },
+                              }}
+                            />
+                          ))}
+                        </Box>
                       </Box>
                     </FormControl>
                   )}

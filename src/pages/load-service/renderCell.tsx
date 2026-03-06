@@ -4,7 +4,7 @@ import { Chip, Box, Typography, Button, TableCell } from '@mui/material'
 import { getStatusColor } from '@/utils';
 import { renderAddress } from '@/components/common/renderAddress';
 import { renderDefaultCellValue } from '@/utils/renderDefaultCellValue';
-import moment from 'moment';
+
 interface renderCellProps {
     column: string;
     load: IViewLoad;

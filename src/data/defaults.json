@@ -77,6 +77,12 @@
       "light": "#94A3B8",
       "dark": "#1E293B",
       "contrast": "#FFFFFF"
+    },
+    "darkSlate": {
+      "main": "#383e4b",
+      "light": "#475569",
+      "dark": "#2d3440",
+      "contrast": "#FFFFFF"
     }
   },
   "secondaryPresets": {
