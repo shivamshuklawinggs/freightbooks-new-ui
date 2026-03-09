@@ -12,6 +12,7 @@ import {
     Tooltip,
     IconButton,
     Dialog,
+    DialogActions,
 } from '@mui/material';
 import { PaymentMethods, PaymentMethodsOptions } from '@/types/enum';
 import { IPaymentRecived, ICustomerInvoicesPaymentDetails, ICustomer } from '@/types';
@@ -22,6 +23,7 @@ import useDepositToOptions from '@/hooks/DepositToOptions';
 import { useQueryClient } from '@tanstack/react-query';
 import ChartAccountForm from '@/pages/chart-accounts-service/ChartAccountForm';
 import CustomDatePicker from '@/components/common/CommonDatePicker';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface RecievedPaymentFormFieldsProps {
     invoiceData: ICustomer[];
@@ -281,6 +283,11 @@ const RecievedPaymentFormFields: React.FC<RecievedPaymentFormFieldsProps> = ({ i
                 />
             </Grid>
             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+                <DialogActions>
+                    <IconButton onClick={() => setOpen(false)} size="small">
+                        {getIcon('CloseIcon')}
+                    </IconButton>
+                </DialogActions>
                 <ChartAccountForm
                     initial={undefined}
                     onSuccess={() => {

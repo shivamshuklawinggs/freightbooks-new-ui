@@ -41,6 +41,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import api from '@/utils/axiosInterceptor';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface EmailReminderSettings {
   enabled: boolean;
@@ -420,6 +421,11 @@ const InvoiceEmailReminders: React.FC = () => {
       </Card>
 
       <Dialog open={sendDialogOpen} onClose={() => setSendDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogActions>
+          <IconButton onClick={() => setSendDialogOpen(false)} size="small">
+            {getIcon('CloseIcon')}
+          </IconButton>
+        </DialogActions>
         <DialogTitle>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             Send Manual Reminder

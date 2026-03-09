@@ -8,11 +8,13 @@ import {
   Button,
   Box,
   Chip,
-  Stack
+  Stack,
+  IconButton
 } from '@mui/material';
 import { IFile } from '@/types';
 import { toast } from 'react-toastify';
 import apiService from '@/service/apiService';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface SendEmailProps {
   selectedDocuments: IFile[];
@@ -83,6 +85,11 @@ const SendEmail: React.FC<SendEmailProps> = ({
       maxWidth="sm"
       fullWidth
     >
+      <DialogActions>
+        <IconButton onClick={handleEmailDialogClose}>
+          {getIcon('CloseIcon')}
+        </IconButton>
+      </DialogActions>
       <DialogTitle>Send Documents via Email</DialogTitle>
       <DialogContent>
         <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>

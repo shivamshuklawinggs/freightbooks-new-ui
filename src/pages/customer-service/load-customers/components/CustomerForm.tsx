@@ -30,6 +30,7 @@ import AdditionalInfo from './FormCompnents/AdditionalInfo';
 import CompanySection from './FormCompnents/CompanySection';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import ErrorHandlerAlert from '@/components/common/ErrorHandlerAlert';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface CustomerFormProps {
   submitButtonText?: string;
@@ -112,8 +113,12 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
       onClose={onClose} 
       maxWidth="md" 
       fullWidth
-   
     >
+      <DialogActions>
+        <Button onClick={onClose}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
       <FormProvider {...form}>
          <ErrorHandlerAlert error={mutation.error}/>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -129,7 +134,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
               <Grid container spacing={5}>
                 {/* Company Information Section */}
                 <Grid item xs={12}>
-                  <Typography variant="h6" color="primary" gutterBottom>
+                  <Typography variant="h6" color="primary" gutterBottom mb={2}>
                     Company Information
                   </Typography>
                   <CompanySection  />

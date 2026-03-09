@@ -10,6 +10,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 import { toast } from "react-toastify"
 import { useGenerateRateConfirmationPDF } from '@/hooks/useGenerateRateConfirmationPDF'
+import { getIcon } from './icons/getIcon'
 
 const LoadTermsAndCondition = ({ type, handleAddDelivery }: { type: "load" | "editload", handleAddDelivery: () => void }) => {
   const { generatePDF, isLoading: isGeneratingPdf, error: pdfError } = useGenerateRateConfirmationPDF({ type,  })
@@ -148,6 +149,11 @@ const LoadTermsAndCondition = ({ type, handleAddDelivery }: { type: "load" | "ed
       </Grid>
       {/* Terms & Conditions Dialog */}
       <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth PaperProps={{ sx: { height: '80vh' } }}>
+        <DialogActions>
+          <Button onClick={handleClose}>
+            {getIcon('CloseIcon')}
+          </Button>
+        </DialogActions>
         <DialogTitle sx={{ 
           display: 'flex', 
           justifyContent: 'space-between', 

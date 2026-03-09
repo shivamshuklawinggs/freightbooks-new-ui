@@ -17,6 +17,7 @@ import { ContactPage } from '@mui/icons-material';
 import BillingAddress from './components/FormCompnents/BillingAddress';
 import ShippingAddress from './components/FormCompnents/ShippingAddress';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface VendorFormProps {
   submitButtonText?: string;
@@ -96,6 +97,11 @@ const VendorForm: React.FC<VendorFormProps> = ({
       maxWidth="md"
       fullWidth
     >
+      <DialogActions>
+        <Button onClick={onClose}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <DialogTitle>

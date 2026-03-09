@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DATE_PICKER_TIME_FORMAT } from "@/config/constant";
+import { getIcon } from "../icons/getIcon";
 interface CheckDateTimeDialogProps {
   open: boolean;
   title: string;
@@ -37,6 +38,11 @@ const CheckDateTimeDialog: React.FC<CheckDateTimeDialogProps> = ({
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
+      <DialogActions>
+        <Button onClick={onClose}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Box

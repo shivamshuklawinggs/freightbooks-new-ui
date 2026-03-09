@@ -232,6 +232,11 @@ const StatementsTable: React.FC = () => {
         open={confirmSingleDelete.open}
         onClose={() => setConfirmSingleDelete({ open: false, statement: undefined })}
       >
+        <DialogActions>
+          <Button onClick={() => setConfirmSingleDelete({ open: false, statement: undefined })}>
+            {getIcon('CloseIcon')}
+          </Button>
+        </DialogActions>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           Are you sure you want to delete the statement dated{' '}
@@ -256,6 +261,11 @@ const StatementsTable: React.FC = () => {
 
       {/* Confirm bulk delete */}
       <Dialog open={confirmBulkDeleteOpen} onClose={() => setConfirmBulkDeleteOpen(false)}>
+        <DialogActions>
+          <Button onClick={() => setConfirmBulkDeleteOpen(false)}>
+            {getIcon('CloseIcon')}
+          </Button>
+        </DialogActions>
         <DialogTitle>Confirm Bulk Delete</DialogTitle>
         <DialogContent>
           Are you sure you want to delete the {selectedIds.size} selected statement

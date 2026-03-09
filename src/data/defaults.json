@@ -1,12 +1,12 @@
 {
   "defaultSettings": {
-    "mode": "dark",
-    "primaryColor": "teal",
+    "mode": "light",
+    "primaryColor": "grey",
     "secondaryColor": "amber",
     "backgroundTone": "charcoal",
     "borderRadius": 8,
     "sidebarStyle": "solid",
-    "fontFamily": "inter",
+    "fontFamily": "mulish",
     "typographyScale": "default",
     "formFontSize": "medium",
     "sidebarCollapsed": false
@@ -18,6 +18,12 @@
       "dark": "#1D4ED8",
       "contrast": "#FFFFFF"
     },
+      "grey": {
+        "main": "#6B7280",
+        "light": "#9CA3AF",
+        "dark": "#4B5563",
+        "contrast": "#FFFFFF"
+      },
     "indigo": {
       "main": "#4F46E5",
       "light": "#818CF8",
@@ -227,7 +233,7 @@
     "manrope": "\"Manrope\", \"Helvetica\", \"Arial\", sans-serif",
     "figtree": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
     "lexend": "\"Lexend\", \"Helvetica\", \"Arial\", sans-serif",
-    "mulish": "\"Mulish\", \"Helvetica\", \"Arial\", sans-serif",
+    "mulish": "\"Mulish\", sans-serif",
     "quicksand": "\"Quicksand\", \"Helvetica\", \"Arial\", sans-serif",
     "urbanist": "\"Urbanist\", \"Helvetica\", \"Arial\", sans-serif",
     "spaceGrotesk": "\"Space Grotesk\", \"Helvetica\", \"Arial\", sans-serif",

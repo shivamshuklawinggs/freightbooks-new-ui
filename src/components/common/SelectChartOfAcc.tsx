@@ -3,7 +3,8 @@ import { Controller, useFormContext } from 'react-hook-form'
 import FormSelect from '../ui/FormSelect'
 import { useChartOfAccount } from '@/hooks/useChartOfAccount'
 import ChartAccountForm from '@/pages/chart-accounts-service/ChartAccountForm'
-import { Dialog } from '@mui/material'
+import { Button, Dialog, DialogActions } from '@mui/material'
+import { getIcon } from './icons/getIcon'
 
 export const SelectChartOfAcc: React.FC<{
   type:('asset' | 'liability' | 'equity' | 'income' | 'expense')[] | 'asset' | 'liability' | 'equity' | 'income' | 'expense',
@@ -36,6 +37,11 @@ export const SelectChartOfAcc: React.FC<{
             addNewLabel="+ Add New Chart Account"
             addNewModal={
               <Dialog open={showChartModal} onClose={() => setShowChartModal(false)} maxWidth="md" fullWidth>
+                <DialogActions>
+                  <Button onClick={() => setShowChartModal(false)}>
+                    {getIcon('CloseIcon')}
+                  </Button>
+                </DialogActions>
                 <ChartAccountForm
                   initial={undefined}
                 />

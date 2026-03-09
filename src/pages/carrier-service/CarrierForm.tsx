@@ -24,6 +24,7 @@ import { useMutation } from '@tanstack/react-query';
 import { withPermission } from '@/hooks/ProtectedRoute/authUtils';
 import UpdateContactList from './CarrierContactList/UpdateContactList';
 import ContactList from './CarrierContactList/Index';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface CarrierFormProps {
   open: boolean | ICarrier;
@@ -133,6 +134,11 @@ const CarrierForm: React.FC<CarrierFormProps> = ({
   const id =typeof open === 'object' && (open as ICarrier)?._id
   return (
     <Dialog open={open as boolean} onClose={onClose} maxWidth="md" fullWidth >
+      <DialogActions>
+        <Button onClick={onClose}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
       <FormProvider {...form}>
         <form onSubmit={
            (e)=>{

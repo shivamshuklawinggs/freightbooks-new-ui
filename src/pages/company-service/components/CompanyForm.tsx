@@ -12,6 +12,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic"; // ✅ free build
 import { getFilePreview } from '@/utils/getFilePreview';
 import { COMPANY_LOGO_UPLOAD_URL } from '@/config';
+import { getIcon } from '@/components/common/icons/getIcon';
 // import SignatureDrawer from '@/components/SignatureDrawer';
 interface CompanyFormProps { open: boolean; onClose: () => void; initialData?: Partial<ICompany>; title: string; }
 const CompanyForm: React.FC<CompanyFormProps> = ({ open, onClose, initialData, title, }) => {
@@ -127,6 +128,11 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ open, onClose, initialData, t
   console.error("errors", errors)
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <DialogActions>
+        <Button onClick={handleClose}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>

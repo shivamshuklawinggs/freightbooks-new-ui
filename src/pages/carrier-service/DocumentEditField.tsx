@@ -9,6 +9,7 @@ import { getFileType, getFilePreview, getFileSize, getFileName } from '@/utils/g
 import { CARRIER_DOCUMENTS_UPLOAD_URL } from '@/config';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { withPermission } from '@/hooks/ProtectedRoute/authUtils';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 const MAX_SIZE = 20 * 1024 * 1024; // 20MB
 
@@ -107,6 +108,11 @@ const DocumentUpload: React.FC<{ carrierId: string, onClose: () => void, onUpdat
       maxWidth="md"
       fullWidth
     >
+      <DialogActions>
+        <Button onClick={onClose}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">

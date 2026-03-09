@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { TextField, Grid, Select, MenuItem, FormControl, InputLabel, FormHelperText, Tooltip, Dialog } from '@mui/material';
+import { TextField, Grid, Select, MenuItem, FormControl, InputLabel, FormHelperText, Tooltip, Dialog, DialogActions, Button } from '@mui/material';
 import { PaymentMethodsOptions } from '@/types/enum';
 import SearchInvoice from './SearchInvoice';
 import { useCreditLeft } from './hooks/useCreditLeft';
@@ -10,6 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { UpdateRecievedPamentSchemaType } from '../schema/UpdateRecievedPamentSchema';
 import { getFullName } from '@/utils';
 import CustomDatePicker from '@/components/common/CommonDatePicker';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface RecievedPaymentFormFieldsProps {
     isLoading: boolean;
@@ -182,6 +183,11 @@ const RecievedPaymentFormFields: React.FC<RecievedPaymentFormFieldsProps> = ({ i
                 />
             </Grid>
             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)}>
+                        {getIcon('CloseIcon')}
+                    </Button>
+                </DialogActions>
                 <ChartAccountForm
                     initial={undefined}
                     onSuccess={() => {

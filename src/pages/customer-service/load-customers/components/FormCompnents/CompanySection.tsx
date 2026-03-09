@@ -35,9 +35,7 @@ const CompanySection = () => {
                 onChange={(e) => {
                   setLocalUsdot(e.target.value);
                 }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
+             
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -46,7 +44,7 @@ const CompanySection = () => {
                         usdotLoading ? (
                           <LoadingSpinner />
                         ) : (
-                          <FaSearch style={{ cursor: 'pointer' }} onClick={(e) => {
+                          <FaSearch sx={{ cursor: 'pointer' }}  onClick={(e) => {
                             e.stopPropagation();
                             handleCustomerSubmit(localUsdot);
                           }} />

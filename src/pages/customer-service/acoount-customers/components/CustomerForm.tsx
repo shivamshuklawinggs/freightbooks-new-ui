@@ -18,6 +18,7 @@ import BillingAddress from './FormCompnents/BillingAddress';
 import ShippingAddress from './FormCompnents/ShippingAddress';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import ErrorHandlerAlert from '@/components/common/ErrorHandlerAlert';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface CustomerFormProps {
   submitButtonText?: string;
@@ -96,6 +97,11 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
       maxWidth="md"
       fullWidth
     >
+      <DialogActions>
+        <Button onClick={onClose}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
       <FormProvider {...form}>
           <ErrorHandlerAlert error={mutation.error}/>
         <form onSubmit={form.handleSubmit(handleSubmit)}>

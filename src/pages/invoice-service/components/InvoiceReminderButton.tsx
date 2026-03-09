@@ -16,6 +16,7 @@ import {
 import { Email as EmailIcon, Close as CloseIcon } from '@mui/icons-material';
 import api from '@/utils/axiosInterceptor';
 import { toast } from 'react-toastify';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface InvoiceReminderButtonProps {
   invoiceId: string;
@@ -74,6 +75,11 @@ const InvoiceReminderButton: React.FC<InvoiceReminderButtonProps> = ({
       </Tooltip>
 
       <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+          <DialogActions>
+                 <IconButton onClick={handleClose} size="small">
+                   {getIcon('CloseIcon')}
+                 </IconButton>
+               </DialogActions>
         <DialogTitle>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Send Payment Reminder</Typography>

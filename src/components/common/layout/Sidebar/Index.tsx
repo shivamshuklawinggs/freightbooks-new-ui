@@ -69,6 +69,11 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ drawerWidth }) => {
 
 
   const handleMenuClick = (menuKey: string) => {
+    // If sidebar is not expanded, expand it first
+    if (!isExpanded) {
+      dispatch(toggleSidebar());
+    }
+    
     setOpenMenus(prev => {
       const newSet = new Set(prev);
       if (newSet.has(menuKey)) {
@@ -275,6 +280,7 @@ const renderNestedMenuItems = (
                   <ListItemButton
                     onMouseEnter={(e) => handleMenuHover(e, item.title)}
                     onMouseLeave={handleMenuLeave}
+                    onClick={() => handleMenuClick(item.title)}
                     sx={{
                       borderRadius: 1.5,
                       pl: isExpanded ? level * 1.5 + 1.5 : 1,
@@ -633,7 +639,7 @@ const handleNestedPopoverLeave = () => {
           boxSizing: "border-box",
           bgcolor: 'primary.main',
           backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
-          borderRight: primaryColor ? `2px solid ${primaryColor}` : 'none',
+          borderLeft: primaryColor ? `4px solid ${primaryColor}` : 'none',
           boxShadow: '2px 0 12px rgba(0,0,0,0.15)',
           transition: theme.transitions.create("width", {
             easing: theme.transitions.easing.sharp,
@@ -652,48 +658,51 @@ const handleNestedPopoverLeave = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: isExpanded ? 'space-between' : 'center',
-          px: 1.5,
+          px: isExpanded ? 1.5 : 1,
           minHeight: { xs: 56, sm: 64 },
           borderBottom: '1px solid rgba(255,255,255,0.1)',
         }}
       >
-        {isExpanded && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box
+        {/* Left side - Logo and toggle button */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {isExpanded && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box
+                sx={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 1,
+                  bgcolor: 'rgba(255,255,255,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '0.9rem', lineHeight: 1 }}>F</Typography>
+              </Box>
+              <Typography
+                variant="subtitle1"
+                noWrap
+                sx={{ color: 'white', fontWeight: 700, letterSpacing: '0.02em', fontSize: '0.95rem' }}
+              >
+                FreightBooks
+              </Typography>
+            </Box>
+          )}
+          <Tooltip title={isExpanded ? 'Collapse' : 'Expand'} placement="right">
+            <IconButton
+              onClick={() => dispatch(toggleSidebar())}
+              size="small"
               sx={{
-                width: 28,
-                height: 28,
-                borderRadius: 1,
-                bgcolor: 'rgba(255,255,255,0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
+                color: 'rgba(255,255,255,0.8)',
+                '&:hover': { bgcolor: 'rgba(255,255,255,0.12)', color: 'white' },
               }}
             >
-              <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '0.9rem', lineHeight: 1 }}>F</Typography>
-            </Box>
-            <Typography
-              variant="subtitle1"
-              noWrap
-              sx={{ color: 'white', fontWeight: 700, letterSpacing: '0.02em', fontSize: '0.95rem' }}
-            >
-              FreightBooks
-            </Typography>
-          </Box>
-        )}
-        <Tooltip title={isExpanded ? 'Collapse' : 'Expand'} placement="right">
-          <IconButton
-            onClick={() => dispatch(toggleSidebar())}
-            size="small"
-            sx={{
-              color: 'rgba(255,255,255,0.8)',
-              '&:hover': { bgcolor: 'rgba(255,255,255,0.12)', color: 'white' },
-            }}
-          >
-            {isExpanded ? <ChevronLeftIcon fontSize="small" /> : <MenuIcon fontSize="small" />}
-          </IconButton>
-        </Tooltip>
+              {isExpanded ? <ChevronLeftIcon fontSize="small" /> : <MenuIcon fontSize="small" />}
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Toolbar>
 
       {/* Menu Items */}

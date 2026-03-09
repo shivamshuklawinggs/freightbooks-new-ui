@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import CloseIcon from '@mui/icons-material/Close';
 import CustomDatePicker from '@/components/common/CommonDatePicker';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface Props {
   open: boolean;
@@ -94,6 +95,11 @@ const CreateStatementModal: React.FC<Props> = ({ open, onClose }) => {
   };
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogActions>
+        <Button onClick={onClose}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
       <DialogTitle>
         <Typography variant="h6">{invoiceData?.customer?.company || 'Customer Statement'}</Typography>
       </DialogTitle>

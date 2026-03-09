@@ -46,10 +46,11 @@ import {
   Settings ,
   Email,
   MarkEmailRead,
-  SettingsSuggest
+  SettingsSuggest,
+  Close as CloseIcon
 } from "@mui/icons-material";
 
-export type iconType = "dashboard" |"drivers" | "truck" | "OutlineSend" | "plus" | "edit" | "users" | "priceChange" | "visibility" | "customers" | "carriers" | "file" | "company" | "AttachMoneyIcon" | "amazonPay" | "sales" | "accountBalanceWallet" | "invoices" | "estimates" | "tax" | "product" | "purchase" | "vendors" | "bills" | "chartAccounts" | "journalEntry" | "profitAndLoss" | "balanceSheet" | "reports" | "delete" | "fileUpload" | "fileDownload" | "pictureAsPdf" | "arrowForward" | "localShipping" | "creditCard" | "receiptLong" | "GoDotFill" | "communication" | "behavior" | "payment" | "businessStability" | "reportScore" | "cancel" | "fileExport" | "fileImport" | "RemoveRedEye" | "Print" | "checkCircle" | "convert" | "settings" | "email" | "markEmailRead" | "settingsSuggest"
+export type iconType = "dashboard" |"drivers" | "truck" | "OutlineSend" | "plus" | "edit" | "users" | "priceChange" | "visibility" | "customers" | "carriers" | "file" | "company" | "AttachMoneyIcon" | "amazonPay" | "sales" | "accountBalanceWallet" | "invoices" | "estimates" | "tax" | "product" | "purchase" | "vendors" | "bills" | "chartAccounts" | "journalEntry" | "profitAndLoss" | "balanceSheet" | "reports" | "delete" | "fileUpload" | "fileDownload" | "pictureAsPdf" | "arrowForward" | "localShipping" | "creditCard" | "receiptLong" | "GoDotFill" | "communication" | "behavior" | "payment" | "businessStability" | "reportScore" | "cancel" | "fileExport" | "fileImport" | "RemoveRedEye" | "Print" | "checkCircle" | "convert" | "settings" | "email" | "markEmailRead" | "settingsSuggest" | "CloseIcon"
 export const getIcon = (iconName?: iconType,props={}): React.ReactElement | null => {
   if (!iconName) return null;
 
@@ -110,7 +111,8 @@ export const getIcon = (iconName?: iconType,props={}): React.ReactElement | null
     settings:<Settings {...props} />,
     email:<Email {...props} />,
     markEmailRead:<MarkEmailRead {...props} />,
-    settingsSuggest:<SettingsSuggest {...props} />
+    settingsSuggest:<SettingsSuggest {...props} />,
+    CloseIcon:<CloseIcon {...props} />
   };
 
   return iconMap[iconName] || null;

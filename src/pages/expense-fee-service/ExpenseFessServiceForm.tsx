@@ -2,12 +2,13 @@ import  { useEffect } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ItemSecviceSchema } from './Schema/ItemSecviceSchema';
-import { Dialog, DialogActions, DialogContent, DialogTitle,Box, FormControl, FormHelperText, MenuItem, Select, TextField,Button,CircularProgress ,InputLabel} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle,Box, FormControl, FormHelperText, MenuItem, Select, TextField,Button,CircularProgress ,InputLabel, IconButton} from '@mui/material';
 import { IitemService, IProductService } from '@/types';
 import apiService from '@/service/apiService';
 import { toast } from 'react-toastify';
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { HasPermission } from '@/hooks/ProtectedRoute/authUtils';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 type FormInputs = {
   label: string;
@@ -81,6 +82,11 @@ const ExpenseFessServiceForm = ({ showModal, handleModalClose, editingItem }: Ex
     return (
         <HasPermission action="create" resource={["expense_service"]} component={
         <Dialog open={showModal} onClose={handleModalClose} maxWidth="sm" fullWidth>
+            <DialogActions>
+                <IconButton onClick={handleModalClose}>
+                    {getIcon('CloseIcon')}
+                </IconButton>
+            </DialogActions>
             <DialogTitle>{editingItem ? 'Edit' : 'Add New'} Item Service</DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <DialogContent>

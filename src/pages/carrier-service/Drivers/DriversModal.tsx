@@ -8,6 +8,7 @@ import apiService from '@/service/apiService';
 import { withPermission } from '@/hooks/ProtectedRoute/authUtils';
 import { paths } from '@/utils/paths';
 import { useNavigate } from 'react-router-dom';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface DriversModalProps {
   open: boolean;
@@ -60,6 +61,11 @@ useEffect(() => {
       maxWidth="md"
       fullWidth
     >
+      <DialogActions>
+        <Button onClick={handleClose}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">

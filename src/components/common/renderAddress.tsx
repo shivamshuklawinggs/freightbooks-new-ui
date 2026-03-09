@@ -16,14 +16,15 @@ import {
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useTheme } from '@mui/material/styles';
 import { formatDate } from '@/utils/dateUtils';
+import { getIcon } from './icons/getIcon';
 // Address Modal Component
 // Address Modal Component
-const AddressModal:React.FC<{addressModalOpen:any,setAddressModalOpen:any,selectedAddresses:any,}> = ({addressModalOpen,selectedAddresses,setAddressModalOpen}) => {
-    const theme = useTheme();
-    // Function to close address modal
-const closeAddressModal = () => {
-  setAddressModalOpen(false);
-};
+const AddressModal: React.FC<{ addressModalOpen: any, setAddressModalOpen: any, selectedAddresses: any, }> = ({ addressModalOpen, selectedAddresses, setAddressModalOpen }) => {
+  const theme = useTheme();
+  // Function to close address modal
+  const closeAddressModal = () => {
+    setAddressModalOpen(false);
+  };
   return (
     <Dialog
       open={addressModalOpen}
@@ -35,7 +36,13 @@ const closeAddressModal = () => {
         sx: { borderRadius: 2 }
       }}
     >
-      <DialogTitle sx={{ 
+
+      <DialogActions>
+        <Button onClick={closeAddressModal}>
+          {getIcon('CloseIcon')}
+        </Button>
+      </DialogActions>
+      <DialogTitle sx={{
         borderBottom: `1px solid ${theme.palette.divider}`,
         backgroundColor: alpha(theme.palette.primary.main, 0.05),
         py: 2
@@ -44,9 +51,9 @@ const closeAddressModal = () => {
       </DialogTitle>
       <DialogContent sx={{ py: 2 }}>
         <List sx={{ py: 0 }}>
-          {selectedAddresses.locations.map((loc:ILocationWithIds, index:number) => (
-            <ListItem 
-              key={`${loc._id}-${index}`} 
+          {selectedAddresses.locations.map((loc: ILocationWithIds, index: number) => (
+            <ListItem
+              key={`${loc._id}-${index}`}
               divider={index < selectedAddresses.locations.length - 1}
               sx={{ py: 1.5 }}
             >
@@ -58,25 +65,25 @@ const closeAddressModal = () => {
                 }
                 secondary={
                   <>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    <strong>Address:</strong> {`${loc.address}-${loc.city}, ${loc.state}`}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    <strong>Check In Date:</strong> {loc.checkin ?formatDate(loc.checkin)  : 'Not Checked In'}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    <strong>Check Out Date:</strong> {loc.checkout ?formatDate(loc.checkout)  : 'Not Checked Out'}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    <strong>{selectedAddresses.type === 'pickup' ? 'Pickup' : 'Delivery'} Date & Time:</strong> {loc.date ?formatDate(loc.date) + ' ' + loc.time : 'Not Picked Up'}
-                  </Typography>
-                  {loc.endTime && (
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                      <strong>{selectedAddresses.type === 'pickup' ? 'Pickup' : 'Delivery'} End Date & Time:</strong> {loc.date ? formatDate(loc.date)  + ' ' + loc.endTime : 'Not Picked Up'}
+                      <strong>Address:</strong> {`${loc.address}-${loc.city}, ${loc.state}`}
                     </Typography>
-                  )}
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                      <strong>Check In Date:</strong> {loc.checkin ? formatDate(loc.checkin) : 'Not Checked In'}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                      <strong>Check Out Date:</strong> {loc.checkout ? formatDate(loc.checkout) : 'Not Checked Out'}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                      <strong>{selectedAddresses.type === 'pickup' ? 'Pickup' : 'Delivery'} Date & Time:</strong> {loc.date ? formatDate(loc.date) + ' ' + loc.time : 'Not Picked Up'}
+                    </Typography>
+                    {loc.endTime && (
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        <strong>{selectedAddresses.type === 'pickup' ? 'Pickup' : 'Delivery'} End Date & Time:</strong> {loc.date ? formatDate(loc.date) + ' ' + loc.endTime : 'Not Picked Up'}
+                      </Typography>
+                    )}
                   </>
-                  
+
                 }
               />
             </ListItem>
@@ -84,11 +91,11 @@ const closeAddressModal = () => {
         </List>
       </DialogContent>
       <DialogActions sx={{ px: 3, py: 2 }}>
-        <Button 
-          onClick={closeAddressModal} 
+        <Button
+          onClick={closeAddressModal}
           variant="contained"
           size="medium"
-          sx={{ 
+          sx={{
             textTransform: 'none',
             borderRadius: 1.5,
             px: 3
@@ -100,29 +107,29 @@ const closeAddressModal = () => {
     </Dialog>
   );
 };
-const renderAddress = (locations: ILocationWithIds[] | undefined, loadId: string, type: string,setAddressModalOpen:any,setSelectedAddresses:any,expandedAddresses:any, setExpandedAddresses:any) => {
-   
+const renderAddress = (locations: ILocationWithIds[] | undefined, loadId: string, type: string, setAddressModalOpen: any, setSelectedAddresses: any, expandedAddresses: any, setExpandedAddresses: any) => {
 
-    // Function to toggle address expansion
-// const toggleAddressExpansion = (addressKey: string) => {
-//   setExpandedAddresses((prev:any) => ({
-//     ...prev,
-//     [addressKey]: !prev[addressKey]
-//   }));
-// };
-// Function to open address modal
-const openAddressModal = (locations: ILocationWithIds[], type: string) => {
-  setSelectedAddresses({
-    locations,
-    title: type === 'pickup' ? 'Origin Addresses' : 'Destination Addresses',
-    type: type  
-  });
-  setAddressModalOpen(true);
-};
+
+  // Function to toggle address expansion
+  // const toggleAddressExpansion = (addressKey: string) => {
+  //   setExpandedAddresses((prev:any) => ({
+  //     ...prev,
+  //     [addressKey]: !prev[addressKey]
+  //   }));
+  // };
+  // Function to open address modal
+  const openAddressModal = (locations: ILocationWithIds[], type: string) => {
+    setSelectedAddresses({
+      locations,
+      title: type === 'pickup' ? 'Origin Addresses' : 'Destination Addresses',
+      type: type
+    });
+    setAddressModalOpen(true);
+  };
 
 
   if (!locations || locations.length === 0) return '-';
-  
+
   // If there's only one address, show it with Read More option
   // if (locations.length === 1) {
   //   const loc = locations[0];
@@ -132,7 +139,7 @@ const openAddressModal = (locations: ILocationWithIds[], type: string) => {
   //   const displayAddress = isExpanded 
   //     ? fullAddress 
   //     : `${fullAddress.substring(0, 30)}${fullAddress.length > 30 ? '...' : ''}`;
-    
+
   //   return (
   //     <Box key={`${loc._id}-0`} sx={{ maxWidth: 500 }}>
   //       <Typography 
@@ -147,7 +154,7 @@ const openAddressModal = (locations: ILocationWithIds[], type: string) => {
   //       </Typography>
   //       {fullAddress.length > 30 && (
   //         <Button 
-             
+
   //           onClick={(e) => {
   //             e.stopPropagation();
   //             toggleAddressExpansion(addressKey);
@@ -171,12 +178,12 @@ const openAddressModal = (locations: ILocationWithIds[], type: string) => {
   //     </Box>
   //   );
   // }
-  
+
   // If there are multiple addresses, show the first one and a View All button
   // const firstLoc = locations[0];
   // const firstAddress = `${firstLoc.address}-${firstLoc.city}, ${firstLoc.state}`;
   // const shortAddress = `${firstAddress.substring(0, 30)}${firstAddress.length > 30 ? '...' : ''}`;
-  
+
   return (
     <Box sx={{ maxWidth: "100%" }}>
       <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -191,18 +198,18 @@ const openAddressModal = (locations: ILocationWithIds[], type: string) => {
           {shortAddress}
         </Typography> */}
         <Button
-          
+
           color="primary"
           startIcon={<VisibilityIcon sx={{ fontSize: 16 }} />}
           onClick={(e) => {
             e.stopPropagation();
             openAddressModal(locations, type);
           }}
-          sx={{ 
-            ml: 1, 
-            p: 0, 
+          sx={{
+            ml: 1,
+            p: 0,
             minHeight: 22,
-            minWidth: 'auto', 
+            minWidth: 'auto',
             textTransform: 'none',
             fontSize: '0.75rem',
             fontWeight: 500,
@@ -219,4 +226,4 @@ const openAddressModal = (locations: ILocationWithIds[], type: string) => {
   );
 };
 
-export  {renderAddress,AddressModal}
+export { renderAddress, AddressModal }

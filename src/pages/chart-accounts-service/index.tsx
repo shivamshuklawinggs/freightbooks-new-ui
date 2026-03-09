@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Dialog, TableRow, TableCell } from '@mui/material';
+import { Box, Button, Dialog, TableRow, TableCell, DialogActions } from '@mui/material';
 import { PageHeader, DataTable } from '@/components/ui';
 import { IChartAccount } from '@/types';
 import ChartAccountForm from './ChartAccountForm';
@@ -15,6 +15,7 @@ import { hasAccess,withPermission } from '@/hooks/ProtectedRoute/authUtils';
 import VerticalMenu from '@/components/VerticalMenu';
 import ErrorHandlerAlert from '@/components/common/ErrorHandlerAlert';
 import { toast } from 'react-toastify';
+import { getIcon } from '@/components/common/icons/getIcon';
 export type ChartAccountFilterType="balance_sheet" | "profit_and_loss" | "all" | "createdBy"
 const ChartAccountsPage: React.FC = () => {
   const navigate = useNavigate()
@@ -129,6 +130,11 @@ const ChartAccountsPage: React.FC = () => {
 
       {/* Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>
+            {getIcon('CloseIcon')}
+          </Button>
+        </DialogActions>
         <ChartAccountForm
           initial={editing ?? undefined}
           onSuccess={handleFormSuccess}
