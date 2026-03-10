@@ -637,11 +637,10 @@ const handleNestedPopoverLeave = () => {
         [`& .MuiDrawer-paper`]: {
           width: drawerWidth,
           boxSizing: "border-box",
-          bgcolor: 'primary.main',
-          backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+          bgcolor: alpha(theme.palette.primary.main, 0.8),
           borderLeft: primaryColor ? `4px solid ${primaryColor}` : 'none',
           boxShadow: '2px 0 12px rgba(0,0,0,0.15)',
-          transition: theme.transitions.create("width", {
+          transition: theme.transitions.create(["width", "backgroundImage"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
           }),
