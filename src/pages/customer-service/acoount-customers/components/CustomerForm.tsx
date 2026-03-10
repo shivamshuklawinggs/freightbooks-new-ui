@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Grid, Divider, Typography, Box, CircularProgress, Dialog, DialogContent, DialogTitle, DialogActions } from '@mui/material';
+import { Button, Grid, Typography, Box, CircularProgress, Dialog, DialogContent, DialogActions, IconButton, useTheme, alpha, Card } from '@mui/material';
+import { Business, Phone, Email, LocationOn, Description, AttachFile, AccountBalance, ContactPage } from '@mui/icons-material';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import apiService from '@/service/apiService';
@@ -13,7 +14,6 @@ import DocumentUpload from './FormCompnents/Documents';
 import { toast } from 'react-toastify';
 import AccountsInfo from './FormCompnents/AccountsInfo';
 import CompanySection from './FormCompnents/CompanySection';
-import { ContactPage } from '@mui/icons-material';
 import BillingAddress from './FormCompnents/BillingAddress';
 import ShippingAddress from './FormCompnents/ShippingAddress';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
@@ -31,6 +31,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
   open,
   onClose
 }) => {
+  const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const queryClient = useQueryClient();
   const [openDialog, setOpenDialog] = useState(false);
@@ -94,87 +95,251 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     <Dialog
       open={!!open}
       onClose={onClose}
-      maxWidth="md"
+      maxWidth="lg"
       fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 3,
+          boxShadow: theme.shadows[8],
+          overflow: 'hidden',
+          maxHeight: '90vh'
+        }
+      }}
     >
-      <DialogActions>
-        <Button onClick={onClose}>
-          {getIcon('CloseIcon')}
-        </Button>
-      </DialogActions>
-      <FormProvider {...form}>
-          <ErrorHandlerAlert error={mutation.error}/>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <DialogTitle>
+      {/* Header with close icon */}
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        px: 3,
+        py: 2.5,
+        bgcolor: 'primary.main',
+        color: 'primary.contrastText',
+        position: 'relative'
+      }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Box sx={{ 
+            p: 1,
+            borderRadius: 2,
+            bgcolor: alpha('#fff', 0.15),
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <ContactPage sx={{ fontSize: 20 }} />
+          </Box>
+          <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
             {id ? 'Update Customer' : 'Create New Customer'}
-          </DialogTitle>
-
-          <DialogContent>
+          </Typography>
+        </Box>
+        <IconButton 
+          onClick={onClose}
+          sx={{ 
+            color: 'inherit',
+            '&:hover': { 
+              bgcolor: alpha('#fff', 0.1),
+              transition: 'all 0.2s ease-in-out'
+            }
+          }}
+        >
+          {getIcon('CloseIcon')}
+        </IconButton>
+      </Box>
+      
+      <FormProvider {...form}>
+        <Box component="form" onSubmit={form.handleSubmit(handleSubmit)}>
+          <DialogContent sx={{ px: 3, py: 3, maxHeight: 'calc(90vh - 200px)', overflowY: 'auto' }}>
+            <ErrorHandlerAlert error={mutation.error}/>
             {isFetching ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-                <CircularProgress />
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 8 }}>
+                <CircularProgress size={40} thickness={4} />
               </Box>
             ) : (
-              <Grid container spacing={5}>
+              <Grid container spacing={3}>
+                {/* Company Information Section */}
                 <Grid item xs={12}>
-                  <Typography variant="h6" color="primary" gutterBottom>
-                    <ContactPage /> Name & Contact
-                  </Typography>
-                  <CompanySection />
+                  <Card 
+                    variant="outlined" 
+                    sx={{ 
+                      p: 2.5,
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.background.paper, 0.5),
+                      border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <Business sx={{ fontSize: 18, color: 'primary.main' }} />
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                        Company Information
+                      </Typography>
+                    </Box>
+                    <CompanySection />
+                  </Card>
                 </Grid>
 
+                {/* Billing Address Section */}
                 <Grid item xs={12}>
-                  <Divider className="custom-divider" />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="h6" color="primary" gutterBottom>
-                    Billing Address
-                  </Typography>
-                  <BillingAddress />
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider className="custom-divider" />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="h6" color="primary" gutterBottom>
-                    Shipping Address
-                  </Typography>
-                  <ShippingAddress />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="h6" color="primary" gutterBottom>
-                    Notes And Attachments
-                  </Typography>
-                  <DocumentUpload />
+                  <Card 
+                    variant="outlined" 
+                    sx={{ 
+                      p: 2.5,
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.background.paper, 0.5),
+                      border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <LocationOn sx={{ fontSize: 18, color: 'primary.main' }} />
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                        Billing Address
+                      </Typography>
+                    </Box>
+                    <BillingAddress />
+                  </Card>
                 </Grid>
 
+                {/* Shipping Address Section */}
                 <Grid item xs={12}>
-                  <Divider className="custom-divider" />
+                  <Card 
+                    variant="outlined" 
+                    sx={{ 
+                      p: 2.5,
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.background.paper, 0.5),
+                      border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <LocationOn sx={{ fontSize: 18, color: 'primary.main' }} />
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                        Shipping Address
+                      </Typography>
+                    </Box>
+                    <ShippingAddress />
+                  </Card>
                 </Grid>
+
+                {/* Documents Section */}
                 <Grid item xs={12}>
-                  <Typography variant="h6" color="primary" gutterBottom>
-                    Accounting Payments
-                  </Typography>
-                  <AccountsInfo setOpenDialog={setOpenDialog} />
+                  <Card 
+                    variant="outlined" 
+                    sx={{ 
+                      p: 2.5,
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.background.paper, 0.5),
+                      border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <AttachFile sx={{ fontSize: 18, color: 'primary.main' }} />
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                        Notes & Attachments
+                      </Typography>
+                    </Box>
+                    <DocumentUpload />
+                  </Card>
+                </Grid>
+
+                {/* Accounting Section */}
+                <Grid item xs={12}>
+                  <Card 
+                    variant="outlined" 
+                    sx={{ 
+                      p: 2.5,
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.background.paper, 0.5),
+                      border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <AccountBalance sx={{ fontSize: 18, color: 'primary.main' }} />
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                        Accounting & Payments
+                      </Typography>
+                    </Box>
+                    <AccountsInfo setOpenDialog={setOpenDialog} />
+                  </Card>
                 </Grid>
               </Grid>
             )}
           </DialogContent>
 
-          <DialogActions sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
-            <Button onClick={onClose} color="inherit">
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              type="submit"
-              disabled={mutation.isPending}
-              startIcon={mutation.isPending ? <CircularProgress size={20} color="inherit" /> : null}
-            >
-              {mutation.isPending ? "Submitting..." : submitButtonText}
-            </Button>
+          {/* Actions */}
+          <DialogActions sx={{ px: 3, py: 2.5, borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}` }}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Button 
+                  onClick={onClose} 
+                  color="inherit" 
+                  disabled={mutation.isPending}
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    borderColor: alpha(theme.palette.divider, 0.3),
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.text.primary, 0.5),
+                      bgcolor: alpha(theme.palette.action.hover, 0.04)
+                    }
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  disabled={mutation.isPending}
+                  fullWidth
+                  startIcon={mutation.isPending ? <CircularProgress size={20} color="inherit" /> : null}
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    boxShadow: theme.shadows[4],
+                    '&:hover': {
+                      boxShadow: theme.shadows[6],
+                      transform: 'translateY(-1px)'
+                    },
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                >
+                  {mutation.isPending ? "Submitting..." : submitButtonText}
+                </Button>
+              </Grid>
+            </Grid>
           </DialogActions>
-        </form>
+        </Box>
       </FormProvider>
 
       <PaymentTermForm

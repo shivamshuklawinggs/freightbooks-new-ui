@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Box, Button, CircularProgress, IconButton } from '@mui/material';
+import { Dialog, DialogContent, DialogActions, TextField, Box, Button, CircularProgress, IconButton, useTheme, alpha, Card, CardContent, Typography, Grid } from '@mui/material';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from "react-toastify"
@@ -14,6 +14,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import ChartAccountForm from '@/pages/chart-accounts-service/ChartAccountForm';
 import { ControlledNumericInput } from '@/components/ui/NumericInput';
 import { getIcon } from '@/components/common/icons/getIcon';
+import { AccountBalance, Percent, Description } from '@mui/icons-material';
 
 interface TaxFormProps {
   showModal: boolean;
@@ -22,6 +23,7 @@ interface TaxFormProps {
 }
 
 const TaxForm: React.FC<TaxFormProps> = ({ showModal, handleModalClose, editingItem }) => {
+  const theme = useTheme();
   const qc = useQueryClient()
   const [showChartModal, setShowChartModal] = useState(false)
   const { chartAccountOptions } = useChartOfAccount({ type: ['liability', 'expense'], removeMasters: ["vendor", "customer"], regularExpression: "TAX", nor: [] })
@@ -73,79 +75,269 @@ const TaxForm: React.FC<TaxFormProps> = ({ showModal, handleModalClose, editingI
   return (
     <>
       <HasPermission action="create" resource={["accounting"]} component={
-        <Dialog open={showModal} onClose={handleModalClose} maxWidth="sm" fullWidth>
-          <DialogActions>
-            <IconButton onClick={handleModalClose} size="small">
+        <Dialog 
+          open={showModal} 
+          onClose={handleModalClose} 
+          maxWidth="md" 
+          fullWidth
+          PaperProps={{
+            sx: {
+              borderRadius: 3,
+              boxShadow: theme.shadows[8],
+              overflow: 'hidden',
+              maxHeight: '90vh'
+            }
+          }}
+        >
+          {/* Header with close icon */}
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            px: 3,
+            py: 2.5,
+            bgcolor: 'primary.main',
+            color: 'primary.contrastText',
+            position: 'relative'
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Box sx={{ 
+                p: 1,
+                borderRadius: 2,
+                bgcolor: alpha('#fff', 0.15),
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <Percent sx={{ fontSize: 20 }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
+                {editingItem ? 'Edit Tax Option' : 'Add New Tax Option'}
+              </Typography>
+            </Box>
+            <IconButton 
+              onClick={handleModalClose}
+              sx={{ 
+                color: 'inherit',
+                '&:hover': { 
+                  bgcolor: alpha('#fff', 0.1),
+                  transition: 'all 0.2s ease-in-out'
+                }
+              }}
+            >
               {getIcon('CloseIcon')}
             </IconButton>
-          </DialogActions>
-          <DialogTitle>{editingItem ? 'Edit' : 'Add New'} Tax Option</DialogTitle>
-          <ErrorHandlerAlert error={mutation.error} toast={true} />
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <DialogContent>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-                <TextField
-                  label="Label"
-                  fullWidth
-                  {...register('label')}
-                  error={!!errors.label}
-                  helperText={errors.label?.message}
-                />
-                {/* <TextField
-                  label="Value"
-                  fullWidth
-                  type="number"
-                  {...register('value')}
-                  error={!!errors.value}
-                  helperText={errors.value?.message}
-                /> */}
-                <ControlledNumericInput
-                  name="value"
-                  control={control}
-                  label="Value"
-                  fullWidth
-                  decimalScale={2}
-                  allowNegative={false}
-                  thousandSeparator={false}
-                  placeholder="0.00"
-                />
-                <Controller
-                  name="ChartOfAccountId"
-                  control={control}
-                  rules={{ required: 'Account type is required' }}
-                  render={({ field, fieldState, }) => (
-                    <FormSelect
-                      label="Chart of Account"
-                      options={chartAccountOptions}
-                      value={chartAccountOptions.find((opt) => opt.value === field.value) || null}
-                      onChange={(option) => field.onChange(option?.value || '')}
-                      placeholder="Select Chart of Account"
-                      isClearable
-                      error={fieldState.error?.message}
-                      addNewLabel="+ Add New Chart Account"
-                      addNewModal={
-                        <Dialog open={showChartModal} onClose={() => setShowChartModal(false)} maxWidth="md" fullWidth>
-                          <ChartAccountForm
-                            initial={undefined}
-                            onSuccess={OnSuccess}
-                          />
-                        </Dialog>
+          </Box>
+          
+          <Box sx={{ px: 3, py: 3 }}>
+            <ErrorHandlerAlert error={mutation.error} toast={true} />
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={3}>
+                {/* Tax Information Section */}
+                <Grid item xs={12}>
+                  <Card 
+                    variant="outlined" 
+                    sx={{ 
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.background.paper, 0.5),
+                      border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
                       }
-                      showModal={showChartModal}
-                      setShowModal={setShowChartModal}
-                      required
-                    />
-                  )}
-                />
+                    }}
+                  >
+                    <CardContent sx={{ p: 2.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                        <Description sx={{ fontSize: 18, color: 'primary.main' }} />
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                          Tax Information
+                        </Typography>
+                      </Box>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                          <TextField
+                            label="Tax Label"
+                            fullWidth
+                            placeholder="Enter tax label"
+                            {...register('label')}
+                            error={!!errors.label}
+                            helperText={errors.label?.message}
+                            sx={{
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: 2,
+                                transition: 'all 0.2s ease-in-out'
+                              },
+                              '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                borderColor: theme.palette.primary.main,
+                                borderWidth: 2
+                              }
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <ControlledNumericInput
+                            name="value"
+                            control={control}
+                            label="Tax Rate (%)"
+                            fullWidth
+                            decimalScale={2}
+                            allowNegative={false}
+                            thousandSeparator={false}
+                            placeholder="0.00"
+                            sx={{
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: 2,
+                                transition: 'all 0.2s ease-in-out'
+                              }
+                            }}
+                          />
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                {/* Account Mapping Section */}
+                <Grid item xs={12}>
+                  <Card 
+                    variant="outlined" 
+                    sx={{ 
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.background.paper, 0.5),
+                      border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                      }
+                    }}
+                  >
+                    <CardContent sx={{ p: 2.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                        <AccountBalance sx={{ fontSize: 18, color: 'primary.main' }} />
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                          Account Mapping
+                        </Typography>
+                      </Box>
+                      <Controller
+                        name="ChartOfAccountId"
+                        control={control}
+                        rules={{ required: 'Account type is required' }}
+                        render={({ field, fieldState, }) => (
+                          <FormSelect
+                            label="Chart of Account"
+                            options={chartAccountOptions}
+                            value={chartAccountOptions.find((opt) => opt.value === field.value) || null}
+                            onChange={(option) => field.onChange(option?.value || '')}
+                            placeholder="Select Chart of Account"
+                            isClearable
+                            error={fieldState.error?.message}
+                            addNewLabel="+ Add New Chart Account"
+                            addNewModal={
+                              <Dialog 
+                                open={showChartModal} 
+                                onClose={() => setShowChartModal(false)} 
+                                maxWidth="md" 
+                                fullWidth
+                                PaperProps={{
+                                  sx: {
+                                    borderRadius: 3,
+                                    boxShadow: theme.shadows[8]
+                                  }
+                                }}
+                              >
+                                <Box sx={{ 
+                                  display: 'flex', 
+                                  alignItems: 'center', 
+                                  justifyContent: 'space-between',
+                                  px: 3,
+                                  py: 2.5,
+                                  bgcolor: 'primary.main',
+                                  color: 'primary.contrastText'
+                                }}>
+                                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                                    Create New Chart Account
+                                  </Typography>
+                                  <IconButton 
+                                    onClick={() => setShowChartModal(false)}
+                                    sx={{ 
+                                      color: 'inherit',
+                                      '&:hover': { 
+                                        bgcolor: alpha('#fff', 0.1)
+                                      }
+                                    }}
+                                  >
+                                    {getIcon('CloseIcon')}
+                                  </IconButton>
+                                </Box>
+                                <Box sx={{ p: 3 }}>
+                                  <ChartAccountForm
+                                    initial={undefined}
+                                    onSuccess={OnSuccess}
+                                  />
+                                </Box>
+                              </Dialog>
+                            }
+                            showModal={showChartModal}
+                            setShowModal={setShowChartModal}
+                            required
+                          />
+                        )}
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+              
+              {/* Actions */}
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
+                <Button 
+                  onClick={handleModalClose} 
+                  color="inherit" 
+                  disabled={mutation.isPending}
+                  variant="outlined"
+                  sx={{
+                    py: 1.5,
+                    px: 3,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    borderColor: alpha(theme.palette.divider, 0.3),
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.text.primary, 0.5),
+                      bgcolor: alpha(theme.palette.action.hover, 0.04)
+                    }
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  variant="contained" 
+                  disabled={mutation.isPending} 
+                  color="primary"
+                  startIcon={mutation.isPending ? <CircularProgress size={20} color="inherit" /> : null}
+                  sx={{
+                    py: 1.5,
+                    px: 3,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    boxShadow: theme.shadows[4],
+                    '&:hover': {
+                      boxShadow: theme.shadows[6],
+                      transform: 'translateY(-1px)'
+                    },
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                >
+                  {mutation.isPending ? 'Saving...' : (editingItem ? 'Update' : 'Create')}
+                </Button>
               </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleModalClose} color="inherit" disabled={mutation.isPending}>Cancel</Button>
-              <Button type="submit" variant="contained" disabled={mutation.isPending} color="primary">
-                {mutation.isPending ? <CircularProgress size={24} /> : (editingItem ? 'Update' : 'Create')}
-              </Button>
-            </DialogActions>
-          </form>
+            </Box>
+          </Box>
         </Dialog>
       } />
     </>

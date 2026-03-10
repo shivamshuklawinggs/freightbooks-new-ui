@@ -1,13 +1,6 @@
-/**
- * @author Shivam Shukla
- * @description Carrier Modal Component
- * @version 1.0.0
- * @createdAt 10/06/2025
- * @lastModifiedBy Shivam Shukla
- * @lastModifiedDate 10/06/2025
- */
 import React, {  useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, Typography, Divider, } from '@mui/material';
+import { Dialog, DialogContent, DialogActions, Button, Grid, Typography, Divider, Box, IconButton, CircularProgress, useTheme, alpha, Card } from '@mui/material';
+import { Business, Phone, Email, LocationOn, Description, AttachFile, Shield, LocalShipping, Contacts } from '@mui/icons-material';
 import { useForm, FormProvider } from 'react-hook-form';
 import { ICarrier } from '@/types';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -38,6 +31,7 @@ const CarrierForm: React.FC<CarrierFormProps> = ({
   onClose,
   onUpdate,
 }) => {
+  const theme = useTheme();
   const [localUsdot, setLocalUsdot] = React.useState('');
   const form = useForm<ICarrier>({
     mode: 'onBlur',
@@ -133,113 +127,317 @@ const CarrierForm: React.FC<CarrierFormProps> = ({
   };
   const id =typeof open === 'object' && (open as ICarrier)?._id
   return (
-    <Dialog open={open as boolean} onClose={onClose} maxWidth="md" fullWidth >
-      <DialogActions>
-        <Button onClick={onClose}>
+    <Dialog 
+      open={open as boolean} 
+      onClose={onClose} 
+      maxWidth="lg" 
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 3,
+          boxShadow: theme.shadows[8],
+          overflow: 'hidden',
+          maxHeight: '90vh'
+        }
+      }}
+    >
+      {/* Header with close icon */}
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        px: 3,
+        py: 2.5,
+        bgcolor: 'primary.main',
+        color: 'primary.contrastText',
+        position: 'relative'
+      }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Box sx={{ 
+            p: 1,
+            borderRadius: 2,
+            bgcolor: alpha('#fff', 0.15),
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <LocalShipping sx={{ fontSize: 20 }} />
+          </Box>
+          <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
+            {(open as ICarrier)?._id ? 'Update Carrier' : 'Create New Carrier'}
+          </Typography>
+        </Box>
+        <IconButton 
+          onClick={onClose}
+          sx={{ 
+            color: 'inherit',
+            '&:hover': { 
+              bgcolor: alpha('#fff', 0.1),
+              transition: 'all 0.2s ease-in-out'
+            }
+          }}
+        >
           {getIcon('CloseIcon')}
-        </Button>
-      </DialogActions>
+        </IconButton>
+      </Box>
+      
       <FormProvider {...form}>
-        <form onSubmit={
+        <Box component="form" onSubmit={
            (e)=>{
             e.stopPropagation();
             form.handleSubmit(internalSubmit)(e);
            }
-          
           }>
-          <DialogTitle>{(open as ICarrier)?._id ? 'Update Carrier' : 'Create New Carrier'}</DialogTitle>
-          <DialogContent>
-          <Grid container spacing={5}>
+          <DialogContent sx={{ px: 3, py: 3, maxHeight: 'calc(90vh - 200px)', overflowY: 'auto' }}>
+          <Grid container spacing={3}>
               {/* Company Information Section */}
               <Grid item xs={12}>
-                <Typography variant="h6" color="primary" gutterBottom>
-                  Company Information
-                </Typography>
-                <CompanySection localUsdot={localUsdot} setLocalUsdot={setLocalUsdot} />
+                <Card 
+                  variant="outlined" 
+                  sx={{ 
+                    p: 2.5,
+                    borderRadius: 2,
+                    bgcolor: alpha(theme.palette.background.paper, 0.5),
+                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.primary.main, 0.3),
+                      boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                    }
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <Business sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                      Company Information
+                    </Typography>
+                  </Box>
+                  <CompanySection localUsdot={localUsdot} setLocalUsdot={setLocalUsdot} />
+                </Card>
               </Grid>
               {/* End Company Information Section */}
               {/* Entity Details Section */}
               <Grid item xs={12}>
-                <Divider className="custom-divider" />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h6" color="primary" gutterBottom>
-                  Entity Details
-                </Typography>
-                <CommonData/>
+                <Card 
+                  variant="outlined" 
+                  sx={{ 
+                    p: 2.5,
+                    borderRadius: 2,
+                    bgcolor: alpha(theme.palette.background.paper, 0.5),
+                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.primary.main, 0.3),
+                      boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                    }
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <LocationOn sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                      Entity Details
+                    </Typography>
+                  </Box>
+                  <CommonData/>
+                </Card>
               </Grid>
               {/* End Entity Details Section */}
               {/* Additional Information Section */}
               <Grid item xs={12}>
-                <Divider className="custom-divider" />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h6" color="primary" gutterBottom>
-                  Additional Information
-                </Typography>
-                <AdditionalInfo  />
+                <Card 
+                  variant="outlined" 
+                  sx={{ 
+                    p: 2.5,
+                    borderRadius: 2,
+                    bgcolor: alpha(theme.palette.background.paper, 0.5),
+                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.primary.main, 0.3),
+                      boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                    }
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <Description sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                      Additional Information
+                    </Typography>
+                  </Box>
+                  <AdditionalInfo  />
+                </Card>
               </Grid>
               {/* End Additional Information Section */}
                {/* Contact List Section */}
                 <Grid item xs={12}>
-                  <Divider className="custom-divider" />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="h6" color="primary" gutterBottom>
-                    Contact Persons
-                  </Typography>
-                  {!id ? (
-                    <ContactList
-                      control={form.control}
-                      setValue={form.setValue}
-                      watch={form.watch}
-                      errors={form.formState.errors}
-                    />
-                  ) : (
-                    <UpdateContactList customerId={id} />
-                  )}
+                  <Card 
+                    variant="outlined" 
+                    sx={{ 
+                      p: 2.5,
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.background.paper, 0.5),
+                      border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <Contacts sx={{ fontSize: 18, color: 'primary.main' }} />
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                        Contact Persons
+                      </Typography>
+                    </Box>
+                    {!id ? (
+                      <ContactList
+                        control={form.control}
+                        setValue={form.setValue}
+                        watch={form.watch}
+                        errors={form.formState.errors}
+                      />
+                    ) : (
+                      <UpdateContactList customerId={id} />
+                    )}
+                  </Card>
                 </Grid>
                 {/* End Contact List Section */}  
+              {/* Power Units Section */}
+              <Grid item xs={12}>
+                <Card 
+                  variant="outlined" 
+                  sx={{ 
+                    p: 2.5,
+                    borderRadius: 2,
+                    bgcolor: alpha(theme.palette.background.paper, 0.5),
+                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.primary.main, 0.3),
+                      boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                    }
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <LocalShipping sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                      Power Units
+                    </Typography>
+                  </Box>
+                  <PowerUnits  />
+                </Card>
+              </Grid>
               {/* Insurance Form Section */}
               <Grid item xs={12}>
-                <Divider className="custom-divider" />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h6" color="primary" gutterBottom>
-                  Power Units
-                </Typography>
-                <PowerUnits  />
-              </Grid>
-              <Grid item xs={12}>
-                <Divider className="custom-divider" />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h6" color="primary" gutterBottom>
-                  Insurance Information
-                </Typography>
-                <InsuranceForm open={open} />
+                <Card 
+                  variant="outlined" 
+                  sx={{ 
+                    p: 2.5,
+                    borderRadius: 2,
+                    bgcolor: alpha(theme.palette.background.paper, 0.5),
+                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.primary.main, 0.3),
+                      boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                    }
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <Shield sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                      Insurance Information
+                    </Typography>
+                  </Box>
+                  <InsuranceForm open={open} />
+                </Card>
               </Grid>
               {/* End Insurance Form Section */}
               {/* Document Upload Section */}
               <Grid item xs={12}>
-                <Divider className="custom-divider" />
+                <Card 
+                  variant="outlined" 
+                  sx={{ 
+                    p: 2.5,
+                    borderRadius: 2,
+                    bgcolor: alpha(theme.palette.background.paper, 0.5),
+                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.primary.main, 0.3),
+                      boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
+                    }
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <AttachFile sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                      Documents
+                    </Typography>
+                  </Box>
+                  <DocumentUpload />
+                </Card>
               </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h6" color="primary" gutterBottom>
-                  Documents
-                </Typography>
-                <DocumentUpload />
-                </Grid>
               {/* End Document Upload Section */}
             </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={onClose}>Cancel</Button>
-            <Button variant="contained" color="primary" type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Saving...' : (open as ICarrier)?._id ? 'Update' : 'Create'}
-            </Button>
+          
+          {/* Actions */}
+          <DialogActions sx={{ px: 3, py: 2.5, borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}` }}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Button 
+                  onClick={onClose} 
+                  color="inherit" 
+                  disabled={mutation.isPending}
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    borderColor: alpha(theme.palette.divider, 0.3),
+                    '&:hover': {
+                      borderColor: alpha(theme.palette.text.primary, 0.5),
+                      bgcolor: alpha(theme.palette.action.hover, 0.04)
+                    }
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  type="submit" 
+                  disabled={mutation.isPending}
+                  fullWidth
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    boxShadow: theme.shadows[4],
+                    '&:hover': {
+                      boxShadow: theme.shadows[6],
+                      transform: 'translateY(-1px)'
+                    },
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                >
+                  {mutation.isPending ? (
+                    <CircularProgress size={20} thickness={4} />
+                  ) : (
+                    (open as ICarrier)?._id ? 'Update' : 'Create'
+                  )}
+                </Button>
+              </Grid>
+            </Grid>
           </DialogActions>
-        </form>
+        </Box>
       </FormProvider>
     </Dialog>
   );

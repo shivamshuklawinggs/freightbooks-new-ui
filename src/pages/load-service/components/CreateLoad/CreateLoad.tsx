@@ -1,11 +1,12 @@
 import React, { useState, FormEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, Paper, Button, Alert, Container, Stack, Stepper, Step, StepLabel } from "@mui/material";
+import { Box, Button, Alert, Container, Stack, Stepper, Step, StepLabel, useTheme, alpha, CircularProgress, Typography, Card, CardContent } from "@mui/material";
+import { LocalShipping, People, Business, LocationOn, AttachFile, Save as SaveIcon, ArrowBack as ArrowBackIcon, ArrowForward as ArrowForwardIcon } from '@mui/icons-material';
 import { AppDispatch, RootState } from "@/redux/store";
 import LoadDetails from "./LoadDetails";
 import Carrier from "./Carrier/Index";
 import Delivery from "./Delivery";
-import { setActiveTab, resetLoad, setCustomerInformation, setSignature } from "@/redux/Slice/loadSlice";
+import { setActiveTab, resetLoad, setCustomerInformation } from "@/redux/Slice/loadSlice";
 import { toast } from "react-toastify";
 import Pickup from "./Pickup";
 import { useNavigate } from "react-router-dom";
@@ -17,12 +18,10 @@ import CustomerInformation from "./CustomerInformation/Index";
 import { LoadValidationData } from "@/redux/InitialData/Load";
 import apiService from "@/service/apiService";
 import { useMutation, useQuery } from '@tanstack/react-query';
-
 import { withPermission } from "@/hooks/ProtectedRoute/authUtils";
-import { ArrowBack as ArrowBackIcon, ArrowForward as ArrowForwardIcon, Save as SaveIcon } from '@mui/icons-material';
-import SignatureBox from "@/components/SignatureBox";
 
 const CreateLoad: React.FC = () => {
+  const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { currentCompany } = useSelector((state: RootState) => state.user);
@@ -152,40 +151,75 @@ const CreateLoad: React.FC = () => {
   
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      
       <Box component="form" className="loadForm" id="createLoadForm" onSubmit={handleSubmit}>
-        {/* Progress Stepper */}
-        <Paper sx={{ p: 1, mb:1, borderRadius: 2, bgcolor: 'background.paper' }}>
-          <Stepper activeStep={currentStepIndex} alternativeLabel sx={{ mb: 1 }}>
-            {[
-              { label: 'Load Details', value: 'load' },
-              { label: 'Customer', value: 'customer' },
-              { label: 'Carrier/Asset', value: 'asset' },
-              { label: 'Pickup', value: 'pickup' },
-              { label: 'Delivery', value: 'delivery' },
-              { label: 'Documents', value: 'document' }
-            ].map((step, index) => (
-              <Step key={step.value}>
-                <StepLabel 
-                  onClick={() => handleTabChange(step.value)}
-                  sx={{ 
-                    cursor: 'pointer',
-                    '& .MuiStepLabel-label': {
-                      fontSize: '0.875rem',
-                      fontWeight: currentStepIndex >= index ? 600 : 400
-                    }
-                  }}
-                >
-                  {step.label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Paper>
-
-        {/* Main Content */}
-        <Paper sx={{ borderRadius: 2, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-          <Box sx={{ p: 4 }}>
+        {/* Progress Stepper and Main Content */}
+        <Card 
+          variant="outlined" 
+          sx={{ 
+            borderRadius: 3,
+            bgcolor: alpha(theme.palette.background.paper, 0.8),
+            border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+            boxShadow: theme.shadows[2]
+          }}
+        >
+          <CardContent sx={{ p: 0 }}>
+            <Box sx={{ display: 'flex', height: '100%' }}>
+              {/* Vertical Stepper Sidebar */}
+              <Box sx={{ 
+                width: 280,
+                borderRight: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                p: 3,
+                bgcolor: alpha(theme.palette.background.paper, 0.3)
+              }}>
+                <Stepper activeStep={currentStepIndex} orientation="vertical">
+                  {[
+                    { label: 'Load Details', value: 'load', icon: <LocalShipping /> },
+                    { label: 'Customer', value: 'customer', icon: <People /> },
+                    { label: 'Carrier/Asset', value: 'asset', icon: <Business /> },
+                    { label: 'Pickup', value: 'pickup', icon: <LocationOn />},
+                    { label: 'Delivery', value: 'delivery', icon: <LocationOn />},
+                    { label: 'Documents', value: 'document', icon: <AttachFile /> }
+                  ].map((step, index) => (
+                    <Step key={step.value}>
+                      <StepLabel 
+                        onClick={() => handleTabChange(step.value)}
+                        sx={{ 
+                          cursor: 'pointer',
+                          '& .MuiStepLabel-label': {
+                            fontSize: '0.875rem',
+                            fontWeight: currentStepIndex >= index ? 600 : 400,
+                            color: currentStepIndex >= index ? 'primary.main' : 'text.secondary',
+                            mb: 0.5
+                          },
+                          '& .MuiStepLabel-text': {
+                            display: 'block'
+                          },
+                          '& .MuiStepIcon-root': {
+                            color: currentStepIndex >= index ? 'primary.main' : 'action.disabled',
+                            '&.Mui-active': {
+                              color: 'primary.main',
+                              boxShadow: `0 0 0 6px ${alpha(theme.palette.primary.main, 0.12)}`
+                            },
+                            '&.Mui-completed': {
+                              color: 'primary.main'
+                            }
+                          }
+                        }}
+                        icon={step.icon}
+                      >
+                        <Box>
+                          <Typography variant="body2" sx={{ fontWeight: 'inherit', color: 'inherit' }}>
+                            {step.label}
+                          </Typography>
+                        </Box>
+                      </StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
+              </Box>
+              
+              {/* Main Content Area */}
+              <Box sx={{ flex: 1, minHeight: 600 }}>
             {activeTab === "load" && (
               <Box className="tab-content-wrapper">
                 <LoadDetails />
@@ -212,88 +246,105 @@ const CreateLoad: React.FC = () => {
               </Box>
             )}
             {activeTab === "document" && (
-              <Box
-                className="tab-content-wrapper"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 3,
-                  p: 2,
-                  width: "100%",
-                }}
-              >
-                {/* Document Upload Section */}
-                <DocumentUpload />
-
-                {/* Signature Section (Right Aligned) */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "flex-end",
-                    mt: 2,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: { xs: "100%", sm: "70%", md: "50%", lg: "40%" },
-                      maxWidth: 500,
-                    }}
-                  >
-                    <SignatureBox title="Authorized Signature" defaultSignature={signature} onSave={(dataURl)=>{
-                                          dispatch(setSignature(dataURl))
-                                        }} />
-                  </Box>
+              <Box className="tab-content-wrapper">
+               
+                  {/* Document Upload Section */}
+                  <DocumentUpload />
                 </Box>
-              </Box>
             )}
-          </Box>
-        </Paper>
-       {error && <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>{error}</Alert>}
-      {createLoadMutation.isSuccess && <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>Load created successfully!</Alert>}
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+        {/* Alerts */}
+        {error && (
+          <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+            {error}
+          </Alert>
+        )}
+        {createLoadMutation.isSuccess && (
+          <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
+            Load created successfully!
+          </Alert>
+        )}
 
         {/* Action Buttons */}
-        <Paper sx={{ p: 3, mt: 3, borderRadius: 2, bgcolor: 'background.paper' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={<ArrowBackIcon />}
-              onClick={() => {
-                if (window.confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
-                  dispatch(resetLoad());
-                  navigate(window.location.pathname)
-                }
-              }}
-              sx={{ borderRadius: 2, textTransform: 'none' }}
-            >
-              Cancel
-            </Button>
-            
-            <Stack direction="row" spacing={2}>
+        <Card 
+          variant="outlined" 
+          sx={{ 
+            borderRadius: 3,
+            bgcolor: alpha(theme.palette.background.paper, 0.8),
+            border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+            boxShadow: theme.shadows[2]
+          }}
+        >
+          <CardContent sx={{ p: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
               <Button
                 variant="outlined"
+                color="error"
                 startIcon={<ArrowBackIcon />}
-                onClick={handlePrevious}
-                disabled={activeTab === "load"}
-                sx={{ borderRadius: 2, textTransform: 'none' }}
+                onClick={() => {
+                  if (window.confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                    dispatch(resetLoad());
+                    navigate(window.location.pathname)
+                  }
+                }}
+                sx={{ 
+                  borderRadius: 2, 
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  py: 1.5,
+                  px: 3
+                }}
               >
-                Previous
+                Cancel
               </Button>
-              <Button
-                variant="contained"
-                endIcon={activeTab === "document" ? <SaveIcon /> : <ArrowForwardIcon />}
-                onClick={activeTab === "document" ? handleSubmit : handleNext}
-                disabled={createLoadMutation.isPending}
-                sx={{ borderRadius: 2, textTransform: 'none', minWidth: 120 }}
-              >
-                {activeTab === "document" ? "Save Load" : createLoadMutation.isPending ? "Processing..." : "Next"}
-              </Button>
-            </Stack>
-          </Box>
-        </Paper>
+              
+              <Stack direction="row" spacing={2}>
+                <Button
+                  variant="outlined"
+                  startIcon={<ArrowBackIcon />}
+                  onClick={handlePrevious}
+                  disabled={activeTab === "load"}
+                  sx={{ 
+                    borderRadius: 2, 
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    py: 1.5,
+                    px: 3
+                  }}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="contained"
+                  endIcon={activeTab === "document" ? <SaveIcon /> : <ArrowForwardIcon />}
+                  onClick={activeTab === "document" ? handleSubmit : handleNext}
+                  disabled={createLoadMutation.isPending}
+                  startIcon={createLoadMutation.isPending ? <CircularProgress size={20} color="inherit" /> : null}
+                  sx={{ 
+                    borderRadius: 2, 
+                    textTransform: 'none', 
+                    fontWeight: 600,
+                    minWidth: 120,
+                    py: 1.5,
+                    px: 3,
+                    boxShadow: theme.shadows[4],
+                    '&:hover': {
+                      boxShadow: theme.shadows[6],
+                      transform: 'translateY(-1px)'
+                    },
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                >
+                  {activeTab === "document" ? "Save Load" : createLoadMutation.isPending ? "Processing..." : "Next"}
+                </Button>
+              </Stack>
+            </Box>
+          </CardContent>
+        </Card>
       </Box>
-    
     </Container>
   );
 };
