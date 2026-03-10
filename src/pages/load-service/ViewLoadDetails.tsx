@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Grid, Chip, Divider, Stack, Dialog, DialogContent, DialogTitle, DialogActions, Button, Avatar } from '@mui/material';
+import { Box, Typography, Grid, Chip, Divider, Stack, Dialog, DialogContent, DialogTitle, DialogActions, Button, Avatar, IconButton } from '@mui/material';
 import { IViewLoad, ILocationWithIds } from '@/types';
 import { getFilePreview, getFileType } from '@/utils/getFilePreview';
 import { LOAD_UPLOAD_URL } from '@/config';
@@ -7,6 +7,7 @@ import { FileDownload as FileDownloadIcon, InsertDriveFile, LocalShipping, Perso
 import { handleFileDownload } from '@/utils';
 import { formatDate } from '@/utils/dateUtils';
 import { SectionCard, DetailGrid, LabelValue } from '@/components/ui';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 const LocationCard: React.FC<{ location: ILocationWithIds }> = ({ location }) => (
   <Box sx={{ p: 1.5, mb: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1.5 }}>
@@ -36,6 +37,11 @@ const LocationCard: React.FC<{ location: ILocationWithIds }> = ({ location }) =>
 const ViewLoadDetails: React.FC<{ load: IViewLoad; closeModal: () => void }> = ({ load, closeModal }) => {
   return (
     <Dialog open={!!load} onClose={closeModal} fullWidth maxWidth="lg" transitionDuration={{ enter: 300, exit: 200 }}>
+      <DialogActions>
+        <IconButton onClick={closeModal} size="small">
+          {getIcon('CloseIcon')}
+        </IconButton>
+      </DialogActions>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 1 }}>
         <Box>
           <Typography variant="h6" fontWeight={700}>Load #{load?.loadNumber}</Typography>

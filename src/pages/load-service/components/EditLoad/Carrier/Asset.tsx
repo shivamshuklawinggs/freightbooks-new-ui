@@ -1,6 +1,6 @@
 import  {  useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Grid, Typography, Box, Select, MenuItem, InputLabel, FormControl, Card, TextField, Stack, Divider, SelectChangeEvent, Chip, Dialog, DialogTitle, DialogActions, DialogContent } from "@mui/material";
+import { Button, Grid, Typography, Box, Select, MenuItem, InputLabel, FormControl, Card, TextField, Stack, Divider, SelectChangeEvent, Chip, Dialog, DialogTitle, DialogActions, DialogContent, IconButton } from "@mui/material";
 import { setCarrier,setTrailer,setPowerunit,AddAssignDriver ,setDispatchRate,AssignDriversToCarrier, removeAssignDriver} from "@/redux/Slice/EditloadSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import {  ICarrier, IDriver } from "@/types";
@@ -249,6 +249,11 @@ const handleOpenTrailerForm=()=>{
           </>
         )}
         <Dialog open={openDriverForm} onClose={handleCloseDriverForm}>
+          <DialogActions>
+            <IconButton onClick={handleCloseDriverForm} size="small">
+              {getIcon('CloseIcon')}
+            </IconButton>
+          </DialogActions>
           <DialogTitle>Add Driver</DialogTitle>
       <DialogContent>
          <DriverForm carrier={carrierData.carrier} onCancel={()=>{handleCloseDriverForm()}} onUpdate={async()=>{

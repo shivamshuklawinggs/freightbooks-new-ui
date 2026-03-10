@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, TextField, Button, FormControl, InputLabel, Select, MenuItem, Grid, FormHelperText, DialogTitle, Dialog, DialogContent, Card, CardContent, Stack, IconButton, Tooltip, Alert } from '@mui/material';
+import { Box, Typography, TextField, Button, FormControl, InputLabel, Select, MenuItem, Grid, FormHelperText, DialogTitle, Dialog, DialogContent, Card, CardContent, Stack, IconButton, Tooltip, Alert, DialogActions } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { IProductService } from '@/types';
@@ -14,6 +14,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import ChartAccountForm from '../chart-accounts-service/ChartAccountForm';
 import { Info as InfoIcon, Inventory as InventoryIcon, AccountBalance as AccountIcon, Description as DescriptionIcon } from '@mui/icons-material';
 import { ControlledNumericInput } from '@/components/ui/NumericInput';
+import { getIcon } from '@/components/common/icons/getIcon';
 const ProductServiceForm: React.FC<{ showModal: boolean, handleModalClose: () => void, editingItem: IProductService | null }> = ({ showModal, handleModalClose, editingItem }) => {
   const queryClient = useQueryClient()
   const [showChartModal, setShowChartModal] = useState(false)
@@ -113,6 +114,11 @@ const ProductServiceForm: React.FC<{ showModal: boolean, handleModalClose: () =>
   }
   return (
     <Dialog open={showModal} onClose={handleModalClose} maxWidth="lg" fullWidth>
+      <DialogActions>
+        <IconButton onClick={handleModalClose} size="small">
+          {getIcon('CloseIcon')}
+        </IconButton>
+      </DialogActions>
       <DialogTitle sx={{
         bgcolor: 'primary.main',
         color: 'white',
@@ -408,6 +414,11 @@ const ProductServiceForm: React.FC<{ showModal: boolean, handleModalClose: () =>
         </Box>
       </DialogContent>
       <Dialog open={showChartModal} onClose={() => setShowChartModal(false)} maxWidth="md" fullWidth>
+        <DialogActions>
+          <IconButton onClick={() => setShowChartModal(false)} size="small">
+            {getIcon('CloseIcon')}
+          </IconButton>
+        </DialogActions>
         <ChartAccountForm
           initial={undefined}
           onSuccess={handleChartAccountSuccess}

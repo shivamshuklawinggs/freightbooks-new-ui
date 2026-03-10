@@ -1,0 +1,102 @@
+# Query: <Dialog
+
+65 results - 17 files
+
+freightbooks-new-ui • src\pages\invoice-service\InvoiceRecieptes\RecievedPaymentFormFields.tsx:
+  285:             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+  286:                 <DialogActions>
+
+freightbooks-new-ui • src\pages\invoice-service\InvoiceRecieptes\Edit\RecievedPaymentFormFields.tsx:
+  182:             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+
+freightbooks-new-ui • src\pages\journal-entry-service\JournalEntryList.tsx:
+  151:       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+  152:         <DialogTitle>Confirm Delete</DialogTitle>
+  153:         <DialogContent>
+  158:         <DialogActions>
+
+freightbooks-new-ui • src\pages\journal-entry-service\JournalEntryTable.tsx:
+  587:       <Dialog 
+
+freightbooks-new-ui • src\pages\load-service\ViewLoadDetails.tsx:
+   38:     <Dialog open={!!load} onClose={closeModal} fullWidth maxWidth="lg" transitionDuration={{ enter: 300, exit: 200 }}>
+   39:       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 1 }}>
+   49:       <DialogContent dividers sx={{ p: 2 }}>
+  181:       <DialogActions sx={{ px: 2, py: 1.5 }}>
+
+freightbooks-new-ui • src\pages\load-service\components\BiewLoadModal.tsx:
+  128:     <Dialog
+  134:       <DialogTitle>{title}</DialogTitle>
+  135:       <DialogContent>
+  138:       <DialogActions>
+
+freightbooks-new-ui • src\pages\load-service\components\PowerUnitForm.tsx:
+  40:     <Dialog open={open} onClose={onClose}>
+  42:         <DialogTitle>Add Power Unit</DialogTitle>
+  43:         <DialogContent>
+  54:         <DialogActions>
+
+freightbooks-new-ui • src\pages\load-service\components\TrailerForm.tsx:
+  40:     <Dialog open={open} onClose={onClose}>
+  42:         <DialogTitle>Add Trailer</DialogTitle>
+  43:         <DialogContent>
+  54:         <DialogActions>
+
+freightbooks-new-ui • src\pages\load-service\components\CreateLoad\Carrier\Asset.tsx:
+  277:         <Dialog open={openDriverForm} onClose={handleCloseDriverForm}>
+  278:           <DialogTitle>Add Driver</DialogTitle>
+  279:           <DialogContent>
+  285:           <DialogActions>
+
+freightbooks-new-ui • src\pages\load-service\components\EditLoad\Carrier\Asset.tsx:
+  251:         <Dialog open={openDriverForm} onClose={handleCloseDriverForm}>
+  252:           <DialogTitle>Add Driver</DialogTitle>
+  253:       <DialogContent>
+  259:          <DialogActions>
+
+freightbooks-new-ui • src\pages\payment-terms-service\components\PaymentTermForm.tsx:
+   91:     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+   96:         <DialogTitle>{title}</DialogTitle>
+   97:         <DialogContent>
+  125:         <DialogActions>
+
+freightbooks-new-ui • src\pages\product-service\ProductServiceForm.tsx:
+  115:     <Dialog open={showModal} onClose={handleModalClose} maxWidth="lg" fullWidth>
+  116:       <DialogTitle sx={{
+  127:       <DialogContent sx={{ p: 0 }}>
+  410:       <Dialog open={showChartModal} onClose={() => setShowChartModal(false)} maxWidth="md" fullWidth>
+
+freightbooks-new-ui • src\pages\Settings\EmailTemplateManager.tsx:
+  370:       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+  371:         <DialogTitle>
+  380:           <DialogContent>
+  572:           <DialogActions>
+  581:       <Dialog open={previewOpen} onClose={() => setPreviewOpen(false)} maxWidth="md" fullWidth>
+  582:         <DialogTitle>
+  590:         <DialogContent>
+  596:         <DialogActions>
+
+freightbooks-new-ui • src\pages\superadmin-service\Plans.tsx:
+  67:       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+  68:         <DialogTitle>{form._id ? 'Edit Plan' : 'Add Plan'}</DialogTitle>
+  69:         <DialogContent>
+  77:         <DialogActions>
+
+freightbooks-new-ui • src\pages\superadmin-service\SuperadminDataCleanup.tsx:
+  380:       <Dialog open={confirmDialog.open} onClose={() => setConfirmDialog({ ...confirmDialog, open: false })}>
+  381:         <DialogTitle>
+  387:         <DialogContent>
+  392:         <DialogActions>
+
+freightbooks-new-ui • src\pages\tax-service\TaxForm.tsx:
+   75:         <Dialog open={showModal} onClose={handleModalClose} maxWidth="sm" fullWidth>
+   76:           <DialogTitle>{editingItem ? 'Edit' : 'Add New'} Tax Option</DialogTitle>
+   79:             <DialogContent>
+  121:                         <Dialog open={showChartModal} onClose={() => setShowChartModal(false)} maxWidth="md" fullWidth>
+  136:             <DialogActions>
+
+freightbooks-new-ui • src\pages\user-service\UserForm.tsx:
+  142:     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+  143:       <DialogTitle>{user?._id ? 'Edit User' : 'Add New User'}</DialogTitle>
+  146:         <DialogContent>
+  341:         <DialogActions>

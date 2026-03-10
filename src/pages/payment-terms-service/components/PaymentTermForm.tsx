@@ -1,13 +1,14 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Box, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Box, Button, IconButton } from '@mui/material';
 import { IPaymentTerm } from '@/types';
 import apiService from '@/service/apiService';
 import { toast } from 'react-toastify';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { paymentTermSchema,PaymentTermFormData } from '../Schema/paymentTermSchema';
 import { HasPermission } from '@/hooks/ProtectedRoute/authUtils';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 
 interface PaymentTermFormProps {
@@ -89,6 +90,11 @@ const PaymentTermForm: React.FC<PaymentTermFormProps> = ({
   return (
     <HasPermission action="create" resource={["accounting"]} component={
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <DialogActions>
+        <IconButton onClick={handleClose} size="small">
+          {getIcon('CloseIcon')}
+        </IconButton>
+      </DialogActions>
       <form onSubmit={(e) => {
         e.stopPropagation();
         handleSubmit(onSubmit)(e);

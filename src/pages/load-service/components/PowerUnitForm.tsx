@@ -1,5 +1,6 @@
+import { getIcon } from "@/components/common/icons/getIcon";
 import apiService from "@/service/apiService";
-import { Dialog, DialogTitle, DialogActions, DialogContent, TextField, Button, Stack } from "@mui/material";
+import { Dialog, DialogTitle, DialogActions, DialogContent, TextField, Button, Stack, IconButton } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -38,6 +39,11 @@ const PowerUnitForm: React.FC<PowerUnitFormProps> = ({ onClose, carrierId, open,
 
   return (
     <Dialog open={open} onClose={onClose}>
+       <DialogActions>
+        <IconButton onClick={onClose} size="small">
+          {getIcon('CloseIcon')}
+        </IconButton>
+      </DialogActions>
       <form onSubmit={handleSubmit}>
         <DialogTitle>Add Power Unit</DialogTitle>
         <DialogContent>

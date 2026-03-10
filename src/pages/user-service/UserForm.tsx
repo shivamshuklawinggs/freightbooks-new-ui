@@ -23,6 +23,7 @@ import { isRole, maxinputAllow, preventStringInput } from '@/utils';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { fetchAllCompanies } from '@/redux/api';
 import MenuPermissionsTable from './MenuPermissionsTable';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 type CompanyQueryKey = ['companies', string | undefined];
 
@@ -140,6 +141,11 @@ const {register,
   };
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <DialogActions>
+        <IconButton onClick={handleClose} size="small">
+          {getIcon('CloseIcon')}
+        </IconButton>
+      </DialogActions>
       <DialogTitle>{user?._id ? 'Edit User' : 'Add New User'}</DialogTitle>
       <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmitForm)} noValidate>

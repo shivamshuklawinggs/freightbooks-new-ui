@@ -39,6 +39,7 @@ import { toast } from 'react-toastify';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import api from '@/utils/axiosInterceptor';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface EmailTemplate {
   _id: string;
@@ -368,6 +369,11 @@ const EmailTemplateManager: React.FC = () => {
       </CardContent>
 
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+        <DialogActions>
+          <IconButton onClick={handleCloseDialog} size="small">
+            {getIcon('CloseIcon')}
+          </IconButton>
+        </DialogActions>
         <DialogTitle>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {editingTemplate ? 'Edit Template' : 'Create Template'}
@@ -579,6 +585,11 @@ const EmailTemplateManager: React.FC = () => {
       </Dialog>
 
       <Dialog open={previewOpen} onClose={() => setPreviewOpen(false)} maxWidth="md" fullWidth>
+        <DialogActions>
+          <IconButton onClick={() => setPreviewOpen(false)} size="small">
+            {getIcon('CloseIcon')}
+          </IconButton>
+        </DialogActions>
         <DialogTitle>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             Template Preview

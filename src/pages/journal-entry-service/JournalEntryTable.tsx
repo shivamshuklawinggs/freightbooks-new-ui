@@ -3,7 +3,8 @@ import { useFormContext, useFieldArray, Controller, useWatch } from 'react-hook-
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   TextField, IconButton, Button, Typography, Box,
-  Dialog, Paper, Chip, Tooltip, Alert, Collapse
+  Dialog, Paper, Chip, Tooltip, Alert, Collapse,
+  DialogActions
 } from '@mui/material';
 import { 
   AddCircleOutline, 
@@ -24,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 import { paths } from '@/utils/paths';
 import ChartAccountForm from '../chart-accounts-service/ChartAccountForm';
 import { useTheme, alpha } from '@mui/material/styles';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 const JournalEntryTable: React.FC = () => {
   const navigate = useNavigate();
@@ -595,6 +597,11 @@ const JournalEntryTable: React.FC = () => {
           }
         }}
       >
+        <DialogActions>
+          <IconButton onClick={() => setShowChartModal(false)} size="small">
+            {getIcon('CloseIcon')}
+          </IconButton>
+        </DialogActions>
         <ChartAccountForm
           initial={undefined}
           onSuccess={() => {

@@ -16,6 +16,7 @@ import { IJournalEntry } from './Schema/JournalEntrySchema';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/utils';
 import { paths } from '@/utils/paths';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 // Extended interface to include database fields
 interface IJournalEntryWithId extends IJournalEntry {
@@ -149,6 +150,11 @@ const JournalEntryList: React.FC<JournalEntryListProps> = ({ onEdit }) => {
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+        <DialogActions>
+          <IconButton onClick={() => setDeleteDialogOpen(false)} size="small">
+            {getIcon('CloseIcon')}
+          </IconButton>
+        </DialogActions>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <Typography>

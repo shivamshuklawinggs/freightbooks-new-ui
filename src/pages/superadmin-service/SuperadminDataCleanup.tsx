@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  IconButton,
 } from '@mui/material';
 import {
   Delete as DeleteIcon,
@@ -31,6 +32,7 @@ import {
   setCleanupError,
   clearCleanupResult,
 } from '@/redux/Slice/SuperadminSlice';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 const SuperadminDataCleanup: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -378,6 +380,11 @@ const SuperadminDataCleanup: React.FC = () => {
 
       {/* Confirmation Dialog */}
       <Dialog open={confirmDialog.open} onClose={() => setConfirmDialog({ ...confirmDialog, open: false })}>
+        <DialogActions>
+          <IconButton onClick={() => setConfirmDialog({ ...confirmDialog, open: false })} size="small">
+            {getIcon('CloseIcon')}
+          </IconButton>
+        </DialogActions>
         <DialogTitle>
           <Box display="flex" alignItems="center" gap={1}>
             <WarningIcon color="warning" />

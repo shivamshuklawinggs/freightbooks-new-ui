@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IPlan } from '@/types';
 import { withPermission } from '@/hooks/ProtectedRoute/authUtils';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 
 const Plans: React.FC = () => {
@@ -16,11 +17,11 @@ const Plans: React.FC = () => {
 
   const { data } = useQuery({
     queryKey: ['plans', search],
-    queryFn: () => apiService.getPlans({search}),
+    queryFn: () => apiService.getPlans({ search }),
   });
 
   const upsert = useMutation({
-    mutationFn: (body: IPlan) => body._id ? apiService.updatePlan(body._id,body) : apiService.createPlan(body),
+    mutationFn: (body: IPlan) => body._id ? apiService.updatePlan(body._id, body) : apiService.createPlan(body),
     onSuccess: () => { setOpen(false); qc.invalidateQueries({ queryKey: ['plans'] }); },
   });
   const remove = useMutation({
@@ -28,7 +29,7 @@ const Plans: React.FC = () => {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['plans'] }),
   });
   const toggleActive = useMutation({
-    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) => apiService.setPlanActive(id,isActive),
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) => apiService.setPlanActive(id, isActive),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['plans'] }),
   });
 
@@ -65,6 +66,11 @@ const Plans: React.FC = () => {
       </Grid>
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+        <DialogActions>
+          <IconButton onClick={() => setOpen(false)} size="small">
+            {getIcon('CloseIcon')}
+          </IconButton>
+        </DialogActions>
         <DialogTitle>{form._id ? 'Edit Plan' : 'Add Plan'}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={1}>
@@ -83,6 +89,6 @@ const Plans: React.FC = () => {
   );
 };
 
-export default withPermission("view",["superadmin"])(Plans);
+export default withPermission("view", ["superadmin"])(Plans);
 
 

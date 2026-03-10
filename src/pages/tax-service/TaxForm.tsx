@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Box, Button, CircularProgress } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Box, Button, CircularProgress, IconButton } from '@mui/material';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from "react-toastify"
@@ -13,6 +13,7 @@ import { useChartOfAccount } from '@/hooks/useChartOfAccount';
 import FormSelect from '@/components/ui/FormSelect';
 import ChartAccountForm from '@/pages/chart-accounts-service/ChartAccountForm';
 import { ControlledNumericInput } from '@/components/ui/NumericInput';
+import { getIcon } from '@/components/common/icons/getIcon';
 
 interface TaxFormProps {
   showModal: boolean;
@@ -73,6 +74,11 @@ const TaxForm: React.FC<TaxFormProps> = ({ showModal, handleModalClose, editingI
     <>
       <HasPermission action="create" resource={["accounting"]} component={
         <Dialog open={showModal} onClose={handleModalClose} maxWidth="sm" fullWidth>
+          <DialogActions>
+            <IconButton onClick={handleModalClose} size="small">
+              {getIcon('CloseIcon')}
+            </IconButton>
+          </DialogActions>
           <DialogTitle>{editingItem ? 'Edit' : 'Add New'} Tax Option</DialogTitle>
           <ErrorHandlerAlert error={mutation.error} toast={true} />
           <form onSubmit={handleSubmit(onSubmit)}>

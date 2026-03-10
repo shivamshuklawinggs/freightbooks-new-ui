@@ -8,11 +8,13 @@ import {
   DialogContent,
   DialogActions,
   ListItemText,
-  Divider
+  Divider,
+  IconButton
 } from '@mui/material';
 import React, { useState } from 'react';
 import { formatCurrency } from '@/utils';
 import { formatDate } from '@/utils/dateUtils';
+import { getIcon } from '@/components/common/icons/getIcon';
 // Define the props for the modal component
 interface BiewLoadModalProps {
   open: boolean;
@@ -131,6 +133,11 @@ const BiewLoadModal: React.FC<BiewLoadModalProps> = ({ open, type, title, data, 
       maxWidth="sm"
       fullWidth
     >
+      <DialogActions>
+        <IconButton onClick={onClose} size="small">
+          {getIcon('CloseIcon')}
+        </IconButton>
+      </DialogActions>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         {renderContent()}
