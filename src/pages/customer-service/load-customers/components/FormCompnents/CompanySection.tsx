@@ -44,7 +44,7 @@ const CompanySection = () => {
                         usdotLoading ? (
                           <LoadingSpinner />
                         ) : (
-                          <FaSearch sx={{ cursor: 'pointer' }}  onClick={(e) => {
+                          <FaSearch  sx={{cursor:"pointer",color:"primary.main"}}  onClick={(e) => {
                             e.stopPropagation();
                             handleCustomerSubmit(localUsdot);
                           }} />

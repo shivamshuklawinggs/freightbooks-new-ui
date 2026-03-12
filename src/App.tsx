@@ -20,6 +20,7 @@ const App: React.FC = () => {
 
   // Create a new theme instance whenever the color changes
    const themeSettings = useAppSelector((state) => state.theme);
+   console.log("themeSettings",themeSettings)
   const theme = useMemo(() => createAppTheme(themeSettings), [themeSettings]);
 
   return (

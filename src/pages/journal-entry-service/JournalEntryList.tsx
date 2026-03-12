@@ -89,7 +89,7 @@ const JournalEntryList: React.FC<JournalEntryListProps> = ({ onEdit }) => {
 
   if (error) {
     return (
-      <Container maxWidth="lg" sx={{ py: 3 }}>
+      <Container maxWidth="md" sx={{ py: 3 }}>
         <Alert severity="error">
           Failed to load journal entries. Please try again.
         </Alert>
@@ -100,7 +100,7 @@ const JournalEntryList: React.FC<JournalEntryListProps> = ({ onEdit }) => {
   const totalPages = journalEntriesData?.totalPages || 0
 
   return (
-    <Container maxWidth="lg" sx={{ py: 3 }}>
+    <Container maxWidth="md" sx={{ py: 3 }}>
       <PageHeader
         title="Journal Entries"
         subtitle="View, edit, and manage your journal entries"

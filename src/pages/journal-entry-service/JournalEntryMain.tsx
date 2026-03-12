@@ -50,7 +50,7 @@ const JournalEntryMain: React.FC = () => {
   }, [JournalEntryId]);
 
   return (
-    <Container maxWidth="lg" sx={{ py: 3 }}>
+    <Container maxWidth="md" sx={{ py: 3 }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={tabValue} onChange={handleChange} aria-label="journal entry tabs">
           <Tab label="Create/Edit Journal Entry" {...a11yProps(0)} />

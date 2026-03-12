@@ -148,7 +148,7 @@ const LoadTermsAndCondition = ({ type, handleAddDelivery }: { type: "load" | "ed
         </Grid>
       </Grid>
       {/* Terms & Conditions Dialog */}
-      <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth PaperProps={{ sx: { height: '80vh' } }}>
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth PaperProps={{ sx: { height: '80vh' } }}>
         <DialogActions>
           <Button onClick={handleClose}>
             {getIcon('CloseIcon')}

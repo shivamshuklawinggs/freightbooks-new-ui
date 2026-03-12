@@ -36,7 +36,7 @@ const LocationCard: React.FC<{ location: ILocationWithIds }> = ({ location }) =>
 
 const ViewLoadDetails: React.FC<{ load: IViewLoad; closeModal: () => void }> = ({ load, closeModal }) => {
   return (
-    <Dialog open={!!load} onClose={closeModal} fullWidth maxWidth="lg" transitionDuration={{ enter: 300, exit: 200 }}>
+    <Dialog open={!!load} onClose={closeModal} fullWidth maxWidth="md" transitionDuration={{ enter: 300, exit: 200 }}>
       <DialogActions>
         <IconButton onClick={closeModal} size="small">
           {getIcon('CloseIcon')}

@@ -1,6 +1,6 @@
 import React, {  useEffect } from 'react';
-import { Dialog, DialogContent, DialogActions, Button, Grid, Typography, Divider, Box, IconButton, CircularProgress, useTheme, alpha, Card } from '@mui/material';
-import { Business, Phone, Email, LocationOn, Description, AttachFile, Shield, LocalShipping, Contacts } from '@mui/icons-material';
+import { Dialog, DialogContent, DialogActions, Button, Grid, Typography, Box, IconButton, CircularProgress, useTheme, alpha, Card } from '@mui/material';
+import { Business, LocationOn, Description, AttachFile, Shield, LocalShipping, Contacts } from '@mui/icons-material';
 import { useForm, FormProvider } from 'react-hook-form';
 import { ICarrier } from '@/types';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -130,7 +130,7 @@ const CarrierForm: React.FC<CarrierFormProps> = ({
     <Dialog 
       open={open as boolean} 
       onClose={onClose} 
-      maxWidth="lg" 
+      maxWidth="md" 
       fullWidth
       PaperProps={{
         sx: {

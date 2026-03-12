@@ -119,7 +119,7 @@ const ProductServiceForm: React.FC<{ showModal: boolean, handleModalClose: () =>
     <Dialog 
       open={showModal} 
       onClose={handleModalClose} 
-      maxWidth="lg" 
+      maxWidth="md" 
       fullWidth
       PaperProps={{
         sx: {

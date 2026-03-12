@@ -33,10 +33,11 @@ import { SidebarMenuItem, SideDrawerProps } from "@/types";
 import { hasAccess } from "@/hooks/ProtectedRoute/authUtils";
 
 const SideDrawer: React.FC<SideDrawerProps> = ({ drawerWidth }) => {
+  const theme = useTheme();
   const isExpanded = useSelector((state: RootState) => state.sidebar.isOpen);
   const user = useSelector((state: RootState) => state.user);
   const {primaryColor}=user
-  const theme = useTheme();
+  const bgcolor = "#41495A"
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const [menuState, setMenuState] = React.useState<{
@@ -215,8 +216,8 @@ const renderNestedMenuItems = (
             sx={{
               "& .MuiPopover-paper": {
                 ml: 0.5,
-                bgcolor: theme.palette.primary.main,
-                backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+                bgcolor: bgcolor,
+                backgroundImage: `linear-gradient(180deg, ${bgcolor} 0%, ${bgcolor} 100%)`,
                 boxShadow: "4px 4px 20px rgba(0,0,0,0.3)",
                 borderRadius: 2,
                 minWidth: Math.max(200 - level * 20, 140)
@@ -324,11 +325,12 @@ const renderNestedMenuItems = (
                   pointerEvents: 'none',
                   '& .MuiPopover-paper': {
                     pointerEvents: 'auto',
-                    ml: 0.5,
-                    bgcolor: theme.palette.primary.main,
-                    backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
-                    boxShadow: '4px 4px 20px rgba(0,0,0,0.3)',
-                    borderRadius: 2,
+                    ml:3,
+                    zIndex:1,
+                    bgcolor: bgcolor,
+                    // backgroundImage: `linear-gradient(180deg, ${bgcolor} 0%, ${bgcolor} 100%)`,
+                    // boxShadow: '4px 4px 20px rgba(0,0,0,0.3)',
+                    // borderRadius: 2,
                     minWidth: 200,
                   }
                 }}
@@ -371,7 +373,7 @@ const renderNestedMenuItems = (
                             sx={{
                               borderRadius: 1,
                               minHeight: 36,
-                              bgcolor: isChildActive ? alpha('#fff', 0.18) : 'transparent',
+                              bgcolor: bgcolor,
                               '&:hover': { bgcolor: alpha('#fff', 0.12) },
                               position: 'relative',
                               '&::before': isChildActive ? {
@@ -382,7 +384,7 @@ const renderNestedMenuItems = (
                                 height: '60%',
                                 width: 3,
                                 borderRadius: '0 3px 3px 0',
-                                bgcolor: 'rgba(255,255,255,0.9)',
+                                bgcolor: bgcolor,
                               } : {},
                             }}
                           >
@@ -423,8 +425,8 @@ const renderNestedMenuItems = (
                                 '& .MuiPopover-paper': {
                                   pointerEvents: 'auto',
                                   ml: 0.5,
-                                  bgcolor: theme.palette.primary.main,
-                                  backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+                                  bgcolor: bgcolor,
+                                  backgroundImage: `linear-gradient(180deg, ${bgcolor} 0%, ${bgcolor} 100%)`,
                                   boxShadow: '4px 4px 20px rgba(0,0,0,0.3)',
                                   borderRadius: 2,
                                   minWidth: 180,
@@ -628,6 +630,7 @@ const handleNestedPopoverLeave = () => {
     anchor: null
   })
 }
+
   return (
     <Drawer
       variant="permanent"
@@ -637,7 +640,7 @@ const handleNestedPopoverLeave = () => {
         [`& .MuiDrawer-paper`]: {
           width: drawerWidth,
           boxSizing: "border-box",
-          bgcolor: alpha(theme.palette.primary.main, 0.8),
+          bgcolor: bgcolor,
           borderLeft: primaryColor ? `4px solid ${primaryColor}` : 'none',
           boxShadow: '2px 0 12px rgba(0,0,0,0.15)',
           transition: theme.transitions.create(["width", "backgroundImage"], {

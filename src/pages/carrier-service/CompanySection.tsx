@@ -43,7 +43,7 @@ const CompanySection = ({ localUsdot, setLocalUsdot }: any) => {
                       <LoadingSpinner />
                     ) : (
                       <FaSearch
-                        style={{ cursor: 'pointer' }}
+                        sx={{cursor:"pointer",color:"primary.main"}}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleUSDOTSearch();

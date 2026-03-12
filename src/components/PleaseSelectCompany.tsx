@@ -8,6 +8,7 @@ import { fetchAllCompanies } from '@/redux/api'
 import { ICompany } from '@/types'
 import { useQueryClient } from '@tanstack/react-query'
 import { initialCompanyData } from '@/redux/InitialData/initialCompanyData'
+import { setPrimaryColor } from '@/redux/Slice/themeSlice'
 const PleaseSelectCompany: React.FC = () => {
   const qc=useQueryClient()
   const [SearchParam] = useSearchParams()
@@ -21,6 +22,7 @@ const PleaseSelectCompany: React.FC = () => {
     const selectedCompany = companies.find(company => company._id === id);
     if (selectedCompany) {
       dispatch(setCompany(selectedCompany));
+      selectedCompany.color&& dispatch(setPrimaryColor(selectedCompany.color))
       // qc.invalidateQueries({ queryKey: ['getCompany', currentCompany] });
       qc.refetchQueries()
       const NextUrl = SearchParam.get('next')

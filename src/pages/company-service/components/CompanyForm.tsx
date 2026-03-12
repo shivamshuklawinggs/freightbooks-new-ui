@@ -15,6 +15,8 @@ import { COMPANY_LOGO_UPLOAD_URL } from '@/config';
 import { getIcon } from '@/components/common/icons/getIcon';
 import { Business, Phone, Palette, Description, Upload, Brush } from '@mui/icons-material';
 import SignatureDrawer from '@/components/SignatureDrawer';
+import { colorPresets } from '@/data/colors';
+import defaults from '@/data/defaults.json';
 // import SignatureDrawer from '@/components/SignatureDrawer';
 interface CompanyFormProps { open: boolean; onClose: () => void; initialData?: Partial<ICompany>; title: string; }
 const CompanyForm: React.FC<CompanyFormProps> = ({ open, onClose, initialData, title, }) => {
@@ -35,7 +37,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ open, onClose, initialData, t
       label: initialData?.label || '',
       description: initialData?.description || '',
       type: initialData?.type || 'OTHER',
-      color: initialData?.color || '#FF0000',
+      color: initialData?.color || defaults.colorPresets.teal.main,
       logo: initialData?.logo || null,
       termsandconditions: initialData?.termsandconditions || '',
       phone: initialData?.phone || '',
@@ -110,7 +112,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ open, onClose, initialData, t
         label: '',
         description: '',
         type: 'OTHER',
-        color: '#FF0000',
+        color: defaults.colorPresets.teal.main,
         logo: null,
         termsandconditions: '',
         phone: '',
@@ -171,7 +173,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ open, onClose, initialData, t
     <Dialog 
       open={open} 
       onClose={handleClose} 
-      maxWidth="lg" 
+      maxWidth="md" 
       fullWidth
       PaperProps={{
         sx: {
@@ -638,25 +640,21 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ open, onClose, initialData, t
                                   </Typography>
                                 </Box>
                                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                  {[
-                                    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-                                    '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
-                                    '#FF6B9D', '#C44569', '#2ECC71', '#3498DB', '#9B59B6'
-                                  ].map((color) => (
+                                  {Object.entries(colorPresets).map(([key, val]) => (
                                     <Box
-                                      key={color}
-                                      onClick={() => field.onChange(color)}
+                                      key={key}
+                                      onClick={() => field.onChange(val)}
                                       sx={{
                                         width: 28,
                                         height: 28,
                                         borderRadius: '50%',
-                                        backgroundColor: color,
+                                        backgroundColor: val.main,
                                         cursor: 'pointer',
-                                        border: field.value === color ? `3px solid ${theme.palette.primary.main}` : '2px solid transparent',
+                                        border: field.value === val.main ? `3px solid ${theme.palette.primary.main}` : '2px solid transparent',
                                         transition: 'all 0.2s ease-in-out',
                                         '&:hover': {
                                           transform: 'scale(1.15)',
-                                          boxShadow: `0 2px 8px ${alpha(color, 0.5)}`
+                                          boxShadow: `0 2px 8px ${alpha(val.main, 0.5)}`
                                         },
                                       }}
                                     />

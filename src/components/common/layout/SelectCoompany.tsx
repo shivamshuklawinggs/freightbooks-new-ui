@@ -7,6 +7,7 @@ import { setCompany } from '@/redux/Slice/UserSlice'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { initialCompanyData } from '@/redux/InitialData/initialCompanyData'
+import { setPrimaryColor } from '@/redux/Slice/themeSlice';
 type CompanyQueryKey = ['companies', string | undefined];
 const SelectCoompany = () => {
   const [SearchParam] = useSearchParams()
@@ -23,13 +24,13 @@ const SelectCoompany = () => {
     const selectedCompany = companies.find(company => company._id === id);
     if (selectedCompany) {
       dispatch(setCompany(selectedCompany));
-      // dispatch(setThemeColor(selectedCompany.color || '#000000'));
-      // queryClient.invalidateQueries({ queryKey: ['getCompany', currentCompany] });
+      selectedCompany.color&& dispatch(setPrimaryColor(selectedCompany.color))
       await queryClient.refetchQueries()
       const NextUrl = SearchParam.get('next')
       NextUrl && navigate(NextUrl);
     } else if (!selectedCompany) {
       dispatch(setCompany(initialCompanyData));
+      
       // queryClient.invalidateQueries({ queryKey: ['getCompany', currentCompany] });
       await queryClient.refetchQueries()
       const NextUrl = SearchParam.get('next')
